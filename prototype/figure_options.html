@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--#set var="title" value="Pacific Adaptation Strategy Assistance Program" -->
+    
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-AU" lang="en">
+  <head>
+    <title><!--#echo var=title --></title>
+  </head>
+  <body>
+
+<h1>Figure Generation via Web Services</h1>
+<p>This page provides an interface to the figure output capabilities of map_plot_wms. 
+Comments to a.charles@bom.gov.au</p>
+
+<h2>Figure Options</h2>
+<p>
+<form name="plotter">
+Variable: 
+<select name="varname" id="varname">
+<option value="hr24_prcp" selected>Rainfall</option>
+</select>
+
+Lead Time: 
+<select name="lead" id="lead">
+<option value="0" selected>0</option></br>
+<option value="1">1</option></br>
+<option value="2">2</option></br>
+<option value="3">3</option></br>
+<option value="4">4</option></br>
+<option value="5">5</option></br>
+</select>
+
+Style:
+<select name="rstyle" id="rstyle">
+<option value="contour" selected>contour</option></br>
+<option value="grid" >grid</option></br>
+</select>
+
+Bbox:
+<input type="text" id="bbox" name="bbox" value="0,-90,360,90"/>
+
+Colours:
+<input type="text" id="colorrange" name="colorange" value="-10,10"/><br/>
+
+Width:
+<input type="text" id="imgwidth" name="imgwidth" value="600"/>
+
+Height:
+<input type="text" id="imgheight" name="imgheight" value="400"/>
+
+<input name="Submit"  type="submit" value="Draw" onClick="JavaScript:draw_image(varname.value,lead.value,bbox.value,colorrange.value,imgwidth.value,imgheight.value,rstyle.value); return false"/>
+</form>
+
+</p>
+
+<p>
+<img id='output' src=""/>
+</p>
+
+<p>
+Query: <textarea value="" id="imgquery" name="imgquery" cols=80 rows=3></textarea>
+</p>
+
+
+<script type="text/javascript" language="JavaScript">
+    
+function draw_image(varname,lead,bbox,colorrange,imgwidth,imgheight,style){
+
+    var atmosurl = "http://opendap.bom.gov.au:8080/thredds/dodsC/PASAP/atmos_latest.nc" ;
+    var scriptargz =  "../cgi-bin/map_plot_wms.wsgi?&REQUEST=GetFullFigure" ;
+    var img_dims = '&WIDTH=' + imgwidth + '&HEIGHT=' + imgheight ;
+    var ltime = '&TIMEINDEX='+lead ;
+    var url = "&DAP_URL="+atmosurl;
+    var rstyle = "&STYLE="+style;
+
+    if (varname == 'hr24_prcp') {
+        var varcolors = "&COLORSCALERANGE=" + colorrange;
+        varname = "&LAYERS=hr24_prcpa" ;
+        }
+
+    var bounds = "&BBOX=" + bbox ;
+    var query = scriptargz + url + varname + ltime + varcolors + img_dims + bounds + rstyle;
+    //console.log("Switching to your new image");
+    document.getElementById('output').src = query ;
+    document.getElementById('imgquery').value = query ;
+}
+
+draw_image(document.plotter.varname.value,document.plotter.lead.value,document.plotter.bbox.value,document.plotter.colorrange.value,document.plotter.imgwidth.value,document.plotter.imgheight.value,document.plotter.style.value);
+
+</script>
+
+
+
+</body>
+</html>
+

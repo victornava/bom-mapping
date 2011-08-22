@@ -1,0 +1,30 @@
+install python2.7
+install apache2  
+
+install and setup mod_wsgi:
+  http://code.google.com/p/modwsgi/wiki/QuickInstallationGuide
+  add in apache config file:
+    
+    LoadModule wsgi_module modules/mod_wsgi.so
+    
+    <Directory /{OUTSIDE_ROOT_DIR_PATH}/wsgi-scripts>
+        SetHandler wsgi-script
+        Options ExecCGI
+    </Directory>
+  
+install python libraries:
+  easy_install numpy
+  easy_install mathplotlib
+  easy_install httplib2
+  easy_install pydap
+  easy_install mathplotlib
+  easy_install basemap
+  easy_install pydap.handlers.netcdf
+
+create local pydap server:
+  paster create -t pydap myserver
+
+run the pydap server
+  serve ./myserver/server.ini
+
+  

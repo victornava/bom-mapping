@@ -1,0 +1,48 @@
+# uninstall python libs
+
+http://peak.telecommunity.com/DevCenter/EasyInstall#uninstalling-packages
+
+easy_install -mxN PackageName
+
+
+#install WSGI
+
+http://code.google.com/p/modwsgi/wiki/QuickInstallationGuide
+
+http://www.sitepen.com/blog/2008/05/16/supercharge-mamp/
+
+apache apxs path: /Applications/MAMP/bin/apache2/bin/apxs
+
+python path: /usr/bin/python
+
+run:
+./configure
+./make
+
+OS X apache config file
+/etc/apache2/httpd.conf
+
+OS X apache error log
+/private/var/log/apache2/error_log
+
+
+# Python default libraries location in OS X
+/Library/Python/2.6/site-packages/
+
+# installing matplotlib on OS X
+http://www.cgl.ucsf.edu/Outreach/pc204/matplotlib.html
+
+# installing basemap
+
+
+# install pydap server
+http://pydap.org/#
+  easy_install pydap.handlers.netcdf
+create a server:
+  paster create -t pydap myserver
+run the server:
+paster serve ./myserver/server.ini
+
+
+# test url
+http://localhost/~vic/wsgi-scripts/prototype.wsgi?&REQUEST=GetFullFigure&DAP_URL=http://opendap.bom.gov.au:8080/thredds/dodsC/PASAP/atmos_latest.nc&LAYERS=hr24_prcpa&TIMEINDEX=0&COLORSCALERANGE=-10,10&WIDTH=1024&HEIGHT=800&BBOX=0,-90,360,90&STYLE=contour

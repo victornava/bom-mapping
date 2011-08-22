@@ -1,0 +1,10 @@
+virtual
+ipython
+hdf
+netcdf
+numpy
+scipy
+pynetcdfipython
+matplotlib
+pydap
+basemap

@@ -1,0 +1,26 @@
+TO INSTALL:
+scipy
+  * manually http://stronginference.com/scipy-superpack/3
+  
+cows
+  easy_install -f http://ndg.nerc.ac.uk/dist cows
+
+
+INSTALLED:
+webpy
+numpy
+pydap
+httplib2 (required by pydap)
+mathplotlib
+  * Used this prebuilt package for OS X: http://www.cgl.ucsf.edu/Outreach/pc204/matplotlib.html
+basemap
+  * manually from http://bit.ly/njyeCI
+  http://matplotlib.sourceforge.net/basemap/doc/html/users/installing.html
+pydap.handlers.netcdf
+
+
+
+
+
+
+
