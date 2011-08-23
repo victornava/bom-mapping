@@ -15,3 +15,9 @@ cd Python-2.7.2
 
 make -j5
 make -j5 install
+
+# create symlink for shared libraries
+# fix from: http://code.google.com/p/modwsgi/wiki/InstallationIssues
+
+cd /usr/local/lib/python2.7/config
+ln -s ../../libpython2.7.so .
