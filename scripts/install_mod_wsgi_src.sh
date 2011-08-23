@@ -17,10 +17,12 @@ tar xvzf mod_wsgi-3.3.tar.gz
 
 cd mod_wsgi-3.3
 
-./configure --with-apxs=/usr/sbin/apxs --with-python=/usr/local/bin/python LD_RUN_PATH=/usr/local/lib/
+export LD_RUN_PATH=/usr/local/lib/
+./configure --with-apxs=/usr/sbin/apxs --with-python=/usr/local/bin/python
+#./configure --with-apxs=/usr/sbin/apxs --with-python=/usr/local/bin/python LD_RUN_PATH=/usr/local/lib/
 
 make -j5
-make j5 install
+make -j5 install
 
 # Add mod_wsgi to apache
 
