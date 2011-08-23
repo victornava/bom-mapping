@@ -11,6 +11,7 @@ wget http://python.org/ftp/python/2.7.2/Python-2.7.2.tar.bz2
 tar xvjf Python-2.7.2.tar.bz2
 cd Python-2.7.2
 
-./configure --prefix=/usr/local --with-fpectl --enable-shared --with-libc="" --with-pth --with-system-ffi
+./configure --prefix=/usr/local --with-fpectl --enable-shared --with-libc="" --with-pth --with-system-ffi LDFLAGS="-Wl,-rpath /usr/local/lib"
+
 make -j5
 make -j5 install
