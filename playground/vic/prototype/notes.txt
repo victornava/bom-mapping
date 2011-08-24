@@ -44,5 +44,5 @@ run the server:
 paster serve ./myserver/server.ini
 
 
-# test url
-http://localhost/~vic/wsgi-scripts/prototype.wsgi?&REQUEST=GetFullFigure&DAP_URL=http://opendap.bom.gov.au:8080/thredds/dodsC/PASAP/atmos_latest.nc&LAYERS=hr24_prcpa&TIMEINDEX=0&COLORSCALERANGE=-10,10&WIDTH=1024&HEIGHT=800&BBOX=0,-90,360,90&STYLE=contour
+# prototype test url
+http://localhost/~vic/wsgi-scripts/prototype.wsgi?&REQUEST=GetFullFigure&DAP_URL=http://opendap.bom.gov.au:8080/thredds/dodsC/PASAP/atmos_latest.nc&LAYERS=SSTA&TIMEINDEX=0&COLORSCALERANGE=-10,10&WIDTH=1024&HEIGHT=800&BBOX=0,-90,360,90&STYLE=contour
