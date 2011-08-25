@@ -9,3 +9,6 @@ yum groupinstall 'Development Tools' -y
 
 # install git
 yum install git-all -y
+
+#install firefox for testing purposes
+yum install firefox -y
