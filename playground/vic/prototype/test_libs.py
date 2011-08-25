@@ -23,8 +23,6 @@ from mpl_toolkits.basemap import interp
 import StringIO
 
 
-
-# print pydap.VERSION
 # return the version number of a library
 def version(library):
     import pkg_resources
