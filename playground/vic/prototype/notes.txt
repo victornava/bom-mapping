@@ -46,3 +46,8 @@ paster serve ./myserver/server.ini
 
 # prototype test url
 http://localhost/~vic/wsgi-scripts/prototype.wsgi?&REQUEST=GetFullFigure&DAP_URL=http://opendap.bom.gov.au:8080/thredds/dodsC/PASAP/atmos_latest.nc&LAYERS=SSTA&TIMEINDEX=0&COLORSCALERANGE=-10,10&WIDTH=1024&HEIGHT=800&BBOX=0,-90,360,90&STYLE=contour
+
+
+http://yoursoft06.cs.rmit.edu.au/wsgi-scripts/hello.wsgi
+
+http://yoursoft06.cs.rmit.edu.au/wsgi-scripts/prototype.wsgi?REQUEST=GetFullFigure&DAP_URL=http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc&LAYERS=SSTA&TIMEINDEX=0&COLORSCALERANGE=-10,10&WIDTH=1024&HEIGHT=800&BBOX=0,-90,360,90&STYLE=contour
