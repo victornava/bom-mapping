@@ -12,16 +12,16 @@ yum install httpd-devel -y
 
 # Let the installation begin
 
-#cd /usr/local/src/
-#wget http://modwsgi.googlecode.com/files/mod_wsgi-3.3.tar.gz
-#tar xvzf mod_wsgi-3.3.tar.gz
+cd /usr/local/src/
+wget http://modwsgi.googlecode.com/files/mod_wsgi-3.3.tar.gz
+tar xvzf mod_wsgi-3.3.tar.gz
 
-#cd mod_wsgi-3.3
+cd mod_wsgi-3.3
 
-#./configure --with-apxs=/usr/sbin/apxs --with-python=/usr/local/bin/python LD_RUN_PATH=/usr/local/lib/
+./configure --with-apxs=/usr/sbin/apxs --with-python=/usr/local/bin/python LD_RUN_PATH=/usr/local/lib/
 
-#make -j5
-#make j5 install
+make -j5
+make -j5 install
 
 # Add mod_wsgi to apache
 
