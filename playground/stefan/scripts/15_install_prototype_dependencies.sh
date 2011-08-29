@@ -96,6 +96,7 @@ function install_setuptools() {
 function install_pydap() {
    $EASY_INSTALL Paste
    $EASY_INSTALL Pydap
+   $EASY_INSTALL pydap.handlers.netcdf
 }
 
 install_centos_deps
