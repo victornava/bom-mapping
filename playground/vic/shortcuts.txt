@@ -1,0 +1,6 @@
+alias wsgi="cd /var/www/wsgi-scripts"
+alias  tail -f /var/log/httpd/error_log
+tail -f /var/log/httpd/access_log
+
+sync proto
+rsync *.wsgi $y6:/var/www/wsgi-scripts/
