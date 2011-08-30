@@ -125,10 +125,8 @@ def application(environ, start_response):
 
     params = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ)
     download = params.getvalue('DOWNLOAD', False);
-    print 'params: '
-    print params
+    print 'params: ', params
     output = doWMS(params)
-#    output='Hello'
 
     print "Duration: %s" % str(time() - start)
     if output:
@@ -736,7 +734,7 @@ def atmos_mask_test():
             params.list.append(cgi.MiniFieldStorage(name, value))
         doWMS(params)
 
-"""
+
 if __name__ == '__main__':
     if 'TERM' in os.environ:
         print "Running from terminal"
@@ -758,3 +756,4 @@ if __name__ == '__main__':
 if __name__ == '__main__':
   from paste import httpserver
   httpserver.serve(application, host='127.0.0.1', port='8080')
+"""
