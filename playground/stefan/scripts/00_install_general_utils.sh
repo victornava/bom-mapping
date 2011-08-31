@@ -1,14 +1,29 @@
 #!/bin/bash
 # Author: Stefan Fuchs (s3260968@student.rmit.edu.au)
 
+
 # install general dependencies
-yum install zlib udunits2-devel curl-devel freetype-devel libpng-devel blas-devel lapack-devel atlas gcc-gfortran tk-devel -y
+function prototype_general_deps() {
+   yum install zlib udunits2-devel curl-devel freetype-devel libpng-devel blas-devel lapack-devel atlas gcc-gfortran tk-devel -y
+}
 
 # install gcc devel environment
-yum groupinstall 'Development Tools' -y
+function install_dev_tools() {
+   yum groupinstall 'Development Tools' -y
+}
 
 # install git
-yum install git-all -y
+function install_git() {
+   yum install git-all -y
+}
 
 #install firefox for testing purposes
-yum install firefox -y
+function install_user_tools() {
+   yum install firefox -y
+}
+
+
+#prototype_general_deps
+#install_dev_tools
+install_git
+#install_user_tools
