@@ -27,7 +27,7 @@ from mpl_toolkits.basemap import addcyclic, date2num, num2date
 from mpl_toolkits.basemap import interp
 
 # scipy interploate --?? 
-#from scipy.interpolate import interpolate
+from scipy.interpolate import interpolate
 
 import StringIO
 
@@ -114,12 +114,12 @@ def doWMS(params):
         colrange_in = '-4,4'
     colorrange = tuple([float(a) for a in colrange_in.rsplit(',')])
     save_local_img = bool(int(params.getvalue('SAVE_LOCAL',0)))
-    t_out = "\ndoWMS before return"
-    return t_out
+#    t_out = "\ndoWMS before return"
+#    return t_out
     # Might be nicer to just pass a dict to mapdap()
-#    return mapdap(varname=varname,bbox=bbox,url=url,imgheight=imgheight,imgwidth=imgwidth,
-#        request=request,time=time,timeindex=timeindex,save_local_img=save_local_img,
-#        colorrange=colorrange,palette=palette,style=style,ncolors=ncolors)
+    return mapdap(varname=varname,bbox=bbox,url=url,imgheight=imgheight,imgwidth=imgwidth,
+        request=request,time=time,timeindex=timeindex,save_local_img=save_local_img,
+        colorrange=colorrange,palette=palette,style=style,ncolors=ncolors)
 
 def cmap_discretize(cmap, N):
     """Return a discrete colormap from the continuous colormap cmap.
@@ -342,7 +342,7 @@ def mapdap(
     """
     transparent = True
     lonmin,latmin,lonmax,latmax = tuple([float(a) for a in bbox.rsplit(',')])
-   
+
     # It's not clear there is any point in this. Pydap doesn't actually
     # download data until you subscript 
     if url not in cache:
@@ -378,7 +378,9 @@ def mapdap(
     lat = dset['lat'][:]
     lon = dset['lon'][:]
     var = dset[varname][timestep,:,:]
- 
+
+#    t_out = "\mapdap - lon lat return" + str(lat)
+#    return t_out
     #xcoords = lonmin,lonmax
     #xcoords,lon,var = transform_lons(xcoords,lon,var)
  
@@ -413,6 +415,8 @@ def mapdap(
     lonmin,lonmax = xcoords
     varnc = dset[varname]
 
+#    t_out = "\mapdap - varnc return" + str(varnc)
+#    return t_out
     try:
         var_units = varnc.attributes['units']
     except KeyError:
@@ -500,6 +504,8 @@ def mapdap(
     #    Do some checks on the size of the list, and fix if we can
     #    pass
 
+#    t_out = "\mapdap - before style return - " + str(style)
+#    return t_out
     if style == 'contour':
         # Interpolate to a finer resolution
         # TODO: make this sensitive to the chosen domain
@@ -539,6 +545,8 @@ def mapdap(
     elif style == 'grid':
         main_render = m.pcolormesh(x,y,varm[:,:],vmin=colorrange[0],vmax=colorrange[1],
             cmap=colormap,ax=ax)
+#        t_out = "\mapdap - after main_render return - " + str(main_render)
+#        return t_out
     elif style == 'grid_threshold':
         increment = float(colorrange[1]-colorrange[0]) / float(ncolors)
         colorbounds = list(np.arange(colorrange[0],colorrange[1]+increment,increment))
@@ -585,6 +593,10 @@ def mapdap(
         fig.text(titlex,titley,title,va='top',fontsize=title_font_size)
    
     colorbar_font_size = 8
+
+#    t_out = "\mapdap - before request - return - " + str(request)
+#    return t_out
+
     if request == 'GetLegendGraphic':
         # Currently we make the plot, and then if the legend is asked for
         # we use the plot as the basis for the legend. This is not optimal.
