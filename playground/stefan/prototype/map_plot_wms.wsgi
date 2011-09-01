@@ -1,4 +1,4 @@
-#! python
+#!/usr/bin/python
 """
 A WMS server for generating contour images from opendap data sources.
 Not guaranteed to implement all parts of the WMS specification.
@@ -91,13 +91,17 @@ http://poamaloc/experimental/pasap/cgi-bin/map_plot_wms.py?TRANSPARENT=true&FORM
 """
 
 # Python setup and importation of required modules.
+import sys
+print >> sys.stderr, 'Debug: 1'
 import cgi
 import cgitb
 cgitb.enable()
-import sys
+
 import os
 import site
 
+os.environ['HOME'] = '/var/www'
+print >> sys.stderr, 'Debug: 2'
 # Set up the pythonpath
 for path in os.environ.get('PYTHON_PATH_PASAP','').split(':'):
     site.addsitedir(path)
@@ -109,14 +113,22 @@ import numpy as np
 from time import strftime, time, strptime
 import datetime
 import numpy as np
+print >> sys.stderr, 'Debug: 3'
 import matplotlib as mpl
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from mpl_toolkits.basemap import Basemap, addcyclic, date2num, num2date
+print >> sys.stderr, 'Debug: 4'
 from mpl_toolkits.basemap import interp
+
+print >> sys.stderr, 'Debug: 5'
 from scipy.interpolate import interpolate
+print >> sys.stderr, 'Debug: 6'
 import StringIO
 
+print >> sys.stderr, 'Debug: 7'
+
 # Create a cache for storing data from urls
+print >> sys.stderr, 'cache'
 cache = {}
 
 def application(environ, start_response):
@@ -642,7 +654,8 @@ def mapdap(
         m.drawparallels(parallels,labels=[1,0,0,0],fmt='%3.1f',fontsize=tick_font_size)
         m.drawparallels([0],linewidth=1,dashes=[1,0],labels=[0,1,1,1],fontsize=tick_font_size)
         titlex,titley = (0.05,0.98)
-        title = get_pasap_plot_title(dset,varname=varname,timestep=timestep)
+        #title = get_pasap_plot_title(dset,varname=varname,timestep=timestep)
+	title = 'stefan'
         fig.text(titlex,titley,title,va='top',fontsize=title_font_size)
    
     colorbar_font_size = 8
