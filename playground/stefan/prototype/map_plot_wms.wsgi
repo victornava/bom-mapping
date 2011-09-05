@@ -101,7 +101,6 @@ import os
 import site
 
 os.environ['HOME'] = '/var/www'
-print >> sys.stderr, 'Debug: 2'
 # Set up the pythonpath
 for path in os.environ.get('PYTHON_PATH_PASAP','').split(':'):
     site.addsitedir(path)
@@ -113,22 +112,15 @@ import numpy as np
 from time import strftime, time, strptime
 import datetime
 import numpy as np
-print >> sys.stderr, 'Debug: 3'
 import matplotlib as mpl
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from mpl_toolkits.basemap import Basemap, addcyclic, date2num, num2date
-print >> sys.stderr, 'Debug: 4'
 from mpl_toolkits.basemap import interp
-
-print >> sys.stderr, 'Debug: 5'
 from scipy.interpolate import interpolate
-print >> sys.stderr, 'Debug: 6'
 import StringIO
 
-print >> sys.stderr, 'Debug: 7'
 
 # Create a cache for storing data from urls
-print >> sys.stderr, 'cache'
 cache = {}
 
 def application(environ, start_response):
