@@ -4,7 +4,7 @@
 import sys
 import os
 os.environ['HOME'] = '/var/www'
-import lala_bom as ec
+import map_gen as ec
 
 
 def application(environ, start_response):

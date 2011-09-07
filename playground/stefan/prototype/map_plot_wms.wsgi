@@ -511,14 +511,22 @@ def mapdap(
     # Convert the latitude extents to Basemap coordinates
     bmaplatmin,bmaplonmin = m(latmin,lonmin)
     bmaplatmax,bmaplonmax = m(latmax,lonmax)
+    print bmaplatmin,bmaplonmin,latmin,lonmin
+    print bmaplatmax,bmaplonmax,latmax,lonmax
     lon_offset1 = abs(bmaplclon - bmaplonmin)
     lat_offset1 = abs(bmaplclat - bmaplatmin)
     lon_offset2 = abs(bmapuclon - bmaplonmax)
     lat_offset2 = abs(bmapuclat - bmaplatmax)
+    
+    print lon_offset1, lat_offset1, lon_offset2,  lat_offset2
+    
     lon_normstart = lon_offset1 / abs(bmaplonmax - bmaplonmin)
     lat_normstart = lat_offset1 / abs(bmaplatmax - bmaplatmin)
     ax_xfrac = abs(bmapuclon - bmaplclon)/abs(bmaplonmax - bmaplonmin)
     ax_yfrac = abs(bmapuclat - bmaplclat)/abs(bmaplatmax - bmaplatmin)
+    
+    
+    print lon_normstart, lat_normstart, ax_xfrac, ax_yfrac
 
     # Set plot_coords, the plot boundaries. If this is a regular WMS request,
     # the plot must fill the figure, with whitespace for invalid regions.
@@ -647,7 +655,7 @@ def mapdap(
         m.drawparallels([0],linewidth=1,dashes=[1,0],labels=[0,1,1,1],fontsize=tick_font_size)
         titlex,titley = (0.05,0.98)
         #title = get_pasap_plot_title(dset,varname=varname,timestep=timestep)
-	title = 'stefan'
+        title = 'stefan'
         fig.text(titlex,titley,title,va='top',fontsize=title_font_size)
    
     colorbar_font_size = 8
@@ -728,7 +736,7 @@ def atmos_mask_test():
             "INVOCATION" : "terminal",
             "SAVE_LOCAL": "1",
             "REQUEST" : "GetFullFigure",
-            "BBOX" : "70,-50,180,-5",
+            "BBOX" : "-85,-50,80,45",
             "WIDTH" : "640",
             "HEIGHT" : "300",
             "DAP_URL" : 'http://localhost:8001/atmos_latest.nc',
@@ -746,8 +754,8 @@ if __name__ == '__main__':
         os.environ['INVOCATION'] = 'terminal'
 
         # Some test parameters for debugging
-        ocean_mask_test()
-        #atmos_mask_test()
+        #ocean_mask_test()
+        atmos_mask_test()
 
     elif 'CGI' in os.environ.get('GATEWAY_INTERFACE',''):
         os.environ['INVOCATION'] = 'cgi'
