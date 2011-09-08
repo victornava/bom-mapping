@@ -538,9 +538,9 @@ def mapdap(
     else:
         plot_coords = (lon_normstart,lat_normstart,ax_xfrac,ax_yfrac)
 
-    m = Basemap(projection='cyl',resolution='c',urcrnrlon=bmapuclon,
-        urcrnrlat=bmapuclat,llcrnrlon=bmaplclon,llcrnrlat=bmaplclat,
-        suppress_ticks=True,fix_aspect=False,ax=ax)
+#    m = Basemap(projection='cyl',resolution='c',urcrnrlon=bmapuclon,
+ #       urcrnrlat=bmapuclat,llcrnrlon=bmaplclon,llcrnrlat=bmaplclat,
+  #      suppress_ticks=True,fix_aspect=False,ax=ax)
 
     ax = fig.add_axes(plot_coords,frameon=False,axisbg='k')
 
@@ -569,7 +569,7 @@ def mapdap(
     # if colorbounds = 'Default':
     # colorbounds = list(np.arange(colorrange[0],colorrange[1]+increment,increment))
     # else:
-    #    colorbounds = list(np.arange(colorrange[0],colorrange[1]+increment,increment))
+    #    colorbounds = list(np.arange(colorraninterpge[0],colorrange[1]+increment,increment))
     #    Do some checks on the size of the list, and fix if we can
     #    pass
 
@@ -736,7 +736,9 @@ def atmos_mask_test():
             "INVOCATION" : "terminal",
             "SAVE_LOCAL": "1",
             "REQUEST" : "GetFullFigure",
+#            "REQUEST" : "GetLegendGraphic",
             "BBOX" : "-85,-50,80,45",
+#            "BBOX" : "-180,-90,180,90",
             "WIDTH" : "640",
             "HEIGHT" : "300",
             "DAP_URL" : 'http://localhost:8001/atmos_latest.nc',
