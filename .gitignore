@@ -4,3 +4,5 @@
 *myserver/
 *.png
 *servers/
+*~
+*.pyc

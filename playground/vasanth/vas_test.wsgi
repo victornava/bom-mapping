@@ -1,106 +1,15 @@
-#!/usr/bin/python
-"""
-A WMS server for generating contour images from opendap data sources.
-Not guaranteed to implement all parts of the WMS specification.
-
-----------------------------------------------------------------
-WMS Parameters [name,description,example]
-----------------------------------------------------------------
-BBOX: lonmin,latmin,lonmax,latmax	-180,0,180,90
-COLORSCALERANGE: -4,4  
-CRS	EPSG: 4283 
-FORMAT:	image/png   
-HEIGHT:	256
-LAYERS:	netCDF variable name
-NUMCOLORBANDS: 254
-PALETTE: redblue
-REQUEST:	
-    GetMap
-    GetLegendGraphic
-    (GetFullFigure)
-SERVICE: WMS
-STYLES:	boxfill/redblue
-STYLE:
-    grid
-    contour
-TIME: 2010-09-20T00:00:00 (assume ISO8601 format)
-TIMEINDEX: 0
-TRANSPARENT: true
-WIDTH: 256
-
----------------------------------------
-Custom parameters for PASAP application
----------------------------------------
-DAP_URL - location of netcdf file (not full string of dap data request - we don't
-parse the DAP output, we use pydap.)
-
-The REQUEST parameter allows the GetFigure option, which plots a full figure,
-that is, the requested variable, a colour bar and a title all in one image.
-Assumptions are made about the shape of the data: it must be two dimensional.
-
-Requires:
-   - numpy
-   - pydap
-   - basemap 
-   - matplotlib
-
-Instructions:
-     Python libraries need to be executable by 'all' (permissions 755). The
-     pythonpath on your system, and the location of the python executable,
-     may vary.
-    
-     When running in ipython use ; to seperate variabels
-     %run map_plot_form.py variable='hr24_prcp';foo=bar
-
-    For guidance in using the non-pyplot interface:
-    http://matplotlib.sourceforge.net/leftwich_tut.txt
-
-    Ensure the cgi-bin directory contains a soft link called python to the 
-    python installation that will be used. /usr/bin/env python searches the 
-    path for python, which is not appropriate on all systems especially for
-    cgi-scripts which will not have a user's path variable, or in the case
-    of mulitple installs where the system default will not always have numpy,
-    matplotlib because of cgi-bin user
-
-ENVIRONMENT VARIABLES
-    PYTHON_PATH_PASAP
-
-Look for something like the following in the Apache config for PASAP:
-  SetEnv PYTHON_PATH_PASAP /home/acharles/local/python/2.4.3/lib/python2.4/site-packages
-  (on the AIFS machine: /etc/httpd/conf.d/pasap.conf)
-
-TODO:
-    Different Projections
-    Add urls for dependencies to documentation
-    Change dap call to get only the slice of data required.
-    Add case insensitivity for parameters
-        form_lc = make_lowercase(cgi.FieldStorage)
-    Handle the case of a variable not being found at the url gracefully
-    Image height/width ratios close to or less than one cause strange errors.
-    try/except variable retrieval in case of not in file
-
-An example request:
-http://poamaloc/experimental/pasap/cgi-bin/map_plot_wms.py?TRANSPARENT=true&FORMAT=image%2Fpng&LAYERS=hr24_prcp&VERSION=1.3.0&EXCEPTIONS=INIMAGE&SERVICE=WMS&REQUEST=GetMap&STYLES=&CRS=EPSG%3A4283&BBOX=118.94580078125,-48.45361328125,190.79638671875,15.75048828125&WIDTH=817&HEIGHT=730
-
-# Andrew Charles 201012-11
-# Roald de Wit
-# Andrew Charles 201101-27
-# Andrew Charles 20110222 -- moving to pydap 3. Allowing full URL to be passed (i.e. to grab
-# a slice from the dap url.)
-
-"""
-
+#! python
 # Python setup and importation of required modules.
-import sys
-print >> sys.stderr, 'Debug: 1'
 import cgi
 import cgitb
 cgitb.enable()
-
+import sys
 import os
 import site
 
-os.environ['HOME'] = '/var/www'
+import pprint
+#sys.path.append('/usr/local/lib/python2.7/site-packages')
+
 # Set up the pythonpath
 for path in os.environ.get('PYTHON_PATH_PASAP','').split(':'):
     site.addsitedir(path)
@@ -108,16 +17,22 @@ for path in os.environ.get('PYTHON_PATH_PASAP','').split(':'):
 # Set up a temporary directory for matplotlib    
 os.environ['MPLCONFIGDIR'] = '/tmp/'
 from pydap.client import open_url
-import numpy as np
 from time import strftime, time, strptime
 import datetime
 import numpy as np
 import matplotlib as mpl
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from mpl_toolkits.basemap import Basemap, addcyclic, date2num, num2date
+from mpl_toolkits.basemap import Basemap
+from mpl_toolkits.basemap import addcyclic, date2num, num2date
 from mpl_toolkits.basemap import interp
+
+# scipy interploate --?? 
 from scipy.interpolate import interpolate
+
 import StringIO
+
+# ws client url :
+#http://yoursoft06.cs.rmit.edu.au/wsgi-scripts/vas_test.wsgi?TRANSPARENT=true&FORMAT=image%2Fpng&LAYERS=hr24_prcp&VERSION=1.3.0&EXCEPTIONS=INIMAGE&SERVIC#E=WMS&REQUEST=GetMap&STYLES=&CRS=EPSG%3A4283&BBOX=118.94580078125,-48.45361328125,190.79638671875,15.75048828125&WIDTH=817&HEIGHT=730
 
 
 # Create a cache for storing data from urls
@@ -126,13 +41,17 @@ cache = {}
 def application(environ, start_response):
 
     start = time()
+#    output = "Execution Starts @ : " + str(start)
 
     params = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ)
-    download = params.getvalue('DOWNLOAD', False);
-    print 'params: ', params
+#    download = params.getvalue('DOWNLOAD', False);
+    download = None
     output = doWMS(params)
 
-    print "Duration: %s" % str(time() - start)
+#    output += doGET("http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc")
+#    output += "\nExecution Ends << before output@ : " + str(time())
+
+#    print "Duration: %s" % str(time() - start)
     if output:
         if download:
             filename = "map.png"
@@ -143,7 +62,7 @@ def application(environ, start_response):
                 ])
         else:
             start_response('200 OK', [
-                ('Content-Type', 'image/png'),
+                ('Content-Type', 'text/plain'),
                 ("Content-length", str(len(output))),
                 ])
 
@@ -158,13 +77,28 @@ def application(environ, start_response):
             ], sys.exc_info)
         return [error,]
 
+def doGET(ds_url):
+    t_out = "\ndoGet function starts"
+    t_out += "\nOpen url : @ " + str(time())
+    dataset = open_url(ds_url)
+    t_out += "\nDataset \n"
+    t_out += str(dataset.keys())
+    return t_out
+#    t_out = "Hey Python here.!!"
+#    return t_out
+
 def doWMS(params):
     """ Provides a wrapper for the map-plot function. """
     varname = params.getvalue('LAYERS', params.getvalue('LAYER','hr24_prcp'))
     bbox = params.getvalue('BBOX','-180,-90,180,90')
     projection_code = params.getvalue('CRS', 'EPSG:4283')
     url = params.getvalue('DAP_URL',
-        'http://localhost:8001/atmos_latest.nc')
+        'http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc')
+    imgwidth = int(params.getvalue('WIDTH',256))
+    imgheight = int(params.getvalue('HEIGHT',256))
+    request = params.getvalue('REQUEST', 'GetMap')
+    time = params.getvalue('TIME','Default')
+    palette = params.getvalue('PALETTE','jet')
     imgwidth = int(params.getvalue('WIDTH',256))
     imgheight = int(params.getvalue('HEIGHT',256))
     request = params.getvalue('REQUEST', 'GetMap')
@@ -180,7 +114,8 @@ def doWMS(params):
         colrange_in = '-4,4'
     colorrange = tuple([float(a) for a in colrange_in.rsplit(',')])
     save_local_img = bool(int(params.getvalue('SAVE_LOCAL',0)))
-
+#    t_out = "\ndoWMS before return"
+#    return t_out
     # Might be nicer to just pass a dict to mapdap()
     return mapdap(varname=varname,bbox=bbox,url=url,imgheight=imgheight,imgwidth=imgwidth,
         request=request,time=time,timeindex=timeindex,save_local_img=save_local_img,
@@ -371,7 +306,7 @@ def get_pasap_plot_title(dset,
 def mapdap(
     varname = 'hr24_prcp',
     bbox = '-180,-90,180,90',
-    url = 'http://localhost:8001/atmos_latest.nc',
+    url = 'http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc',
     timeindex = 'Default',
     imgwidth = 256,
     imgheight = 256,
@@ -407,7 +342,7 @@ def mapdap(
     """
     transparent = True
     lonmin,latmin,lonmax,latmax = tuple([float(a) for a in bbox.rsplit(',')])
-   
+
     # It's not clear there is any point in this. Pydap doesn't actually
     # download data until you subscript 
     if url not in cache:
@@ -443,7 +378,9 @@ def mapdap(
     lat = dset['lat'][:]
     lon = dset['lon'][:]
     var = dset[varname][timestep,:,:]
- 
+
+#    t_out = "\mapdap - lon lat return" + str(lat)
+#    return t_out
     #xcoords = lonmin,lonmax
     #xcoords,lon,var = transform_lons(xcoords,lon,var)
  
@@ -478,6 +415,8 @@ def mapdap(
     lonmin,lonmax = xcoords
     varnc = dset[varname]
 
+#    t_out = "\mapdap - varnc return" + str(varnc)
+#    return t_out
     try:
         var_units = varnc.attributes['units']
     except KeyError:
@@ -511,22 +450,14 @@ def mapdap(
     # Convert the latitude extents to Basemap coordinates
     bmaplatmin,bmaplonmin = m(latmin,lonmin)
     bmaplatmax,bmaplonmax = m(latmax,lonmax)
-    print bmaplatmin,bmaplonmin,latmin,lonmin
-    print bmaplatmax,bmaplonmax,latmax,lonmax
     lon_offset1 = abs(bmaplclon - bmaplonmin)
     lat_offset1 = abs(bmaplclat - bmaplatmin)
     lon_offset2 = abs(bmapuclon - bmaplonmax)
     lat_offset2 = abs(bmapuclat - bmaplatmax)
-    
-    print lon_offset1, lat_offset1, lon_offset2,  lat_offset2
-    
     lon_normstart = lon_offset1 / abs(bmaplonmax - bmaplonmin)
     lat_normstart = lat_offset1 / abs(bmaplatmax - bmaplatmin)
     ax_xfrac = abs(bmapuclon - bmaplclon)/abs(bmaplonmax - bmaplonmin)
     ax_yfrac = abs(bmapuclat - bmaplclat)/abs(bmaplatmax - bmaplatmin)
-    
-    
-    print lon_normstart, lat_normstart, ax_xfrac, ax_yfrac
 
     # Set plot_coords, the plot boundaries. If this is a regular WMS request,
     # the plot must fill the figure, with whitespace for invalid regions.
@@ -538,9 +469,9 @@ def mapdap(
     else:
         plot_coords = (lon_normstart,lat_normstart,ax_xfrac,ax_yfrac)
 
-#    m = Basemap(projection='cyl',resolution='c',urcrnrlon=bmapuclon,
- #       urcrnrlat=bmapuclat,llcrnrlon=bmaplclon,llcrnrlat=bmaplclat,
-  #      suppress_ticks=True,fix_aspect=False,ax=ax)
+    m = Basemap(projection='cyl',resolution='c',urcrnrlon=bmapuclon,
+        urcrnrlat=bmapuclat,llcrnrlon=bmaplclon,llcrnrlat=bmaplclat,
+        suppress_ticks=True,fix_aspect=False,ax=ax)
 
     ax = fig.add_axes(plot_coords,frameon=False,axisbg='k')
 
@@ -569,10 +500,12 @@ def mapdap(
     # if colorbounds = 'Default':
     # colorbounds = list(np.arange(colorrange[0],colorrange[1]+increment,increment))
     # else:
-    #    colorbounds = list(np.arange(colorraninterpge[0],colorrange[1]+increment,increment))
+    #    colorbounds = list(np.arange(colorrange[0],colorrange[1]+increment,increment))
     #    Do some checks on the size of the list, and fix if we can
     #    pass
 
+#    t_out = "\mapdap - before style return - " + str(style)
+#    return t_out
     if style == 'contour':
         # Interpolate to a finer resolution
         # TODO: make this sensitive to the chosen domain
@@ -612,6 +545,8 @@ def mapdap(
     elif style == 'grid':
         main_render = m.pcolormesh(x,y,varm[:,:],vmin=colorrange[0],vmax=colorrange[1],
             cmap=colormap,ax=ax)
+#        t_out = "\mapdap - after main_render return - " + str(main_render)
+#        return t_out
     elif style == 'grid_threshold':
         increment = float(colorrange[1]-colorrange[0]) / float(ncolors)
         colorbounds = list(np.arange(colorrange[0],colorrange[1]+increment,increment))
@@ -654,11 +589,14 @@ def mapdap(
         m.drawparallels(parallels,labels=[1,0,0,0],fmt='%3.1f',fontsize=tick_font_size)
         m.drawparallels([0],linewidth=1,dashes=[1,0],labels=[0,1,1,1],fontsize=tick_font_size)
         titlex,titley = (0.05,0.98)
-        #title = get_pasap_plot_title(dset,varname=varname,timestep=timestep)
-        title = 'stefan'
+        title = get_pasap_plot_title(dset,varname=varname,timestep=timestep)
         fig.text(titlex,titley,title,va='top',fontsize=title_font_size)
    
     colorbar_font_size = 8
+
+#    t_out = "\mapdap - before request - return - " + str(request)
+#    return t_out
+
     if request == 'GetLegendGraphic':
         # Currently we make the plot, and then if the legend is asked for
         # we use the plot as the basis for the legend. This is not optimal.
@@ -722,7 +660,7 @@ def ocean_mask_test():
             "BBOX" : "00,-90,360,90",
             "WIDTH" : "640",
             "HEIGHT" : "300",
-            "DAP_URL" : 'http://localhost:8001/ocean_latest.nc',
+            "DAP_URL" : 'http://127.0.0.1:8001/ocean_latest.nc',
             "LAYER" : 'SSTA',
             "STYLE" : 'contour'
             #"STYLE" : 'grid'
@@ -736,12 +674,10 @@ def atmos_mask_test():
             "INVOCATION" : "terminal",
             "SAVE_LOCAL": "1",
             "REQUEST" : "GetFullFigure",
-#            "REQUEST" : "GetLegendGraphic",
-            "BBOX" : "-85,-50,80,45",
-#            "BBOX" : "-180,-90,180,90",
+            "BBOX" : "70,-50,180,-5",
             "WIDTH" : "640",
             "HEIGHT" : "300",
-            "DAP_URL" : 'http://localhost:8001/atmos_latest.nc',
+            "DAP_URL" : 'http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc',
             "LAYER" : 'hr24_prcp',
             "STYLE" : 'contour'
             #"STYLE" : 'grid'
@@ -749,15 +685,14 @@ def atmos_mask_test():
             params.list.append(cgi.MiniFieldStorage(name, value))
         doWMS(params)
 
-
 if __name__ == '__main__':
     if 'TERM' in os.environ:
         print "Running from terminal"
         os.environ['INVOCATION'] = 'terminal'
 
         # Some test parameters for debugging
-        #ocean_mask_test()
-        atmos_mask_test()
+        ocean_mask_test()
+        # atmos_mask_test()
 
     elif 'CGI' in os.environ.get('GATEWAY_INTERFACE',''):
         os.environ['INVOCATION'] = 'cgi'
@@ -766,9 +701,3 @@ if __name__ == '__main__':
     else:
         os.environ['INVOCATION'] = 'wsgi'
         pass
-
-"""
-if __name__ == '__main__':
-  from paste import httpserver
-  httpserver.serve(application, host='127.0.0.1', port='8080')
-"""
