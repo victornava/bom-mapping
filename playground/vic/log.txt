@@ -1,0 +1,6 @@
+2011-09-11
+installed ruby libraries rspec, cucumber, imagesize
+
+2011-09-06
+Installed EDP, fixed the scipy problem but now have to install pydap manually, not included in EDP
+

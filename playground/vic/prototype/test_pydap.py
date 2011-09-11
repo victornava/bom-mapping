@@ -13,11 +13,11 @@
 import sys
 import site
 
-site.addsitedir("/Library/Python/2.6/site-packages")
+# site.addsitedir("/Library/Python/2.6/site-packages")
 from pydap.client import open_url
 
-# url = "http://localhost:8001/coads.nc"
-url = "http://localhost:8001/test.csv"
+url = "http://localhost:8001/coads.nc"
+# url = "http://localhost:8001/test.csv"
 # url = "http://yoursoft06.cs.rmit.edu.au/ocean_latest.nc"
 # url = "http://yoursoft06.cs.rmit.edu.au:8001/coads.nc"
 # 

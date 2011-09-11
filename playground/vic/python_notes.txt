@@ -1,0 +1,7 @@
+# Packages Paths on OS X:
+  Original:
+    /Library/Python/2.6/site-packages
+  EDP:
+    /Library/Frameworks/Python.framework/Versions/7.1/lib/python2.7/site-packages
+
+    
