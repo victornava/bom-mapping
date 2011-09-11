@@ -32,15 +32,14 @@ Feature: WMS Parameter Validation
     Given The parameter "bbox" is <value>
     When I submit the request 
     Then it should return a "WMSArgumentError" error
-      And the message should contain "ilegal bbox parameter: bbox has less than 4 values"
+      And the message should contain "ilegal bbox parameter: bbox shuold have 4 values"
       
-  
   Examples:
-    | value           |
-    |"-180"           |
-    |"-180,-90,180"   |
-    |"-180,-90,180,"  |
-    
+    | value                   |
+    |"-180"                   |
+    |"-180,-90,180"           |
+    |"-180,-90,180,"          |
+    |"-180,-90,180,-180,100"  |
     
   Scenario Outline: bbox parameter has non integer values
     Given The parameter "bbox" is <value>

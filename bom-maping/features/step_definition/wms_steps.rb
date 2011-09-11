@@ -29,6 +29,22 @@ Then /^the message should contain "?([^"]*)"?$/ do |message|
   @reply.should include(message)
 end
 
+
+Given /^The parameter "([^"]*)" is \-(\d+)$/ do |arg1, arg2|
+  pending # express the regexp above with the code you wish you had
+end
+
+Given /^The parameter "([^"]*)" is \-(\d+),(\d+)$/ do |arg1, arg2, arg3|
+  pending # express the regexp above with the code you wish you had
+end
+
+Given /^The parameter "([^"]*)" is \-(\d+),(\d+),\-(\d+)$/ do |arg1, arg2, arg3, arg4|
+  pending # express the regexp above with the code you wish you had
+end
+
+
+
+
 # TODO replace with real visit url method
 def visit(url)
   `curl -s #{url}`
