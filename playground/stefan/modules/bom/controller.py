@@ -15,8 +15,13 @@ class Controller(object):
     OVERLAY_GRID_TRESHHOLD = 2
     
     def __init__(self,bbox):
+        """ Constructor
+        
+        bbox - 
+        """
         self.bbox = bbox
         
+        #TODO: Maybe set up basemap instance in constructor and pass along
     
     def getMap(self):
         """ This method returns a map for the specified bounding box
