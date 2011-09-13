@@ -13,6 +13,7 @@ class TestPlottingPrams(unittest.TestCase):
         
         
 class TestBBox(unittest.TestCase):
+    """Bounding Box Test"""
 
     def setUp(self):
         self.b = c.BBox(-50,-100,30,70)
@@ -28,6 +29,14 @@ class TestBBox(unittest.TestCase):
         
     def test_maxY(self):
         self.assertEquals(self.b.maxY,70)
+
+
+#class TestMapSize(unittest.TestCase):
+#    """ Map Size Test """
+    
+#    def setUp(self):
+#        self.m = c.MapSize(self,150,360)
+
 
 if __name__ == 'main':
     unittest.main()

@@ -18,10 +18,7 @@ class BBox(object):
     TODO: Add validation
     """
     def __init__(self,minX,minY,maxX,maxY):
-        """ Constructor
-        
-        
-        """
+        """ Constructor """
         self.minX = minX
         self.minY = minY
         self.maxX = maxX
