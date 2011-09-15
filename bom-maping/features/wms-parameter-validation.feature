@@ -32,7 +32,7 @@ Feature: WMS Parameter Validation
     Given The parameter "bbox" is <value>
     When I submit the request 
     Then it should return a "WMSArgumentError" error
-      And the message should contain "ilegal bbox parameter: bbox shuold have 4 values"
+      And the message should contain "Invalid bbox parameter: bbox should have 4 values"
       
   Examples:
     | value                   |
@@ -45,7 +45,7 @@ Feature: WMS Parameter Validation
     Given The parameter "bbox" is <value>
     When I submit the request 
     Then it should return a "WMSArgumentError" error
-      And the message should contain "ilegal bbox parameter: all values should be integers"
+      And the message should contain "Invalid bbox parameter: all values should be integers"
       
   Examples:
     | value           |
@@ -54,8 +54,25 @@ Feature: WMS Parameter Validation
     |"-180,-90,a,90"  |
     |"-180,-90,180,a" |
     
-  # Scenario Outline: bbox parameter has incorrect values
-  #   Given The parameter "bbox" is <value>
-  #   When I submit the request 
-  #   Then it should return a "WMSArgumentError" error
-  #     And the message should contain "ilegal bbox parameter: some values are missing"
+  # TODO find out default crs 
+  # Scenario Outline: bbox parameter has incorrect values for  
+  #       Given The parameter "bbox" is <value>
+  #       When I submit the request 
+  #       Then it should return a "WMSArgumentError" error
+  #         And the message should contain "Invalid bbox parameter: minx and miny must be smaller than maxx and maxy"
+  
+        
+  Scenario Outline: width or height parameter are invalid
+    Given The parameter <parameter> is <value>
+    When I submit the request
+    Then it should return a "WMSArgumentError" error
+      And the message should contain "width and height must be positive numbers greater than 0"
+      
+  Examples:
+    | parameter | value | 
+    | width     | -1    | 
+    | height    | -1    | 
+    | width     | 0     | 
+    | height    | 0     | 
+    | width     | big   | 
+    | height    | big   |
