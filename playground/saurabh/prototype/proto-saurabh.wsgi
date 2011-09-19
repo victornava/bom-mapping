@@ -714,6 +714,7 @@ def ocean_mask_test():
             "LAYER" : 'SSTA',
             #"STYLE" : 'contour'
             "STYLE" : 'grid'
+	    #"TRANSPARENT" : 'FALSE'
         }.items():
             params.list.append(cgi.MiniFieldStorage(name, value))
         doWMS(params)
