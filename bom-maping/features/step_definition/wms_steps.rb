@@ -2,6 +2,7 @@ begin require 'rspec/expectations'; rescue LoadError; require 'spec/expectations
 
 Before do
   @base_url = "http://localhost:8007?"
+  @default_params = {}
   @url = ""
 end
 
@@ -12,7 +13,7 @@ Given /^The parameter (\w+) is missing$/ do |parameter|
   @base_url.should_not include(parameter)
 end
 
-Given /^The parameter "([^"]*)" is "([^"]*)"$/ do |parameter, value|
+Given /^The parameter (.*) is (.*)$/ do |parameter, value|
   @url == @base_url << "#{parameter}=#{value}"
 end
 
@@ -28,21 +29,6 @@ end
 Then /^the message should contain "?([^"]*)"?$/ do |message|
   @reply.should include(message)
 end
-
-
-Given /^The parameter "([^"]*)" is \-(\d+)$/ do |arg1, arg2|
-  pending # express the regexp above with the code you wish you had
-end
-
-Given /^The parameter "([^"]*)" is \-(\d+),(\d+)$/ do |arg1, arg2, arg3|
-  pending # express the regexp above with the code you wish you had
-end
-
-Given /^The parameter "([^"]*)" is \-(\d+),(\d+),\-(\d+)$/ do |arg1, arg2, arg3, arg4|
-  pending # express the regexp above with the code you wish you had
-end
-
-
 
 
 # TODO replace with real visit url method

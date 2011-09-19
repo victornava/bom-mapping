@@ -17,42 +17,42 @@ Feature: WMS Parameter Validation
     | width     | width parameter is missing      |
     | height    | height parameter is missing     |
     | format    | format parameter is missing     |
-    | version   | version parameter is missing    |
+#    | version   | version parameter is missing    |
     | layers    | layers parameter is missing     |
     | styles    | styles parameter is missing     |
     
 
-  Scenario: request parameter is not GetMap or GetFeature
+  Scenario: request parameter is not supported
     Given The parameter "request" is "GetCrazy"
     When I submit the request 
     Then it should return a "WMSError" error
       And the message should contain "Operation not supported"
       
-  Scenario Outline: bbox parameter has missing values
+  Scenario Outline: bbox parameter doesn't have exactly 4 values
     Given The parameter "bbox" is <value>
     When I submit the request 
     Then it should return a "WMSArgumentError" error
       And the message should contain "Invalid bbox parameter: bbox should have 4 values"
       
   Examples:
-    | value                   |
-    |"-180"                   |
-    |"-180,-90,180"           |
-    |"-180,-90,180,"          |
-    |"-180,-90,180,-180,100"  |
+    | value                         |
+    |"-180.0"                       |
+    |"-180.0,-90.0,180"             |
+    |"-180.0,-90.0,180,"            |
+    |"-180.0,-90.0,180,-180.0,100"  |
     
-  Scenario Outline: bbox parameter has non integer values
+  Scenario Outline: bbox parameter has non float values
     Given The parameter "bbox" is <value>
     When I submit the request 
     Then it should return a "WMSArgumentError" error
       And the message should contain "Invalid bbox parameter: all values should be integers"
       
   Examples:
-    | value           |
-    |"a,-90,180,90"   |
-    |"-180,a,180,90"  |
-    |"-180,-90,a,90"  |
-    |"-180,-90,180,a" |
+    | value               |
+    |"a,-90.0,180,90"     |
+    |"-180.0,a,180,90"    |
+    |"-180.0,-90.0,a,90"  |
+    |"-180.0,-90.0,180,a" |
     
   # TODO find out default crs 
   # Scenario Outline: bbox parameter has incorrect values for  
@@ -76,3 +76,27 @@ Feature: WMS Parameter Validation
     | height    | 0     | 
     | width     | big   | 
     | height    | big   |
+    
+  
+  Scenario: format parameter is not supported
+    Given The parameter "format" is "image/mp3"
+    When I submit the request 
+    Then it should return a "WMSArgumentError" error
+      And the message should contain "Invalid format parameter: format not supported"
+      
+  # TODO not sure what to test here
+  # Scenario: layers parameter is invalid
+  #   Given The parameter "layer" is ???? 
+  #   When I submit the request 
+  #   Then it should return a "WMSArgumentError" error
+  #     And the message should contain "Invalid layer parameter: ???"
+  
+  
+  # TODO do we have a set of predefines styles or does that depend on the data?
+  # Scenario: styles parameter is invalid
+  #   Given The parameter "layer" is ???? 
+  #   When I submit the request 
+  #   Then it should return a "WMSArgumentError" error
+  #     And the message should contain "Invalid layer parameter: ???"
+  
+  
