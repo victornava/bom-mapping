@@ -7,7 +7,6 @@ class BBox(object):
     
     def __init__(self,bbox):
         """ Constructor
-        
         bbox: {
                 min_lat: float
                 min_lon: float
@@ -30,5 +29,12 @@ class BBox(object):
             raise BBoxException("Incorrect Latitudes.")
         
         # WMS Compliance page 16
-        if self.lon_min < -180.0 or self.lon_max > 180.0:
+        if self.lon_min < -180.0 or self.lon_max > 360.0:
             raise BBoxException("Incorrect Longitudes")
+        
+        
+    def displayy(self):
+        print "lon_min: %d" % self.lon_min
+        print "lat_min: %d" % self.lat_min
+        print "lon_max: %d" % self.lon_max
+        print "lat_max: %d" % self.lat_max
