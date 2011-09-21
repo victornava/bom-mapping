@@ -10,14 +10,14 @@ class TestPlottingController(unittest.TestCase):
     
     def setUp(self):
         self.param = { "bbox" : {  "min_lat" : -90.0,
-                                   "min_lon" : -180.0,
+                                   "min_lon" : 0.0,
                                    "max_lat" : 90.0,
                                    "max_lon" : 360.0 
                                 } ,
                         "width" : 300 ,
                         "height" : 400 ,
-                        "layers" : ["hr24_prcp", ] ,
-                        "styles" : ["contour", ] ,
+                        "layers" : ["hr24_prcpa", ] ,
+                        "styles" : ["grid", ] ,
                         "crs" : {   "name" : "EPSG" ,
                                     "identifier" : "4283" 
                                 } ,
@@ -25,7 +25,7 @@ class TestPlottingController(unittest.TestCase):
                         "time" : "Default" ,
                         "time_index" : "Default" ,
                         "source_url" : "http://localhost:8001/atmos_latest.nc",
-                        "color_range" : (-4,4) ,
+                        "color_range" : (-10,10) ,
                         "n_color" : 10 ,
                         "palette" : "jet"
                      }
