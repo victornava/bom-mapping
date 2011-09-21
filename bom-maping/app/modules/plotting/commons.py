@@ -33,7 +33,7 @@ class BBox(object):
             raise BBoxException("Incorrect Longitudes")
         
         
-    def displayy(self):
+    def display(self):
         print "lon_min: %d" % self.lon_min
         print "lat_min: %d" % self.lat_min
         print "lon_max: %d" % self.lon_max

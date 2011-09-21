@@ -1,1 +1,46 @@
-Hello BOM
+Countour Plot Map Web Service for Australian Bureau of Meteorology
+
+Some info:
+
+# default hosts & ports description:
+
+localhost:8001  test pydap server
+localhost:8006  prototype
+localhost:8007  app (our application)
+localhost:8008  test-client
+localhost:8009  test-runner
+
+
+How to run stuff:
+
+  * assuming current dir is bom-mapping
+  * all port arguments are optional
+
+# pydap server
+
+$ paster serve pydap-server/server.ini
+
+
+# prototype
+
+$ python prototype/prototype_paste.py
+
+
+# app
+
+$ python app/app.py <port>
+
+
+# test-client
+
+$ python app/test_client.py <port>
+
+
+# test-runner
+
+$ python test-runner/test_runner.py <port>
+
+
+# running all acceptance tests from terminal
+
+$ cucumber
