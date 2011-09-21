@@ -3,26 +3,42 @@ Unit tests for the PlottingController Class
 """
 
 import unittest
-import modules.plotting.plotting_controller
+import modules.plotting.plotting_controller as pc
 
 
 class TestPlottingController(unittest.TestCase):
     
     def setUp(self):
-        self.param["bbox"] = {  "min_lat" : -90.0,
-                                "min_lon" : -180.0,
-                                "max_lat" : 90.0,
-                                "max_lon" : 180.0 }
-        self.param["width"] = 300
-        self.param["height"] = 400
-        self.param["layers"] = ["hr24_prcp", ]
-        self.param["styles"] = ["contour", ]
-        self.param["crs"] = { "name" : "EPSG",
-                              "identifier" : "4283" }
-        self.param["format"] = "png"
-        self.param["time"] = "Default"
-        self.param["time_index"] = "Default"
-        self.param["source_url"] = "http://localhost:8001/atmos_latest.nc"
-        self.param["color_range"] = (-4,4)
-        self.param["n_color"] = 10
-        self.param["palette"] = "jet"
+        self.param = { "bbox" : {  "min_lat" : -90.0,
+                                   "min_lon" : -180.0,
+                                   "max_lat" : 90.0,
+                                   "max_lon" : 360.0 
+                                } ,
+                        "width" : 300 ,
+                        "height" : 400 ,
+                        "layers" : ["hr24_prcp", ] ,
+                        "styles" : ["contour", ] ,
+                        "crs" : {   "name" : "EPSG" ,
+                                    "identifier" : "4283" 
+                                } ,
+                        "format" : "png" ,
+                        "time" : "Default" ,
+                        "time_index" : "Default" ,
+                        "source_url" : "http://localhost:8001/atmos_latest.nc",
+                        "color_range" : (-4,4) ,
+                        "n_color" : 10 ,
+                        "palette" : "jet"
+                     }
+
+        
+    def test_get_contour(self):
+        c = pc.PlottingController(self.param)
+        self.assertIsNotNone(c.get_contour())
+        
+#    def test_get_legend(self):
+#        c = pc.PlottingController(self.param)
+#        self.assertIsNotNone(c.get_legend())
+        
+#    def test_get_full_figure(self):
+#        c = pc.PlottingController(self.param)
+#        self.assertIsNotNone(c.get_full_figure)

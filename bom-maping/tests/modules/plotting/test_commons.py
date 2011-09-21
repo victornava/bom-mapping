@@ -52,5 +52,24 @@ class TestBBox(unittest.TestCase):
         bbox = {  "min_lat" : -90.0,
                   "min_lon" : -180.0,
                   "max_lat" : 90.0,
-                  "max_lon" : 181.0 }
+                  "max_lon" : 361.0 }
         self.assertRaises(BBoxException,c.BBox,bbox)
+        """
+    def test_normalise_lons1(self):
+        bbox = {  "min_lat" : -90.0,
+                  "min_lon" : -180.0,
+                  "max_lat" : 90.0,
+                  "max_lon" : 180.0 }
+        bb = c.BBox(bbox)
+        self.assertEquals(0.0,bb.lon_min)
+        self.assertEquals(360.0, bb.lon_max)
+        
+    def test_normalise_lons2(self):
+        bbox = {  "min_lat" : -90.0,
+                  "min_lon" : -160.0,
+                  "max_lat" : 90.0,
+                  "max_lon" : 160.0 }
+        bb = c.BBox(bbox)
+        self.assertEquals(0.0,bb.lon_min)
+        self.assertEquals(360.0, bb.lon_max)
+        """
