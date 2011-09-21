@@ -1,7 +1,7 @@
 Feature: WMS Parameter Validation
   In order to ensure WMS compliance
   As a User
-  I want to have parameter validation
+  I want to get meaningful xml exceptions when I summit an invalid request
   
   Scenario Outline: Missing parameters
     Given The parameter <parameter> is missing   
@@ -17,7 +17,7 @@ Feature: WMS Parameter Validation
     | width     | width parameter is missing      |
     | height    | height parameter is missing     |
     | format    | format parameter is missing     |
-#    | version   | version parameter is missing    |
+    # | version   | version parameter is missing    |
     | layers    | layers parameter is missing     |
     | styles    | styles parameter is missing     |
     
@@ -54,14 +54,6 @@ Feature: WMS Parameter Validation
     |"-180.0,-90.0,a,90"  |
     |"-180.0,-90.0,180,a" |
     
-  # TODO find out default crs 
-  # Scenario Outline: bbox parameter has incorrect values for  
-  #       Given The parameter "bbox" is <value>
-  #       When I submit the request 
-  #       Then it should return a "WMSArgumentError" error
-  #         And the message should contain "Invalid bbox parameter: minx and miny must be smaller than maxx and maxy"
-  
-        
   Scenario Outline: width or height parameter are invalid
     Given The parameter <parameter> is <value>
     When I submit the request
@@ -82,21 +74,17 @@ Feature: WMS Parameter Validation
     Given The parameter "format" is "image/mp3"
     When I submit the request 
     Then it should return a "WMSArgumentError" error
-      And the message should contain "Invalid format parameter: format not supported"
-      
-  # TODO not sure what to test here
-  # Scenario: layers parameter is invalid
-  #   Given The parameter "layer" is ???? 
-  #   When I submit the request 
-  #   Then it should return a "WMSArgumentError" error
-  #     And the message should contain "Invalid layer parameter: ???"
+      And the message should contain "Invalid format parameter: format not supported"  
   
-  
-  # TODO do we have a set of predefines styles or does that depend on the data?
-  # Scenario: styles parameter is invalid
-  #   Given The parameter "layer" is ???? 
-  #   When I submit the request 
-  #   Then it should return a "WMSArgumentError" error
-  #     And the message should contain "Invalid layer parameter: ???"
-  
-  
+  Scenario: styles parameter is invalid
+    Given The parameter "styles" is "blah"
+    When I submit the request 
+    Then it should return a "WMSArgumentError" error
+      And the message should contain "Invalid styles parameter: style not supported"
+        
+  # TODO find out default crs 
+  # Scenario Outline: bbox parameter has incorrect values for  
+  #       Given The parameter "bbox" is <value>
+  #       When I submit the request 
+  #       Then it should return a "WMSArgumentError" error
+  #         And the message should contain "Invalid bbox parameter: minx and miny must be smaller than maxx and maxy"
