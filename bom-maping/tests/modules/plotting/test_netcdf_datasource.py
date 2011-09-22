@@ -7,13 +7,22 @@
 import unittest
 from modules.plotting.datasource import NetCDFDatasource
 from util.exceptions import NetCDFException
+from modules.plotting.commons import BBox
+
 
 class TestNetCDFDatasource(unittest.TestCase):
     
     def setUp(self):
+        self.bbox = BBox({  "min_lat" : -90.0,
+                            "min_lon" : 0.0,
+                            "max_lat" : 90.0,
+                            "max_lon" : 360.0
+                        })
+        
         self.d = NetCDFDatasource(
                        'http://yoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
-                        2,'SsST',4,5,6 )
+                        self.bbox,
+                        'SST',4,5,6 )
         
         
     """
@@ -41,7 +50,7 @@ class TestNetCDFDatasource(unittest.TestCase):
         with self.assertRaises(NetCDFException):
             
             try:
-                self.d.get_data()
+                print self.d.get_data()
             except NetCDFException,e:
                 print e.__str__()
                 raise

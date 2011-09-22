@@ -8,6 +8,7 @@
 """
 
 import abc
+from modules.plotting.commons import BBox
 
 class IDataSource(object):
     """
@@ -118,6 +119,7 @@ class NetCDFDatasource(IDataSource):
                             plot_mask \
                             )
         
+        self.bbox.display()
         try:
             self.dset = open_url(url)
         except :
@@ -131,7 +133,7 @@ class NetCDFDatasource(IDataSource):
             Returns all the lattitude values in the data source.
             TODO : raise exception if invalid operation/unexpected error
         """
-        return self.dset['lat'][:]
+        return self.dset['lat'][self.bbox.lat_min:self.bbox.lat_max]
         
         
     def get_lons(self):
@@ -139,7 +141,7 @@ class NetCDFDatasource(IDataSource):
             Returns all the longitude values in the data source
             TODO : raise exception if invalid operation/unexpected error
         """
-        return self.dset['lon'][:]
+        return self.dset['lon'][self.bbox.lon_min:self.bbox.lon_max]
         
         
     def get_data(self):
@@ -155,7 +157,10 @@ class NetCDFDatasource(IDataSource):
             self.timestep = int(self.time_index)
         
         try:
-            return self.dset[self.varname][self.timestep,:,:]
+            return self.dset[self.varname][ self.timestep,
+                                            self.bbox.lat_min:self.bbox.lat_max,
+                                            self.bbox.lon_min:self.bbox.lon_max
+                                          ]
         except KeyError as ke:
             
             raise NetCDFException(repr(ke) + " ==> Variable " + self.varname +
