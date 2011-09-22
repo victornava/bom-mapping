@@ -24,9 +24,13 @@ class IDataSource(object):
     def __init__(self,url, bbox, varname, time, time_index, plot_mask) :
         self.url = url
         self.bbox = bbox
+        self.varname = varname
         self.time = time
         self.time_index = time_index
         self.plot_mask = plot_mask
+        
+        #=======#
+        self.timestep = 0
         
     
     @abc.abstractmethod
@@ -96,7 +100,7 @@ class NetCDFDatasource(IDataSource):
                             bbox, \
                             varname, \
                             time, \
-                            time_index,\
+                            time_index = 'Default',\
                             plot_mask \
                             )
         
@@ -105,7 +109,7 @@ class NetCDFDatasource(IDataSource):
         except :
             raise NetCDFException("Cannot open url")
         
-        self.varname = varname
+        
         
         
     def get_lats(self):
@@ -131,8 +135,13 @@ class NetCDFDatasource(IDataSource):
         
         """
         
+        if time_index = 'Default':
+            self.timestep = 0
+        else:
+            self.timestep = int(self.time_index)
+        
         try:
-            return self.dset[self.varname][:]
+            return self.dset[self.varname][self.timestep,:,:]
         except KeyError as ke:
             
             raise NetCDFException(repr(ke) + " ==> Variable " + self.varname +
