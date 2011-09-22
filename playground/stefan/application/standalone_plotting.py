@@ -10,7 +10,7 @@ param = { "bbox": { "min_lat" : -90.0,
           "width" : 300 ,
           "height" : 400 ,
           "layers" : ["hr24_prcpa", ] ,
-          "styles" : ["grid", ] ,
+          "styles" : ["contour", ] ,
           "crs" : {   "name" : "EPSG" ,
                       "identifier" : "4283" 
                   } ,

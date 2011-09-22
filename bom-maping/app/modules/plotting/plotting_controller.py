@@ -69,11 +69,8 @@ class PlottingController(object):
         
         self.parameters = parameters
         bbox = BBox(parameters["bbox"])
-        
 
         # 1. Retrieve the data
-        
-        # TODO: Fix datasource
         dset = ds.NetCDFDatasource( self.parameters["source_url"], \
                                     bbox, \
                                     self.parameters["layers"][0], \
@@ -84,12 +81,11 @@ class PlottingController(object):
         lat = dset.get_lats()
         lon = dset.get_lons()
         var = dset.get_data()
-        
-
-        
-        varm = np.ma.masked_array(var, mask=np.isinf(var))
-            # 1.1 Normalise data
        
+        #TODO: Fix masking .. will be shifted to datasource
+        varm = np.ma.masked_array(var, mask=np.isinf(var))
+        
+            # 1.1 Normalise data
         self.bbox,lon,var = \
                     PlottingController.__transform_lons(self,bbox,lon,varm)
        
@@ -130,6 +126,7 @@ class PlottingController(object):
         PlottingController.__create_contours(self)
         
         #TODO: Replace with image creator
+        #self.m.drawcoastlines()
         self.fig.savefig('maapppp.png',format='png')
 
     
@@ -157,11 +154,16 @@ class PlottingController(object):
                                    self.lon, \
                                    self.lat, \
                                    self.var)
-            print "grid styl selected"
+            print "grid style selected"
         elif style == "grid_treshhold":
             print "grid_treshhold style not implemented"
         elif style == "contour":
-            print "contour style not implemented"
+            plot = pt.ContourPlot( self.parameters, \
+                                   self.m, \
+                                   self.lon, \
+                                   self.lat, \
+                                   self.var)
+            print "contour style selected"
         else:
             print "%s no supported .. raise exception" % style
             #TODO: raise exception
