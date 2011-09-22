@@ -34,6 +34,7 @@ tuple: ()
 """
 import numpy as np
 import modules.plotting.plot_type as pt
+import modules.plotting.datasource as ds
 
 import matplotlib as mpl
 
@@ -44,7 +45,7 @@ from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.basemap import addcyclic
 
 #TODO: Delete once datasource is there
-from pydap.client import open_url
+#from pydap.client import open_url
 
 def get_contour(parameters):
     """ Returns a contour plot for the specified parameters """
@@ -73,11 +74,20 @@ class PlottingController(object):
         # 1. Retrieve the data
         
         # TODO: Fix datasource
-        dset = open_url(self.parameters["source_url"])
-        lat = dset['lat'][:]
-        lon = dset['lon'][:]
-        var = dset[self.parameters["layers"][0]][0,:,:]
-        varm = np.ma.masked_array(var,mask=np.isinf(var))
+        dset = ds.NetCDFDatasource( self.parameters["source_url"], \
+                                    bbox, \
+                                    self.parameters["layers"][0], \
+                                    self.parameters["time"], \
+                                    self.parameters["time_index"], \
+                                    )
+        #dset = open_url(self.parameters["source_url"])
+        lat = dset.get_lats()
+        lon = dset.get_lons()
+        var = dset.get_data()
+        
+
+        
+        varm = np.ma.masked_array(var, mask=np.isinf(var))
             # 1.1 Normalise data
        
         self.bbox,lon,var = \
