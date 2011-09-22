@@ -26,8 +26,8 @@ class IDataSource(object):
                 bbox, \
                 varname, \
                 time, \
-                time_index = 'Default', \
-                plot_mask = True
+                time_index, \
+                plot_mask
                 ) :
         self.url = url
         self.bbox = bbox
@@ -99,7 +99,14 @@ class NetCDFDatasource(IDataSource):
 
     """
     
-    def __init__(self, url, bbox, varname, time, time_index, plot_mask) :
+    def __init__(self, \
+                url, \
+                bbox, \
+                varname, \
+                time = 'Default', \
+                time_index = 'Default', \
+                plot_mask = True
+                ) :
         
         # Pass parameters to the super constructor
         IDataSource.__init__(self, \
