@@ -127,7 +127,7 @@ class PlottingController(object):
         
         #TODO: Replace with image creator
         #self.m.drawcoastlines()
-        self.fig.savefig('maapppp.png',format='png')
+        self.fig.savefig('maapppp.png',format='png',transparent=True)
 
     
     
@@ -155,8 +155,13 @@ class PlottingController(object):
                                    self.lat, \
                                    self.var)
             print "grid style selected"
-        elif style == "grid_treshhold":
-            print "grid_treshhold style not implemented"
+        elif style == "grid_treshold":
+            plot = pt.GriddedTresholdPlot( self.parameters, \
+                                           self.m, \
+                                           self.lon, \
+                                           self.lat, \
+                                           self.var)
+            print "grid_treshhold selected"
         elif style == "contour":
             plot = pt.ContourPlot( self.parameters, \
                                    self.m, \
