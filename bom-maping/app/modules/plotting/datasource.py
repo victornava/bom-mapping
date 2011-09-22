@@ -21,7 +21,14 @@ class IDataSource(object):
     __metaclass__ = abc.ABCMeta
     
     @abc.abstractmethod
-    def __init__(self,url, bbox, varname, time, time_index, plot_mask) :
+    def __init__(self, \
+                url, \
+                bbox, \
+                varname, \
+                time, \
+                time_index = 'Default', \
+                plot_mask = True
+                ) :
         self.url = url
         self.bbox = bbox
         self.varname = varname
@@ -92,7 +99,7 @@ class NetCDFDatasource(IDataSource):
 
     """
     
-    def __init__(self,url, bbox, varname, time, time_index, plot_mask) :
+    def __init__(self, url, bbox, varname, time, time_index, plot_mask) :
         
         # Pass parameters to the super constructor
         IDataSource.__init__(self, \
@@ -100,7 +107,7 @@ class NetCDFDatasource(IDataSource):
                             bbox, \
                             varname, \
                             time, \
-                            time_index = 'Default',\
+                            time_index, \
                             plot_mask \
                             )
         
@@ -135,7 +142,7 @@ class NetCDFDatasource(IDataSource):
         
         """
         
-        if time_index = 'Default':
+        if self.time_index == 'Default':
             self.timestep = 0
         else:
             self.timestep = int(self.time_index)
