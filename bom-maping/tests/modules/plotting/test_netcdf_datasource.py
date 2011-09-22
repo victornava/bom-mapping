@@ -30,7 +30,7 @@ class TestNetCDFDatasource(unittest.TestCase):
     """
     def test_get_lats(self):
         print "===get_lats==="
-        #print self.d.get_lats()
+        print self.d.get_lats()
         self.assertIsNotNone(self.d.get_lats())
         
         
@@ -39,7 +39,7 @@ class TestNetCDFDatasource(unittest.TestCase):
     """
     def test_get_lons(self):
         print "===get_lons==="
-        #print self.d.get_lons()
+        print self.d.get_lons()
         
         self.assertIsNotNone(self.d.get_lons())
         
