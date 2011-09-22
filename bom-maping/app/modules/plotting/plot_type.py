@@ -81,6 +81,36 @@ class GriddedPlot(IPlotType):
                                              cmap=colormap)
         
     
+class GriddedTresholdPlot(IPlotType):
+    """
+    Class responsible for creating gridded treshold plots
+    """
+    
+    def __init__(self,parameters,m,lons,lats,data):
+        """ Constructor """
+        IPlotType.__init__(self,parameters,m,lons,lats,data)
+    
+    
+    def plot(self):
+        IPlotType.plot(self)
+        
+        cmap = mpl.cm.get_cmap(self.parameters["palette"])
+        crange = self.parameters["color_range"]
+        ncolors = self.parameters["n_color"]
+        
+        increment = float(crange[1] - crange[0]) / float(ncolors)
+        cbounds = list(np.arange(crange[0],crange[1] + increment, increment ))
+        
+        cnorm = mpl.colors.BoundaryNorm(cbounds,cmap.N)
+        self.main_render = self.m.pcolor( self.x, \
+                                          self.y, \
+                                          self.data[:,:], \
+                                          vmin=crange[0], \
+                                          vmax=crange[1], \
+                                          cmap=cmap, \
+                                          norm=cnorm)
+        
+        
 class ContourPlot(IPlotType):
     """
     Class responsible for creating contour plots
