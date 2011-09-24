@@ -331,6 +331,8 @@ def figurePlotDims(imgheight,imgwidth,coords,plot_max_xfrac=0.7,plot_max_yfrac=0
         plot_yfrac = plot_yfrac * plot_max_xfrac/plot_xfrac
         plot_xfrac = plot_max_xfrac
 
+    print "dims from figurePlotDims"
+    print plot_xfrac,plot_yfrac
     return (0.08,0.08,plot_xfrac,plot_yfrac)
 
 def get_pasap_plot_title(dset,
@@ -511,13 +513,15 @@ def mapdap(
     # Convert the latitude extents to Basemap coordinates
     bmaplatmin,bmaplonmin = m(latmin,lonmin)
     bmaplatmax,bmaplonmax = m(latmax,lonmax)
+    print "basemap stuff"
     print bmaplatmin,bmaplonmin,latmin,lonmin
     print bmaplatmax,bmaplonmax,latmax,lonmax
     lon_offset1 = abs(bmaplclon - bmaplonmin)
     lat_offset1 = abs(bmaplclat - bmaplatmin)
     lon_offset2 = abs(bmapuclon - bmaplonmax)
     lat_offset2 = abs(bmapuclat - bmaplatmax)
-    
+   
+    print "Offset Stuff"
     print lon_offset1, lat_offset1, lon_offset2,  lat_offset2
     
     lon_normstart = lon_offset1 / abs(bmaplonmax - bmaplonmin)
@@ -525,7 +529,7 @@ def mapdap(
     ax_xfrac = abs(bmapuclon - bmaplclon)/abs(bmaplonmax - bmaplonmin)
     ax_yfrac = abs(bmapuclat - bmaplclat)/abs(bmaplatmax - bmaplatmin)
     
-    
+    print "Fraction stuff"
     print lon_normstart, lat_normstart, ax_xfrac, ax_yfrac
 
     # Set plot_coords, the plot boundaries. If this is a regular WMS request,
@@ -721,7 +725,7 @@ def ocean_mask_test():
             "REQUEST" : "GetFullFigure",
             "BBOX" : "00,-90,360,90",
             "WIDTH" : "640",
-            "HEIGHT" : "300",
+            "HEIGHT" : "400",
             "DAP_URL" : 'http://localhost:8001/ocean_latest.nc',
             "LAYER" : 'SSTA',
             "STYLE" : 'contour'
@@ -737,10 +741,10 @@ def atmos_mask_test():
             "SAVE_LOCAL": "1",
             "REQUEST" : "GetFullFigure",
 #            "REQUEST" : "GetLegendGraphic",
-            "BBOX" : "-85,-50,80,45",
+            "BBOX" : "0,-90,360,-45",
 #            "BBOX" : "-180,-90,180,90",
             "WIDTH" : "640",
-            "HEIGHT" : "300",
+            "HEIGHT" : "400",
             "DAP_URL" : 'http://localhost:8001/atmos_latest.nc',
             "LAYER" : 'hr24_prcp',
             "STYLE" : 'contour'

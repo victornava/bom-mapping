@@ -9,7 +9,6 @@ list: []
 tuple: ()
 
   parameters:
-
         bbox:   {
                 min_lat: float
                 min_lon: float
@@ -60,7 +59,8 @@ def get_legend(parameters):
 def get_full_figure(parameters):
     """ Returns a downloadable version and combines the contour plot, legend,
     a description for the plot overlayed with coastlines. """
-    pass
+    pc = PlottingController(parameters)
+    return pc.get_full_figure()
 
 class PlottingController(object):
     """ Plotting Controller 
@@ -70,29 +70,40 @@ class PlottingController(object):
     
     def __init__(self,parameters):
         """ Constructor """
-        
+        self.__check_mandatory_parameters(parameters)
+        self.DPI = 100.0
         self.parameters = parameters
-        bbox = BBox(parameters["bbox"])
+        
+        #FIXME: What if no bbox in dictionary
+        self.bbox = BBox(parameters["bbox"])
 
         # 1. Retrieve the data
         #FIXME: Build argument list dynamically
         dset = ds.NetCDFDatasource( self.parameters["source_url"], \
-                                    bbox, \
+                                    self.bbox, \
                                     self.parameters["layers"][0], \
                                     self.parameters["time"], \
                                     self.parameters["time_index"], \
                                     )
         #dset = open_url(self.parameters["source_url"])
-        lat = dset.get_lats()
-        lon = dset.get_lons()
-        var = dset.get_data()
+        self.lat = dset.get_lats()
+        self.lon = dset.get_lons()
+        self.var = dset.get_data()
        
         #FIXME: Fix masking .. will be shifted to datasource
-        varm = np.ma.masked_array(var, mask=np.isinf(var))
+        varm = np.ma.masked_array(self.var, mask=np.isinf(self.var))
         
             # 1.1 Normalise data
-        self.bbox,lon,var = \
-                    PlottingController.__transform_lons(self,bbox,lon,varm)
+        self.bbox,self.lon,self.var = \
+                self.__transform_lons(self.bbox, \
+                                      self.lon, \
+                                      varm)
+       
+       
+       
+       
+       
+       
        
         # 2. Set up figure
         self.fig = Figure()
@@ -108,17 +119,6 @@ class PlottingController(object):
                           suppress_ticks = True, \
                           fix_aspect = False)
                           
-        # 4. add data
-        ax = self.fig.add_axes( (0,0,1,1), \
-                                frame_on = False, \
-                                axis_bgcolor = 'k')
-                                
-        self.m.ax = ax
-        
-        #  "export" important variables
-        self.lat = lat
-        self.lon = lon
-        self.var = var
 
         
    
@@ -136,11 +136,16 @@ class PlottingController(object):
         
         if not available_styles.has_key(key):
             raise ex.OperationNotSupportedError(key)
+       
+       # Set up axes for basemap
+        ax = self.fig.add_axes( (0,0,1,1), \
+                                frame_on = False, \
+                                axis_bgcolor = 'k')
+        self.m.ax = ax
+        self.__create_contours(available_styles[key])
         
-        PlottingController.__create_contours(self,available_styles[key])
-        
-      #  self.m.drawcoastlines()
-        return PlottingController.__create_image(self)
+
+        return self.__create_image()
     
     
     def get_legend(self):
@@ -151,14 +156,15 @@ class PlottingController(object):
         """
         
         #FIXME: Ugly ... replace without having to print map first
-        PlottingController.__create_contours(self,pt.GriddedPlot)
-        
-        DPI = 100.0
+        ax = self.fig.add_axes( (0,0,1,1), \
+                                frame_on = False, \
+                                axis_bgcolor = 'k')
+        self.m.ax = ax
+        self.__create_contours(pt.GriddedPlot)
+       
         font_size = 8
-        self.fig = Figure(figsize=(64/DPI,256/DPI))
+        self.fig = Figure(figsize=(64/self.DPI,256/self.DPI))
         self.canvas = FigureCanvas(self.fig)
-        #self.fig.set_figwidth(64/DPI)
-        #self.fig.set_figheight(256/DPI)
         
         ax = self.fig.add_axes([0,0.1,0.2,0.8],axis_bgcolor = 'k')
         
@@ -175,18 +181,24 @@ class PlottingController(object):
         for t in cbar.ax.get_yticklabels():
             t.set_fontsize(font_size)
             
-        return PlottingController.__create_image(self)
+        return self.__create_image()
     
     
     def get_full_figure(self):
-        pass
-    
+        #4. add data
+        ax = self.fig.add_axes( self.__calc_plot_dims(), \
+                                frame_on = False, \
+                                axis_bgcolor = 'k')
+                                
+      
+        return 
     
     
     def __create_image(self):
         """ Create image with the given format an returns it. If iamge type is
         not supported, an exception is raised:
         """
+       
         supported_formats = [ 'png', 'svg' ]
         img_format = self.parameters["format"]
         
@@ -208,7 +220,12 @@ class PlottingController(object):
         
         style_type: The class we have to create
         """
-
+        
+        # Set size of the image
+        self.fig.set_dpi(self.DPI)
+        self.fig.set_size_inches(self.parameters["width"]/self.DPI, \
+                                 self.parameters["height"]/self.DPI)
+                                 
         plot = style_type(self.parameters, \
                           self.m, \
                           self.lon, \
@@ -258,3 +275,14 @@ class PlottingController(object):
         
         return bbox,lons,var
        
+       
+    def __calc_plot_dims(self):
+        return (0,0,1,1)
+        
+        
+    def __check_mandatory_parameters(self,parameters):
+        """ Checks for mandatory parameters """
+        mandatory_parameters = [ "bbox" ]
+        for key in mandatory_parameters:
+            if not parameters.has_key(key):
+                raise ex.MissingParameterError(key)
