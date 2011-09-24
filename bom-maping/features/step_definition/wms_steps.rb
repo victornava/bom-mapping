@@ -65,17 +65,32 @@ Then /^the response should be a "([^"]*)" image$/ do |type|
   image_type(@response.body).should match(type)
 end
 
+Then /^the "([^"]*)" of the image should be "([^"]*)"$/ do |param, value|
+  image_size(@response.body)[param].should == value.to_i
+end
 
-#helpers
+
+# helpers
 
 def visit(url)
   @response = Net::HTTP.get_response(URI.parse(url))
 end
 
-def make_url(url, params)
-  url << params.to_a.reduce([]){|a,kv| a << kv.join("=")}.join("&")
+# Makes a url string based on the base_url string and a hash with the query parameters
+# input:
+#  url = http:localhost?
+#  params = {a => 1, b => 2}
+# out: http:localhost?a=1&b=2
+def make_url(base_url, params)
+  base_url << params.to_a.reduce([]){|a,kv| a << kv.join("=")}.join("&")
+  # base_url << "?" << params.to_a.reduce([]){|a,kv| a << kv.join("=")}.join("&")
 end
 
 def image_type(img)
   ImageSize.new(img).get_type.downcase
+end
+
+def image_size(img)
+  size = ImageSize.new(img).get_size
+  {"width" => size[0], "height" => size[1]}
 end
