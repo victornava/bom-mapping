@@ -28,15 +28,15 @@ tuple: ()
         time: string
         time_index: string
         source_url: string
-        color_scale_range: (int,int) min,max
+        color_scale_range: [int,int] min,max
         n_color: int
         palette: string
 """
 import numpy as np
 import modules.plotting.plot_type as pt
 import modules.plotting.datasource as ds
-
 import matplotlib as mpl
+import StringIO
 
 from modules.plotting.commons import BBox
 from matplotlib.figure import Figure
@@ -44,14 +44,16 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.basemap import addcyclic
 
-#TODO: Delete once datasource is there
-#from pydap.client import open_url
 
 def get_contour(parameters):
     """ Returns a contour plot for the specified parameters """
     pc = PlottingController(parameters)
     return pc.get_contour()
     
+    
+def get_legend(parameters):
+    """ Returns the scale only"""
+    pass
 
 def get_full_figure(parameters):
     """ Returns a downloadable version and combines the contour plot, legend,
@@ -124,11 +126,7 @@ class PlottingController(object):
         This will return the whole image
         """
         PlottingController.__create_contours(self)
-        
-        #TODO: Replace with image creator
-        #self.m.drawcoastlines()
-        self.fig.savefig('maapppp.png',format='png',transparent=True)
-
+        return PlottingController.__create_image(self)
     
     
     def get_legend(self):
@@ -138,6 +136,23 @@ class PlottingController(object):
     def get_full_figure(self):
         pass
     
+    
+    
+    def __create_image(self):
+        """ Create image with the given format an returns it. If iamge type is
+        not supported, an exception is raised:
+        """
+        img_data = StringIO.StringIO()
+        if self.parameters["format"] == 'png':
+            self.fig.savefig(img_data,format='png',transparent=True)
+        else:
+            print "%s not supported!"
+            #TODO: Raise Exception
+    
+        value = img_data.getvalue()
+        img_data.close()
+        
+        return value
     
     def __create_contours(self):
         """

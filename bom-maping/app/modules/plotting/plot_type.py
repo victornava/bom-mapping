@@ -44,7 +44,6 @@ class IPlotType(object):
         # minimum self preparation
         self.data, lonwrap = addcyclic(self.data, self.lons)
         self.x, self.y = self.m( *np.meshgrid(lonwrap[:],self.lats[:]) )
-        
        
        
        

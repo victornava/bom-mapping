@@ -10,7 +10,7 @@ param = { "bbox": { "min_lat" : -90.0,
           "height" : 400 ,
           "layers" : ["hr24_prcp", ] ,
 #          "layers" : ["SSTA", ] ,
-          "styles" : ["grid_treshold", ] ,
+          "styles" : ["contour", ] ,
           "crs" : {   "name" : "EPSG" ,
                       "identifier" : "4283" 
                   } ,
@@ -19,10 +19,17 @@ param = { "bbox": { "min_lat" : -90.0,
           "time_index" : "Default" ,
           "source_url" : "http://localhost:8001/atmos_latest.nc",
 #          "source_url" : "http://localhost:8001/ocean_latest.nc",
-          "color_range" : (-10,10) ,
+          "color_range" : [-10,10] ,
           "n_color" : 10 ,
           "palette" : "jet"
         }
         
-c = pc.PlottingController(param)
-output = c.get_contour()
+#c = pc.PlottingController(param)
+#output = c.get_contour()
+
+d = pc.get_contour(param)
+#print d
+
+img = open("test.png","w")
+img.write(d)
+img.close()

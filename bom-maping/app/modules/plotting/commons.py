@@ -14,6 +14,13 @@ class BBox(object):
                 max_lon: float
                 }
         """
+        expected_keys = ['min_lon', 'min_lat', 'max_lon', 'max_lat']
+        
+        for key in expected_keys:
+            if not bbox.has_key(key):
+                raise MissingDimensionValueError("Missing " + key + \
+                                                 "in Bounding Box.")
+            
         
         self.lon_min = bbox["min_lon"]
         self.lat_min = bbox["min_lat"]
@@ -22,14 +29,17 @@ class BBox(object):
         
         # WMS Compliance page 16
         if self.lon_min > self.lon_max or self.lat_min > self.lat_max:
+            #TODO: Replace Exception
             raise BBoxException("Bounding Box not correct.")
         
         # WMS Compliance page 16
         if self.lat_min < -90.0 or self.lat_max > 90.0:
+            #TODO: Replace Exception
             raise BBoxException("Incorrect Latitudes.")
         
         # WMS Compliance page 16
         if self.lon_min < -180.0 or self.lon_max > 360.0:
+            #TODO: Replace Exception
             raise BBoxException("Incorrect Longitudes")
         
         
