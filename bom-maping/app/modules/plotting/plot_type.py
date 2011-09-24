@@ -78,6 +78,8 @@ class GriddedPlot(IPlotType):
                                              vmin=crange[0], \
                                              vmax=crange[1], \
                                              cmap=colormap)
+                                             
+        return self.main_render
         
     
 class GriddedTresholdPlot(IPlotType):
@@ -109,6 +111,7 @@ class GriddedTresholdPlot(IPlotType):
                                           cmap=cmap, \
                                           norm=cnorm)
         
+        return self.main_render
         
 class ContourPlot(IPlotType):
     """
@@ -167,3 +170,5 @@ class ContourPlot(IPlotType):
                                             extend='both')
         contours = self.m.contour(x,y,data_bl,cbounds,colors='k')
         contours.clabel(colors='k',rightside_up=True,fmt='%1.1f',inline=True)
+        
+        return self.main_render

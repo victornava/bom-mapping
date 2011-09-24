@@ -1,6 +1,6 @@
 """ This module contains common datatypes need in the plotting module """
 
-from util.exceptions import BBoxException
+import util.exceptions as ex
 
 class BBox(object):
     """ Represents a bounding box """
@@ -18,7 +18,7 @@ class BBox(object):
         
         for key in expected_keys:
             if not bbox.has_key(key):
-                raise MissingDimensionValueError("Missing " + key + \
+                raise ex.MissingDimensionValueError("Missing " + key + \
                                                  "in Bounding Box.")
             
         
@@ -30,17 +30,17 @@ class BBox(object):
         # WMS Compliance page 16
         if self.lon_min > self.lon_max or self.lat_min > self.lat_max:
             #TODO: Replace Exception
-            raise BBoxException("Bounding Box not correct.")
+            raise ex.BBoxException("Bounding Box not correct.")
         
         # WMS Compliance page 16
         if self.lat_min < -90.0 or self.lat_max > 90.0:
             #TODO: Replace Exception
-            raise BBoxException("Incorrect Latitudes.")
+            raise ex.BBoxException("Incorrect Latitudes.")
         
         # WMS Compliance page 16
         if self.lon_min < -180.0 or self.lon_max > 360.0:
             #TODO: Replace Exception
-            raise BBoxException("Incorrect Longitudes")
+            raise ex.BBoxException("Incorrect Longitudes")
         
         
     def display(self):
