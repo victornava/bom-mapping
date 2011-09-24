@@ -18,7 +18,6 @@ class WMSParams():
         to_list = lambda s: s.split(",")
         each_to_int = lambda a: [int(elem) for elem in a]
         each_to_float = lambda a: [float(elem) for elem in a]
-        # bbox = lambda a: dict(zip(["min_lat","min_lon","max_lat","max_lon"], a))
         bbox = lambda a: dict(zip(["min_lon","min_lat","max_lon","max_lat"], a))
         crs = lambda s: dict(zip(["name","identifier"], s.split(":")))
         
@@ -29,7 +28,7 @@ class WMSParams():
             "height": [int],
             "width": [int],
             "n_color": [int],
-            "bbox": [to_list, each_to_float, bbox],
+            "bbox": [to_list, bbox],
             "crs": [crs],
             "styles": [to_list],
             "layers": [to_list]
@@ -47,6 +46,7 @@ class WMSParams():
                     try:
                         params[key] = rule(params[key])
                     except Exception, e:
+                        # TODO throw meaninful exception
                         raise ValueError("Error parsing parameter: "+key)
         return params
 
