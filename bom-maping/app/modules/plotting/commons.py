@@ -18,8 +18,8 @@ class BBox(object):
         
         for key in expected_keys:
             if not bbox.has_key(key):
-                raise ex.MissingDimensionValueError("Missing " + key + \
-                                                 "in Bounding Box.")
+                raise ex.MissingDimensionValueError("Missing value \
+                                                     in Bounding Box.")
             
         
         self.lon_min = bbox["min_lon"]
