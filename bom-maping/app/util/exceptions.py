@@ -71,3 +71,11 @@ class OperationNotSupportedError(WMSBaseError):
     """ Excepton for representiong an invalid operation"""
     def __init__(self,message):
         WMSBaseError.__init__(self,'OperationNotSupported',message)
+        
+        
+########################### Custom errors not in WMS
+
+class MissingParameterError(WMSBaseError):
+    """ Exception for missing mandatory parameter"""
+    def __init__(self,message):
+        WMSBaseError.__init__(self,'MissingParameter',message)

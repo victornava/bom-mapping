@@ -1,13 +1,13 @@
 import modules.plotting.plotting_controller as pc
 
 
-param = { "bbox": { "min_lat" : -90.0,
-                    "min_lon" : 0.0,
-                    "max_lat" : 90.0,
-                    "max_lon" : 360.0 
+param = { "bbox": { "min_lat" : "-90.0",
+                    "min_lon" : "0.0",
+                    "max_lat" : "90.0",
+                    "max_lon" : "360.0"
                    } ,
-          "width" : 300 ,
-          "height" : 400 ,
+          "width" : 1024 ,
+          "height" : 768 ,
           "layers" : ["hr24_prcp", ] ,
 #          "layers" : ["SSTA", ] ,
           "styles" : ["contour", ] ,
@@ -27,8 +27,8 @@ param = { "bbox": { "min_lat" : -90.0,
 #c = pc.PlottingController(param)
 #output = c.get_contour()
 
-#d = pc.get_contour(param)
-d = pc.get_legend(param)
+d = pc.get_contour(param)
+#d = pc.get_legend(param)
 #print d
 
 img = open("test.png","w")
