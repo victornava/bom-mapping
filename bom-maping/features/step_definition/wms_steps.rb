@@ -30,7 +30,8 @@ After do
 end
 
 Given /^The parameter (\w+) is missing$/ do |parameter|
-  @base_url.should_not include(parameter)
+  @params = @default_params
+  @params.delete(parameter)
 end
 
 Given /^The value of "(.*)" parameter is "(.*)"$/ do |parameter, value|  
@@ -39,7 +40,7 @@ Given /^The value of "(.*)" parameter is "(.*)"$/ do |parameter, value|
 end
 
 When /^I submit the request$/ do
-  puts make_url(@base_url, @params)
+  # puts make_url(@base_url, @params)
   @response = visit make_url(@base_url, @params)
 end
 

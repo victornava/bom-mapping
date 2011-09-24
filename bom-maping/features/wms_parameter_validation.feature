@@ -6,14 +6,13 @@ Feature: WMS Parameter Validation
   Scenario Outline: Missing parameters
     Given The parameter <parameter> is missing   
     When I submit the request 
-    # Then it should return a "WMSArgumentError" error
     Then it should return a "ServiceException" error with code "MissingParameter"
-      And the message should contain <message>
+      And the message should contain <parameter>
       
   Examples:
-    | parameter | message                         |
-    | request   | request parameter is missing    |
-    | bbox      | bbox parameter is missing       |
+    | parameter |
+    | request   |
+    | bbox      |
     # | crs       | crs parameter is missing        |
     # | width     | width parameter is missing      |
     # | height    | height parameter is missing     |
@@ -27,25 +26,24 @@ Feature: WMS Parameter Validation
     Given The value of "request" parameter is "GetCrazy"
     When I submit the request 
     Then it should return a "ServiceException" error with code "OperationNotSupported"
-      # And the message should contain "Operation not supported"
-  #     
+    
   Scenario Outline: bbox parameter doesn't have exactly 4 values
       Given The value of "bbox" parameter is <value>
       When I submit the request 
-      Then it should return a "ServiceException" error with code "MissingDimention"
-        And the message should contain "Invalid bbox parameter: bbox should have 4 values"
+      Then it should return a "ServiceException" error with code "MissingDimension"
+        And the message should contain "Missing value in Bounding Box"
         
     Examples:
-      | value                         |
-      |"-180.0"                       |
-      |"-180.0,-90.0,180"             |
-      |"-180.0,-90.0,180,"            |
-  #   
+      | value                 |
+      |""                     |
+      |"-180.0"               |
+      |"-180.0,-90.0,180"     |
+
   # Scenario Outline: bbox parameter has non float values
-  #   Given The parameter "bbox" is <value>
+  #   Given The value of "bbox" parameter is <value>
   #   When I submit the request 
-  #   Then it should return a "WMSArgumentError" error
-  #     And the message should contain "Invalid bbox parameter: all values should be integers"
+  #   Then it should return a "ServiceException" error with code "InvalidDimensionValue"
+  #     And the message should contain "Invalid bbox parameter: all values should be float"
   #     
   # Examples:
   #   | value               |

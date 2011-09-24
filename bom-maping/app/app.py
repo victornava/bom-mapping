@@ -10,22 +10,24 @@ def index():
     try:
         params = WMSParams(request).parse()
         # return str(params)
-        ops = operations()
+        operations = valid_operations()
         
-        if not params.has_key("request"):
+        if "request" not in params.keys():
             # TODO use appropiate error
-            raise ValueError("ServiceException => code:MissingParameter, message:request parameter is missing")
+            raise ValueError("ServiceException => code:MissingParameter, message:request")
             
         try:
-            operation = ops[params['request']]
+            operation = operations[params['request']]
         except KeyError:
+            # TODO use appropiate error
             raise ValueError("ServiceException => code:OperationNotSupported")
             
         return operation(params)
                 
     except Exception, e:
         # TODO call WMSException here
-        reply = str(e)
+        reply = "ServiceException:"+str(e)
+        # reply = str(e)
     return reply    
     
 def get_map(params):
@@ -47,7 +49,7 @@ def get_capabilities():
     """docstring for get_capabilities"""
     pass
 
-def operations():
+def valid_operations():
     return {
         "GetMap": get_map,
         "GetFullFigure": get_full_figure,
@@ -61,7 +63,6 @@ class ServiceException(object):
         super(ServiceException, self).__init__()
         self.arg = arg
                     
-        
 # can pass the port number as argument
 if __name__ == '__main__':
     port = 8007
@@ -69,7 +70,3 @@ if __name__ == '__main__':
         port = int(sys.argv[1])
     app.debug = True
     app.run(host='0.0.0.0', port=port)
-
-
-        
-        
