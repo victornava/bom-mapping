@@ -16,11 +16,17 @@ class BBox(object):
         """
         expected_keys = ['min_lon', 'min_lat', 'max_lon', 'max_lat']
         
+        # Check that keys exist
         for key in expected_keys:
             if not bbox.has_key(key):
                 raise ex.MissingDimensionValueError("Missing value "\
                                                      "in Bounding Box.")
+        
+        try:
+            bbox = dict([(k,float(v)) for k,v in bbox.items()])
             
+        except Exception, e:
+            raise ex.InvalidDimensionValueError("Invalid bbox parameter.")
         
         self.lon_min = bbox["min_lon"]
         self.lat_min = bbox["min_lat"]
