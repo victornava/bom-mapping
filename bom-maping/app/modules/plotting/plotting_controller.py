@@ -37,6 +37,7 @@ import modules.plotting.plot_type as pt
 import modules.plotting.datasource as ds
 import matplotlib as mpl
 import StringIO
+import util.exceptions as ex
 
 from modules.plotting.commons import BBox
 from matplotlib.figure import Figure
@@ -125,7 +126,16 @@ class PlottingController(object):
         
         This will return the whole image
         """
-        PlottingController.__create_contours(self)
+        available_styles = {'contour' : pt.ContourPlot, \
+                            'grid' : pt.GriddedPlot, \
+                            'grid_treshold' : pt.GriddedTresholdPlot}
+        
+        key = self.parameters["styles"][0]
+        
+        if not available_styles.has_key(key):
+            raise ex.OperationNotSupportedError(key)
+        
+        PlottingController.__create_contours(self,available_styles[key])
         return PlottingController.__create_image(self)
     
     
@@ -142,51 +152,33 @@ class PlottingController(object):
         """ Create image with the given format an returns it. If iamge type is
         not supported, an exception is raised:
         """
+        supported_formats = [ 'png', 'svg' ]
+        img_format = self.parameters["format"]
+        
+        if not img_format in supported_formats:
+            raise ex.InvalidFormatError(img_format)
+       
         img_data = StringIO.StringIO()
-        if self.parameters["format"] == 'png':
-            self.fig.savefig(img_data,format='png',transparent=True)
-        else:
-            print "%s not supported!"
-            #TODO: Raise Exception
-    
+        self.fig.savefig(img_data,format=img_format,transparent=True)
+        
         value = img_data.getvalue()
         img_data.close()
         
         return value
     
-    def __create_contours(self):
+    def __create_contours(self,style_type):
         """
         This class does the actual work, but does not create images. Only
         manipulates the Basemap object.
+        
+        style_type: The class we have to create
         """
 
-        #TODO: Very ugly! Maybe use state pattern here, or factory ...
-        style = self.parameters["styles"][0]
-        
-        if style == "grid":
-            plot = pt.GriddedPlot( self.parameters, \
-                                   self.m, \
-                                   self.lon, \
-                                   self.lat, \
-                                   self.var)
-            print "grid style selected"
-        elif style == "grid_treshold":
-            plot = pt.GriddedTresholdPlot( self.parameters, \
-                                           self.m, \
-                                           self.lon, \
-                                           self.lat, \
-                                           self.var)
-            print "grid_treshhold selected"
-        elif style == "contour":
-            plot = pt.ContourPlot( self.parameters, \
-                                   self.m, \
-                                   self.lon, \
-                                   self.lat, \
-                                   self.var)
-            print "contour style selected"
-        else:
-            print "%s no supported .. raise exception" % style
-            #TODO: raise exception
+        plot = style_type(self.parameters, \
+                          self.m, \
+                          self.lon, \
+                          self.lat, \
+                          self.var)
         
         self.main_render = plot.plot()
 
