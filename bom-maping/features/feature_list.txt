@@ -1,0 +1,23 @@
+wms
+  valid request parameter
+
+get map:
+  bbox
+  width & height
+  layers
+  styles
+  crs
+  format
+  time & time_index
+  source_url
+  color_range
+  n_color
+  palette
+  
+get full figure:
+  same ass get map
+
+
+get full figure:
+  same ass get map
+  

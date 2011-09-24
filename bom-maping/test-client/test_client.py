@@ -13,7 +13,30 @@ def index():
     
 @app.route('/ours')
 def new():
-    url = "http://localhost:8007/?REQUEST=GetFullFigure&DAP_URL=http://localhost:8001/ocean_latest.nc&LAYERS=SSTA&TIMEINDEX=0&COLORSCALERANGE=-10,10&WIDTH=800&HEIGHT=600&BBOX=0,-90,360,90&STYLE=contour"
+    
+    # url = "http://localhost:8007/?REQUEST=GetMap&source_url=http://localhost:8001/ocean_latest.nc&layers=SSTA&time_index=0&colorscalerange=-10,10&width=800&height=600&bbox=0,-90,360,90&styles=contour&time=Default&palette=jet&color_range=-10,10&n_color=10&format=png"
+    url = "http://localhost:8007/?"
+    
+    params = {
+        "request":"GetMap",
+        "bbox":"0,-90,360,90",
+        "width": "300",
+        "height": "400",
+        # "layers": "hr24_prcp",
+        "layers" : "SSTA",
+        "styles" : "contour",
+        "crs" : "EPSG:4283",
+        "format" : "png" ,
+        "time" : "Default" ,
+        "time_index": "Default" ,
+        # "source_url": "http://localhost:8001/atmos_latest.nc",
+        "source_url" : "http://localhost:8001/ocean_latest.nc",
+        "color_range" : "-10,10" ,
+        "n_color" : "10" ,
+        "palette" : "jet"
+    }
+    
+    url += "&".join("=".join(i) for i in params.items())
     return "<a href="+url+">"+url+"</a>"
 
 @app.route('/prototype')

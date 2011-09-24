@@ -14,11 +14,12 @@ class WMSParams():
         """ Parses the http request and translates it to the format
             expected by the plotting controller
         """
-        # we define here some common funtions to enforce rules
+        # we define here some common funtions to set the types
         to_list = lambda s: s.split(",")
         each_to_int = lambda a: [int(elem) for elem in a]
         each_to_float = lambda a: [float(elem) for elem in a]
-        bbox = lambda a: dict(zip(["min_lat","min_lon","max_lat","max_lon"], a))
+        # bbox = lambda a: dict(zip(["min_lat","min_lon","max_lat","max_lon"], a))
+        bbox = lambda a: dict(zip(["min_lon","min_lat","max_lon","max_lat"], a))
         crs = lambda s: dict(zip(["name","identifier"], s.split(":")))
         
         # then define a set of rules to apply to each element
@@ -29,7 +30,9 @@ class WMSParams():
             "width": [int],
             "n_color": [int],
             "bbox": [to_list, each_to_float, bbox],
-            "crs": [crs]
+            "crs": [crs],
+            "styles": [to_list],
+            "layers": [to_list]
         }
         
         # lowercase all the keys
@@ -41,8 +44,19 @@ class WMSParams():
         for key in params:
             if rules.has_key(key):
                 for rule in rules[key]:
-                    params[key] = rule(params[key])
+                    try:
+                        params[key] = rule(params[key])
+                    except Exception, e:
+                        raise ValueError("Error parsing parameter: "+key)
         return params
+
+# class WMSParamsError(Exception):
+#     """docstring for WMSParamsError"""
+#     def __init__(self, arg):
+#         super(WMSParamsError, self).__init__()
+#         self.arg = arg
+        
+    
             
 class FakeRequest():
     """Fake Flask Request for testing. Expects a dict as argument"""
@@ -97,8 +111,8 @@ class TestWMSParams(unittest.TestCase):
             },
             "width" : 300,
             "height" : 400,
-            "layers" : "hr24_prcp",
-            "styles" : "contour",
+            "layers" : ["hr24_prcp"],
+            "styles" : ["contour"],
             "crs" : {
                 "name":"EPSG",
                 "identifier":"4283"
