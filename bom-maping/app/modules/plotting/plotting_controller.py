@@ -54,7 +54,8 @@ def get_contour(parameters):
     
 def get_legend(parameters):
     """ Returns the scale only"""
-    pass
+    pc = PlottingController(parameters)
+    return pc.get_legend()
 
 def get_full_figure(parameters):
     """ Returns a downloadable version and combines the contour plot, legend,
@@ -74,6 +75,7 @@ class PlottingController(object):
         bbox = BBox(parameters["bbox"])
 
         # 1. Retrieve the data
+        #FIXME: Build argument list dynamically
         dset = ds.NetCDFDatasource( self.parameters["source_url"], \
                                     bbox, \
                                     self.parameters["layers"][0], \
@@ -85,7 +87,7 @@ class PlottingController(object):
         lon = dset.get_lons()
         var = dset.get_data()
        
-        #TODO: Fix masking .. will be shifted to datasource
+        #FIXME: Fix masking .. will be shifted to datasource
         varm = np.ma.masked_array(var, mask=np.isinf(var))
         
             # 1.1 Normalise data
@@ -124,7 +126,7 @@ class PlottingController(object):
         """
         Responsible for wrapping the GetMap request.
         
-        This will return the whole image
+        This will return an image
         """
         available_styles = {'contour' : pt.ContourPlot, \
                             'grid' : pt.GriddedPlot, \
@@ -136,11 +138,44 @@ class PlottingController(object):
             raise ex.OperationNotSupportedError(key)
         
         PlottingController.__create_contours(self,available_styles[key])
+        
+      #  self.m.drawcoastlines()
         return PlottingController.__create_image(self)
     
     
     def get_legend(self):
-        pass
+        """
+        Responsible for wrapping the GetLegend request
+        
+        This will return an image.
+        """
+        
+        #FIXME: Ugly ... replace without having to print map first
+        PlottingController.__create_contours(self,pt.GriddedPlot)
+        
+        DPI = 100.0
+        font_size = 8
+        self.fig = Figure(figsize=(64/DPI,256/DPI))
+        self.canvas = FigureCanvas(self.fig)
+        #self.fig.set_figwidth(64/DPI)
+        #self.fig.set_figheight(256/DPI)
+        
+        ax = self.fig.add_axes([0,0.1,0.2,0.8],axis_bgcolor = 'k')
+        
+        cbar = self.fig.colorbar(self.main_render, \
+                                 cax=ax, \
+                                 extend='both', \
+                                 format='%1.1f' \
+                                 )
+                                 
+        #FIXME: need additional datasource method
+        cbar.set_label('Saurabh i need an extra method in ds!!', \
+                        fontsize=font_size)
+       
+        for t in cbar.ax.get_yticklabels():
+            t.set_fontsize(font_size)
+            
+        return PlottingController.__create_image(self)
     
     
     def get_full_figure(self):
