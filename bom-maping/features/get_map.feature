@@ -3,12 +3,12 @@ Feature: Get map
   As a role
   I want feature
   
-  Scenario: can get an image with default parameters
+  Scenario: Request with default parameters
     Given the parameters are set to "default"
     When I submit the request
     Then the response should be a "png" image
     
-  Scenario: can set the size of the image
+  Scenario: Image has the right size
     Given The value of "width" parameter is "800"
       And The value of "height" parameter is "600"
     When I submit the request
