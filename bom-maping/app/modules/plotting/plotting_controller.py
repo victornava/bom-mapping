@@ -43,6 +43,8 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.basemap import addcyclic
+from time import strftime
+from mpl_toolkits.basemap import num2date
 
 
 def get_contour(parameters):
@@ -80,13 +82,13 @@ class PlottingController(object):
 
         # 1. Retrieve the data
         #FIXME: Build argument list dynamically
+        #TODO: Make data source flexible
         self.dset = ds.NetCDFDatasource( self.parameters["source_url"], \
                                          self.bbox, \
                                          self.parameters["layers"][0], \
                                          self.parameters["time"], \
                                          self.parameters["time_index"], \
                                         )
-        #dset = open_url(self.parameters["source_url"])
         self.lat = self.dset.get_lats()
         self.lon = self.dset.get_lons()
         self.var = self.dset.get_data()
@@ -253,8 +255,7 @@ class PlottingController(object):
                                  extend='both', \
                                  format='%1.1f' \
                                  )
-                                 
-        #FIXME: need additional datasource method
+                                
         font_size = 8
         cbar.set_label( self.dset.get_var_unit(), \
                         fontsize=font_size)
@@ -350,7 +351,19 @@ class PlottingController(object):
         
     def __get_plot_title(self):
         """" Returns the title for the full figure request"""
-        return "Stefan"
+        header = "PASAP: Dynamical Seasonal Outlooks for the Pacific."
+        subheader1 = "Outlook based on POAMA 1.5 CGCM adjusted for "\
+                     "historical skill"
+        subheader2 = "Experimental outlook for demonstration and research only"
+        
+        title = header + '\n' + \
+                subheader1 + '\n' + \
+                subheader2 + '\n' + \
+                'Variable: ' + self.parameters['layers'][0] + \
+                ' (' + self.dset.get_var_unit() + ')\n' + \
+                'Model initlialised ' 
+                
+        return title
         
         
     def __evaluate_plot_type(self):
@@ -370,7 +383,7 @@ class PlottingController(object):
             raise ex.OperationNotSupportedError(key)
         
         return available_styles[key]
-        
+       
         
     def __check_mandatory_parameters(self,parameters):
         """ Checks for mandatory parameters 

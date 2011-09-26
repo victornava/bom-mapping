@@ -5,12 +5,20 @@ The following types are supported:
 
     - contour
     - grid
-    - grid_treshhold
+    - grid_treshold
 """
 
 # Interface
 from abc import ABCMeta
 from abc import abstractmethod
+
+# Imports for implementations
+import numpy as np
+import matplotlib as mpl
+
+from mpl_toolkits.basemap import addcyclic
+from mpl_toolkits.basemap import interp
+from scipy.interpolate import interpolate
 
 class IPlotType(object):
     """ Interface for creating different plotting types. Subclass this if
@@ -36,6 +44,11 @@ class IPlotType(object):
         self.lons = lons
         self.lats = lats
         self.data = data
+        
+        self.ncolors = self.parameters["n_color"]
+        self.cmap = self.__cmap_discretise( mpl.cm.get_cmap( \
+                                                self.parameters["palette"]),\
+                                            self.ncolors)
    
     @abstractmethod
     def plot(self):
@@ -46,14 +59,40 @@ class IPlotType(object):
         self.x, self.y = self.m( *np.meshgrid(lonwrap[:],self.lats[:]) )
        
        
+    def __cmap_discretise(self,cmap, N):
+        """ Returns a discrete colormap from a continuous colormap 
+        
+            cmap: colormap instance, e.g. cm.jet
+            N: Number of colors
+            
+            http://www.scipy.org/Cookbook/Matplotlib/ColormapTransformations
+        """
+        cdict = cmap._segmentdata.copy()
+        # N colors
+        colors_i = np.linspace(0,1.,N)
+        # N + 1 indices
+        indices = np.linspace(0,1.,N+1)
+        
+        for key in ('red','green','blue'):
+            # Find the N colors
+            D = np.array(cdict[key])
+            I = interpolate.interp1d(D[:,0], D[:,1])
+            colors = I(colors_i)
+            #Place those colors at the correct indices
+            A = np.zeros((N+1,3),float)
+            A[:,0] = indices
+            A[1:,1] = colors
+            A[:-1,2] = colors
+            #Create a tuple for the dictionary
+            L = []
+            for l in A:
+                L.append(tuple(l))
+            cdict[key] = tuple(L)
+        
+        return mpl.colors.LinearSegmentedColormap('colormap',cdict,1024)
+       
        
 # Implementations
-
-import numpy as np
-import matplotlib as mpl
-
-from mpl_toolkits.basemap import addcyclic
-from mpl_toolkits.basemap import interp
 
 
 class GriddedPlot(IPlotType):
@@ -69,7 +108,7 @@ class GriddedPlot(IPlotType):
     def plot(self):
         IPlotType.plot(self)
         
-        colormap = mpl.cm.get_cmap(self.parameters["palette"])
+        #colormap = mpl.cm.get_cmap(self.parameters["palette"])
         crange = self.parameters["color_range"]
         
         self.main_render = self.m.pcolormesh(self.x, \
@@ -77,7 +116,7 @@ class GriddedPlot(IPlotType):
                                              self.data[:,:], \
                                              vmin=crange[0], \
                                              vmax=crange[1], \
-                                             cmap=colormap)
+                                             cmap=self.cmap)
                                              
         return self.main_render
         
@@ -95,20 +134,20 @@ class GriddedTresholdPlot(IPlotType):
     def plot(self):
         IPlotType.plot(self)
         
-        cmap = mpl.cm.get_cmap(self.parameters["palette"])
+        #cmap = mpl.cm.get_cmap(self.parameters["palette"])
         crange = self.parameters["color_range"]
-        ncolors = self.parameters["n_color"]
+        #ncolors = self.parameters["n_color"]
         
-        increment = float(crange[1] - crange[0]) / float(ncolors)
+        increment = float(crange[1] - crange[0]) / float(self.ncolors)
         cbounds = list(np.arange(crange[0],crange[1] + increment, increment ))
         
-        cnorm = mpl.colors.BoundaryNorm(cbounds,cmap.N)
+        cnorm = mpl.colors.BoundaryNorm(cbounds,self.cmap.N)
         self.main_render = self.m.pcolor( self.x, \
                                           self.y, \
                                           self.data[:,:], \
                                           vmin=crange[0], \
                                           vmax=crange[1], \
-                                          cmap=cmap, \
+                                          cmap=self.cmap, \
                                           norm=cnorm)
         
         return self.main_render
@@ -125,7 +164,7 @@ class ContourPlot(IPlotType):
         
     def plot(self):
         
-        cmap = mpl.cm.get_cmap(self.parameters["palette"])
+        #cmap = mpl.cm.get_cmap(self.parameters["palette"])
         crange = self.parameters["color_range"]
         ncolors = self.parameters["n_color"]
         
@@ -134,6 +173,8 @@ class ContourPlot(IPlotType):
         increment = float(crange[1] - crange[0]) / float(ncolors-2)
         cbounds = list(np.arange(crange[0],crange[1] + increment, increment ))
         # TODO: Color stuff
+        
+        #cmap = self.cmap_discretise(cmap,ncolors)
         
         colvs = [-999]+cbounds+[999]
         
@@ -166,7 +207,7 @@ class ContourPlot(IPlotType):
                                             y, \
                                             data_bl[:,:], \
                                             cbounds, \
-                                            cmap=cmap, \
+                                            cmap=self.cmap, \
                                             extend='both')
         contours = self.m.contour(x,y,data_bl,cbounds,colors='k')
         contours.clabel(colors='k',rightside_up=True,fmt='%1.1f',inline=True)
