@@ -35,6 +35,7 @@ import numpy as np
 import modules.plotting.plot_type as pt
 import modules.plotting.datasource as ds
 import matplotlib as mpl
+import datetime
 import StringIO
 import util.exceptions as ex
 
@@ -43,7 +44,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.basemap import addcyclic
-from time import strftime
+#from time import strftime
 from mpl_toolkits.basemap import num2date
 
 
@@ -356,13 +357,19 @@ class PlottingController(object):
                      "historical skill"
         subheader2 = "Experimental outlook for demonstration and research only"
         
+        start_date = datetime.datetime.strftime( \
+                            num2date( self.dset.get_init_date()[0], \
+                                      self.dset.get_time_units()), \
+                                      "%Y%m%d")
+        
         title = header + '\n' + \
                 subheader1 + '\n' + \
                 subheader2 + '\n' + \
                 'Variable: ' + self.parameters['layers'][0] + \
                 ' (' + self.dset.get_var_unit() + ')\n' + \
-                'Model initlialised ' 
-                
+                'Model initlialised ' + start_date + '\n' + \
+                'Forecast period: ' + str(self.dset.get_time_label())
+
         return title
         
         

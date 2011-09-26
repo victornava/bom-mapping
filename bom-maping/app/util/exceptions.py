@@ -44,7 +44,10 @@ class LayerNotDefinedError(WMSBaseError):
       
         
 class StyleNotDefinedError(WMSBaseError):
-    """ Exception for representing an invalid style """
+    """ Exception for representing an invalid style 
+    
+    Should be raised if there is no such style, e.g. connntooour
+    """
   
         
 class MissingDimensionValueError(WMSBaseError):
@@ -56,10 +59,19 @@ class InvalidDimensionValueError(WMSBaseError):
         
         
 class OperationNotSupportedError(WMSBaseError):
-    """ Excepton for representiong an invalid operation"""
+    """ Excepton for representiong an invalid operation
+    
+    Should be raised, if there is no request e.g. GetCrazy
+    """
         
         
 ########################### Custom errors not in WMS
 
 class MissingParameterError(WMSBaseError):
     """ Exception for missing mandatory parameter"""
+    
+    
+class InvalidParameterValueError(WMSBaseError):
+    """ Exception for invalid values of parameters"""
+    
+    
