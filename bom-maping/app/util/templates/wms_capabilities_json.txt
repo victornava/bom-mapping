@@ -1,0 +1,32 @@
+{# Converted WMS-capabilities 1.3.0 XML to JSON #}
+{
+{% for ds in c.capabilities.contents.datasetSummaries %}
+  "${ds.identifier}": {
+    "title": "${ds.titles[0]}",
+    {% if len(ds.abstracts)>0 %}
+    "abstract": "${ds.abstracts[0]}",
+    {% end %}
+    "crss": [${','.join([`x` for x in ds.CRSs])}],
+    {% with exBBox = ds.wgs84BoundingBoxes[0] %}
+    "exbbox": [${exBBox.lowerCorner[0]}, ${exBBox.lowerCorner[1]}, ${exBBox.upperCorner[0]}, ${exBBox.upperCorner[1]}],
+    {% end %}
+    "bboxes": {
+    {% for bb in ds.boundingBoxes %}
+      "${bb.crs}": [${'%.2f'%bb.lowerCorner[0]}, ${'%.2f'%bb.lowerCorner[1]}, ${'%.2f'%bb.upperCorner[0]}, ${'%.2f'%bb.upperCorner[1]}]{% if bb!=ds.boundingBoxes[-1]%},{% end %}
+    {% end %}
+    },
+    "dimensions": {
+    {% with d_ns = ds.dimensions.keys() %}
+    {% for d_n in d_ns %}
+      "${d_n}": {
+        "units": "${ds.dimensions[d_n].valuesUnit}",
+        "unitSymbol": "${ds.dimensions[d_n].unitSymbol}",
+        "default": "${ds.dimensions[d_n].defaultValue}",
+        "extent": [${','.join([`x` for x in ds.dimensions[d_n].possibleValues.allowedValues])}]
+      }{% if d_n!=d_ns[-1] %},{% end %}
+    {% end %}
+    {% end %}
+    }
+  }{% if ds != c.capabilities.contents.datasetSummaries[-1] %},{% end %}
+  {% end %}
+}
