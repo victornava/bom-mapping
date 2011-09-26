@@ -175,15 +175,18 @@ class NetCDFDatasource(IDataSource):
             raise NetCDFException(repr(ke) + " ==> Variable " + self.varname +
                                 " does not exist in " +
                                 self.dset._id)
-        #Mask if plot_mask parameter set to True
-        if self.plot_mask == True:
-            #if 'mask' variable is present in data set
-            if 'mask' in self.dset.keys():
+        
+        #if 'mask' variable is present in data set
+        if 'mask' in self.dset.keys():
+            #Mask if plot_mask parameter set to True
+            if self.plot_mask == True:
                 maskvar = self.dset['mask'][self.timestep,:,:]
                 varm = np.ma.masked_array(var, mask=maskvar)
                 mask = varm.mask
             else:
                 varm = np.ma.masked_array(var, mask=np.isinf(var))
+        else:
+            varm = np.ma.masked_array(var, mask=np.isinf(var))
             
         return varm
         
