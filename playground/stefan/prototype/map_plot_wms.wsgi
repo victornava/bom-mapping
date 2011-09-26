@@ -306,10 +306,22 @@ def figurePlotDims(imgheight,imgwidth,coords,plot_max_xfrac=0.7,plot_max_yfrac=0
     lonmin,latmin,lonmax,latmax = coords
     plot_max_height=plot_max_yfrac*imgheight
     plot_max_width=plot_max_xfrac*imgwidth
+    print "max_width: %f" % plot_max_width
+    print "max_height: %f " % plot_max_height
+
+    print "latmin: %f" % latmin
+    print "lonmin: %f" % lonmin
+
     nlat = float(latmax-latmin)
     nlon = float(lonmax-lonmin)
+    print "nlat %f" % nlat
+    print "nlon %f" % nlon
     plot_aspect_ratio = plot_max_width/plot_max_height
+    print "plot_aspect_ratio %f" % plot_aspect_ratio
     latlon_aspect_ratio = (nlon/nlat) * (plot_aspect_ratio)
+
+    print "lat_lon_ratio %f" % latlon_aspect_ratio
+
     desired_aspect_ratio = 1.0
     
     if latlon_aspect_ratio > desired_aspect_ratio:
@@ -743,7 +755,7 @@ def atmos_mask_test():
 #            "REQUEST" : "GetLegendGraphic",
             "BBOX" : "0,-90,360,-45",
 #            "BBOX" : "-180,-90,180,90",
-            "WIDTH" : "640",
+            "WIDTH" : "800",
             "HEIGHT" : "400",
             "DAP_URL" : 'http://localhost:8001/atmos_latest.nc',
             "LAYER" : 'hr24_prcp',
