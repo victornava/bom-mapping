@@ -79,3 +79,13 @@ class TestDatasource(unittest.TestCase):
         
         print self.d.get_var_unit()
         
+        
+    def test_get_time_label(self):
+        print "===get_time_label==="
+        
+        self.d = NetCDFDatasource(
+                       'http://yoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
+                        self.bbox,
+                        'SSTA_cc')
+        
+        print self.d.get_time_label()
