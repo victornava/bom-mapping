@@ -62,10 +62,11 @@ def get_full_figure(parameters):
     pc = PlottingController(parameters)
     return pc.get_full_figure()
 
+    
 class PlottingController(object):
     """ Plotting Controller 
     
-    This class controllsall the plotting related functionality.
+    This class controlls all the plotting related functionality.
     """
     
     def __init__(self,parameters):
@@ -79,32 +80,23 @@ class PlottingController(object):
 
         # 1. Retrieve the data
         #FIXME: Build argument list dynamically
-        dset = ds.NetCDFDatasource( self.parameters["source_url"], \
-                                    self.bbox, \
-                                    self.parameters["layers"][0], \
-                                    self.parameters["time"], \
-                                    self.parameters["time_index"], \
-                                    )
+        self.dset = ds.NetCDFDatasource( self.parameters["source_url"], \
+                                         self.bbox, \
+                                         self.parameters["layers"][0], \
+                                         self.parameters["time"], \
+                                         self.parameters["time_index"], \
+                                        )
         #dset = open_url(self.parameters["source_url"])
-        self.lat = dset.get_lats()
-        self.lon = dset.get_lons()
-        self.var = dset.get_data()
-       
-        #FIXME: Fix masking .. will be shifted to datasource
-        varm = np.ma.masked_array(self.var, mask=np.isinf(self.var))
-        
+        self.lat = self.dset.get_lats()
+        self.lon = self.dset.get_lons()
+        self.var = self.dset.get_data()
+      
             # 1.1 Normalise data
         self.bbox,self.lon,self.var = \
                 self.__transform_lons(self.bbox, \
                                       self.lon, \
-                                      varm)
-       
-       
-       
-       
-       
-       
-       
+                                      self.var)
+      
         # 2. Set up figure
         self.fig = Figure()
         self.canvas = FigureCanvas(self.fig)
@@ -118,41 +110,13 @@ class PlottingController(object):
                           urcrnrlat = self.bbox.lat_max, \
                           suppress_ticks = True, \
                           fix_aspect = False)
-                          
-
-        
-   
-    def get_contour(self):
-        """
-        Responsible for wrapping the GetMap request.
-        
-        This will return an image
-        """
-        available_styles = {'contour' : pt.ContourPlot, \
-                            'grid' : pt.GriddedPlot, \
-                            'grid_treshold' : pt.GriddedTresholdPlot}
-        
-        key = self.parameters["styles"][0]
-        
-        if not available_styles.has_key(key):
-            raise ex.OperationNotSupportedError(key)
-       
-       # Set up axes for basemap
-        ax = self.fig.add_axes( (0,0,1,1), \
-                                frame_on = False, \
-                                axis_bgcolor = 'k')
-        self.m.ax = ax
-        self.__create_contours(available_styles[key])
-        
-
-        return self.__create_image()
-    
-    
+                         
+                         
     def get_legend(self):
         """
         Responsible for wrapping the GetLegend request
         
-        This will return an image.
+        Returns an image.
         """
         
         #FIXME: Ugly ... replace without having to print map first
@@ -161,42 +125,81 @@ class PlottingController(object):
                                 axis_bgcolor = 'k')
         self.m.ax = ax
         self.__create_contours(pt.GriddedPlot)
-       
-        font_size = 8
+      
         self.fig = Figure(figsize=(64/self.DPI,256/self.DPI))
         self.canvas = FigureCanvas(self.fig)
         
-        ax = self.fig.add_axes([0,0.1,0.2,0.8],axis_bgcolor = 'k')
-        
-        cbar = self.fig.colorbar(self.main_render, \
-                                 cax=ax, \
-                                 extend='both', \
-                                 format='%1.1f' \
-                                 )
-                                 
-        #FIXME: need additional datasource method
-        cbar.set_label('Saurabh i need an extra method in ds!!', \
-                        fontsize=font_size)
-       
-        for t in cbar.ax.get_yticklabels():
-            t.set_fontsize(font_size)
+        self.__create_legend((0,0.1,0.2,0.8))
             
         return self.__create_image()
     
     
-    def get_full_figure(self):
-        #4. add data
-        ax = self.fig.add_axes( self.__calc_plot_dims(), \
+    def get_contour(self):
+        """ Responsible for wrapping the GetMap request.
+        
+        Returns an image.
+        """
+        ax = self.fig.add_axes( (0,0,1,1), \
                                 frame_on = False, \
                                 axis_bgcolor = 'k')
-                                
-      
-        return 
+        self.m.ax = ax
+        self.__create_contours(self.__evaluate_plot_type())
+        return self.__create_image()
     
     
-    def __create_image(self):
+    def get_full_figure(self, n_merid = 5, n_para = 5):
+        """ Responsibe for wrapping the GetFullFigure request.
+        
+        Returns an image.
+        
+        n_merid: Number of meridians we want to print as an overlay
+        n_para: number of parallels we want printed as an overlay
+        """
+        tick_font_size = 8
+        title_font_size = 9
+        
+        plot_dims = self.__calc_plot_dims()
+        ax = self.fig.add_axes( plot_dims, \
+                                frame_on = False, \
+                                axis_bgcolor = 'k')
+        
+        self.m.ax = ax
+        self.__create_contours(self.__evaluate_plot_type())
+        self.__create_legend((0.8,0.1,0.02,plot_dims[3]))
+        
+        # Creating the overlay
+        base = (self.bbox.lon_max - self.bbox.lon_min)/float(n_merid)
+        meridians = [ self.bbox.lon_min + i*base for i in range(n_merid)]
+        
+        base = (self.bbox.lat_max - self.bbox.lat_min)/float(n_para)
+        parallels = [ self.bbox.lat_min + i*base for i in range(1,n_para+1)]
+        
+        self.m.drawcoastlines()
+        self.m.drawmeridians(meridians, \
+                             labels = [0,1,0,1], \
+                             fmt = "%3.1f", \
+                             fontsize = tick_font_size)
+        self.m.drawparallels(parallels, \
+                             labels= [1,0,0,0], \
+                             fmt = "%3.1f", \
+                             fontsize = tick_font_size)
+        self.m.drawparallels([0], \
+                             linewidth = 1, \
+                             dashes = [1,0], \
+                             labels = [0,1,1,1], \
+                             fontsize = tick_font_size)
+        
+        self.fig.text(0.05,0.98,self.__get_plot_title(), \
+                      va='top', fontsize=title_font_size)
+        
+        return self.__create_image(transparent=False)
+    
+    
+    def __create_image(self,transparent=True):
         """ Create image with the given format an returns it. If iamge type is
         not supported, an exception is raised:
+        
+        transparent: True/False for transparent background
         """
        
         supported_formats = [ 'png', 'svg' ]
@@ -206,7 +209,10 @@ class PlottingController(object):
             raise ex.InvalidFormatError(img_format)
        
         img_data = StringIO.StringIO()
-        self.fig.savefig(img_data,format=img_format,transparent=True)
+       
+        self.fig.savefig(img_data, \
+                         format = img_format, \
+                         transparent=transparent)
         
         value = img_data.getvalue()
         img_data.close()
@@ -234,6 +240,28 @@ class PlottingController(object):
         
         self.main_render = plot.plot()
 
+        
+    def __create_legend(self,coords):
+        """ Creates the legend graphic at the the specified coords
+        
+        coords: rect for the axes
+        """
+        ax = self.fig.add_axes(coords,axis_bgcolor = 'k')
+        
+        cbar = self.fig.colorbar(self.main_render, \
+                                 cax=ax, \
+                                 extend='both', \
+                                 format='%1.1f' \
+                                 )
+                                 
+        #FIXME: need additional datasource method
+        font_size = 8
+        cbar.set_label( self.dset.get_var_unit(), \
+                        fontsize=font_size)
+       
+        for t in cbar.ax.get_yticklabels():
+            t.set_fontsize(font_size)
+        
     
     def __transform_lons(self,bbox,lons,var):
         """ Take Bounding box longitudes and transform them for sensible
@@ -276,12 +304,80 @@ class PlottingController(object):
         return bbox,lons,var
        
        
-    def __calc_plot_dims(self):
-        return (0,0,1,1)
+    def __calc_plot_dims(self , \
+                        max_xfrac = 0.7, \
+                        max_yfrac = 0.7, \
+                        desired_ratio = 1.0):
+        """ Calculate apropriate plotting dimensions for the full figure
+        image.
+        """
+        height = self.parameters["height"]
+        width = self.parameters["width"]
+        max_height = max_yfrac * height
+        max_width = max_xfrac * width
+        
+        nlat = float(self.bbox.lat_max - self.bbox.lat_min)
+        nlon = float(self.bbox.lon_max - self.bbox.lon_min)
+        
+        plot_aspect_ratio = max_width / max_height
+        lat_lon_aspect_ratio = (nlon/nlat) * plot_aspect_ratio
+        
+        if lat_lon_aspect_ratio > desired_ratio:
+            # Image needs to be narrower
+            xfrac = desired_ratio * (nlon/nlat) * max_yfrac * \
+                    (float(width)/height)
+            yfrac = max_yfrac
+        else:
+            #Image needs to be shorter
+            yfrac = (1./desired_ratio) * (nlat/nlon) * max_xfrac * \
+                    (float(width)/height)
+            xfrac = max_xfrac
+        
+        # Ensure we are within bounds
+        if yfrac > max_yfrac:
+            xfrac = xfrac * max_yfrac/yfrac
+            yfrac = max_yfrac
+            
+        if xfrac > max_xfrac:
+            yfrac = yfrac * max_xfrac/xfrac
+            xfrac = max_xfrac
+        
+        #print lat_lon_aspect_ratio
+        #print "xfrac: %f" % xfrac
+        #print "yfrac: %f" % yfrac
+        return (0.08,0.08,xfrac,yfrac)
+        
+        
+    def __get_plot_title(self):
+        """" Returns the title for the full figure request"""
+        return "Stefan"
+        
+        
+    def __evaluate_plot_type(self):
+        """ Evaluates the correct class for the type of plot. 
+        
+        Throws an exception, if the requested type is not available.
+        """
+        
+        # Add to available_styles list if there are new types of plots
+        available_styles = {'contour' : pt.ContourPlot, \
+                            'grid' : pt.GriddedPlot, \
+                            'grid_treshold' : pt.GriddedTresholdPlot}
+        
+        key = self.parameters["styles"][0]
+        
+        if not available_styles.has_key(key):
+            raise ex.OperationNotSupportedError(key)
+        
+        return available_styles[key]
         
         
     def __check_mandatory_parameters(self,parameters):
-        """ Checks for mandatory parameters """
+        """ Checks for mandatory parameters 
+        
+        This method checks if the parameters declared as mandatory were
+        provided by the calling entity.
+        """
         mandatory_parameters = [ "bbox" ]
         for key in mandatory_parameters:
             if not parameters.has_key(key):
