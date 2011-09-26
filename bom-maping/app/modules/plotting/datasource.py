@@ -146,6 +146,10 @@ class NetCDFDatasource(IDataSource):
         except :
             raise NetCDFException("Cannot open url")
         
+        if self.time_index == 'Default':
+            self.timestep = 0
+        else:
+            self.timestep = int(self.time_index)
         
         
         
@@ -167,25 +171,16 @@ class NetCDFDatasource(IDataSource):
         return self.dset['lon'][:]
         
         
-    def _set_timestep(self):
-        if self.time_index == 'Default':
-            self.timestep = 0
-        else:
-            self.timestep = int(self.time_index)
-        
-        #return self.timestep
-        
-        
     def get_data(self):
         """
             Returns all the data values in the data source
         """
-        
+        """
         if self.time_index == 'Default':
             self.timestep = 0
         else:
             self.timestep = int(self.time_index)
-       
+        """
         """
             Masking Logic
             TODO: Complete the Logic
