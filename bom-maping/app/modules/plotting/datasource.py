@@ -171,28 +171,11 @@ class NetCDFDatasource(IDataSource):
         return self.dset['lon'][:]
         
         
-    def get_data(self):
+    def do_masking(self, var):
         """
-            Returns all the data values in the data source
+            Masks the layer/variable data with masking data depending upon the
+            plot_mask parameter.
         """
-        """
-        if self.time_index == 'Default':
-            self.timestep = 0
-        else:
-            self.timestep = int(self.time_index)
-        """
-        """
-            Masking Logic
-            TODO: Complete the Logic
-        """
-        try:
-            var = self.dset[self.varname][ self.timestep,:,:]
-        except KeyError as ke:
-            
-            raise NetCDFException(repr(ke) + " ==> Variable " + self.varname +
-                                " does not exist in " +
-                                self.dset._id)
-        
         #if 'mask' variable is present in data set
         if 'mask' in self.dset.keys():
             #Mask if plot_mask parameter set to True
@@ -205,6 +188,27 @@ class NetCDFDatasource(IDataSource):
         else:
             varm = np.ma.masked_array(var, mask=np.isinf(var))
             
+        return varm
+        
+    def get_data(self):
+        """
+            Returns all the data values in the data source
+        """
+        
+        """
+            Masking Logic
+            TODO: Complete the Logic
+        """
+        try:
+            var = self.dset[self.varname][ self.timestep,:,:]
+        except KeyError as ke:
+            
+            raise NetCDFException(repr(ke) + " ==> Variable " + self.varname +
+                                " does not exist in " +
+                                self.dset._id)
+        
+        varm = self.do_masking(var)
+        
         return varm
         
         """
@@ -254,11 +258,13 @@ class NetCDFDatasource(IDataSource):
         """
             Returns the data of layer init_date
         """
-        return self.dset['init_date']
+        if 'init_date' in self.dset.keys():
+            return self.dset['init_date']
         
         
     def get_time_label(self):
         """
             Returns the value of time_label for given timestep
         """
-        return self.dset['time_label'][self.timestep]
+        if 'time_label' in self.dset.keys():
+            return self.dset['time_label'][self.timestep]
