@@ -1,0 +1,33 @@
+--------------------------------------------------------------------------------------------------------------------------
+Download Links : 
+--------------------------------------------------------------------------------------------------------------------------
+
+1. http://www.python.org/ftp/python/2.7.2/python-2.7.2.msi
+
+2. http://peak.telecommunity.com/dist/ez_setup.py
+
+3. http://sourceforge.net/projects/numpy/files/NumPy/1.6.1/numpy-1.6.1-win32-superpack-python2.7.exe/download
+
+4. http://aarnet.dl.sourceforge.net/project/matplotlib/matplotlib/matplotlib-1.0.1/matplotlib-1.0.1.win32-py2.7.exe
+
+5. http://aarnet.dl.sourceforge.net/project/matplotlib/matplotlib-toolkits/basemap-1.0.1/basemap-1.0.1.win32-py2.7.exe
+
+--------------------------------------------------------------------------------------------------------------------------
+Installation
+--------------------------------------------------------------------------------------------------------------------------
+
+1. Install Python 32 Bit
+
+2. Setup easy install for windows. The easiest way to do it is to run thet downloaded the ez_setup.py file.
+
+3. Add C:\Python27\Scripts to the system path ( ENV vairables )
+
+4. Easy install flask (cmd : easy_install Flask)
+
+5. Install Numpy
+
+6. Install Matplot lib
+
+7. Install Basemap
+
+8. Easy install pydap (cmd : easy_install pydap)
