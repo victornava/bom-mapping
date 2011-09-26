@@ -75,6 +75,12 @@ class IDataSource(object):
             Returns the numpy array of 'time' variable in the data source
         """
         pass
+    @abc.abstractmethod
+    def get_var_unit(self):
+        """
+            Returns the unit of variable in string
+        """
+        pass
         
         
 #Implementations
@@ -119,7 +125,7 @@ class NetCDFDatasource(IDataSource):
                             plot_mask \
                             )
         
-        self.bbox.display()
+        #self.bbox.display()
         try:
             self.dset = open_url(url)
         except :
@@ -157,21 +163,38 @@ class NetCDFDatasource(IDataSource):
             self.timestep = 0
         else:
             self.timestep = int(self.time_index)
+       
         """
+            Masking Logic
+            TODO: Complete the Logic
+        """
+        try:
+            var = self.dset[self.varname][ self.timestep,:,:]
+        except KeyError as ke:
+            
+            raise NetCDFException(repr(ke) + " ==> Variable " + self.varname +
+                                " does not exist in " +
+                                self.dset._id)
+        #Mask if plot_mask parameter set to True
+        if self.plot_mask == True:
+            #if 'mask' variable is present in data set
+            if 'mask' in self.dset.keys():
+                maskvar = self.dset['mask'][self.timestep,:,:]
+                varm = np.ma.masked_array(var, mask=maskvar)
+                mask = varm.mask
+            else:
+                varm = np.ma.masked_array(var, mask=np.isinf(var))
+            
+        return varm
+        
+        """
+        TODO: Add logic to get the slice of data only
         try:
             return self.dset[self.varname][ self.timestep,
                                             self.bbox.lat_min:self.bbox.lat_max,
                                             self.bbox.lon_min:self.bbox.lon_max
                                           ]
         """
-        try:
-            return self.dset[self.varname][ self.timestep,:,:]
-        except KeyError as ke:
-            
-            raise NetCDFException(repr(ke) + " ==> Variable " + self.varname +
-                                " does not exist in " +
-                                self.dset._id)
-            
         
         
     def get_time_units(self):
@@ -193,3 +216,15 @@ class NetCDFDatasource(IDataSource):
         
         time_var = self.dset['time']
         return np.array(time_var[:])
+        
+    def get_var_unit(self):
+        """
+            Returns the unit of variable in string
+        """
+        
+        try:
+            var_units = self.dset[self.varname].attributes['units']
+        except:
+            var_units = ''
+        
+        return var_units
