@@ -2,6 +2,8 @@ import sys
 from flask import Flask, make_response, request
 from modules.wms.wms_params import WMSParams
 import modules.plotting.plotting_controller as plotter
+import modules.capabilities.capabilities_controller as cap_controller
+
 
 app = Flask(__name__)
 
@@ -45,9 +47,27 @@ def get_leyend():
     """docstring for get_leyend"""
     pass
     
-def get_capabilities():
+def get_capabilities(params):
     """docstring for get_capabilities"""
-    pass
+    cap = cap_controller.get_capabilities(params)
+    resp = make_response(cap)
+
+    # considering XML as the default output format(MIME Type)
+    output_format = 'text/xml'
+
+    # TODO: Decide:- how to respond for an non-supported output format request
+    # 1. Handle the request as XML format or 2. Throw an exception
+    
+    if "format" in params.keys():
+        if(params['format'] == 'application/json'):
+            output_format = 'application/json'
+
+    if(output_format == 'text/xml'):
+        resp.headers['Content-Type'] = 'text/xml'
+    else:
+        resp.headers['Content-Type'] = 'application/json'
+
+    return resp
 
 def valid_operations():
     return {
@@ -69,4 +89,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         port = int(sys.argv[1])
     app.debug = True
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='127.0.0.1', port=port)
