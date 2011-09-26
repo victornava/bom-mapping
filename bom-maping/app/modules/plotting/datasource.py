@@ -61,28 +61,43 @@ class IDataSource(object):
             Returns all the data values in the data source
         """
         pass
-        
+    
     @abc.abstractmethod
     def get_time_units(self):
         """
             Returns the unit in which data is represented.
         """
         pass
-        
+    
     @abc.abstractmethod
     def get_available_times(self):
         """
             Returns the numpy array of 'time' variable in the data source
         """
         pass
+    
     @abc.abstractmethod
     def get_var_unit(self):
         """
             Returns the unit of variable in string
         """
         pass
-        
-        
+    
+    @abc.abstractmethod
+    def get_init_date(self):
+        """
+            Returns the data of layer init_date
+        """
+        pass
+    
+    @abc.abstractmethod
+    def get_time_label(self):
+        """
+            Returns the value of time_label for given timestep
+        """
+        pass
+    
+    
 #Implementations
 
 from pydap.client import open_url
@@ -152,11 +167,18 @@ class NetCDFDatasource(IDataSource):
         return self.dset['lon'][:]
         
         
-    def get_data(self):
+    def _set_timestep(self):
+        if self.time_index == 'Default':
+            self.timestep = 0
+        else:
+            self.timestep = int(self.time_index)
         
+        #return self.timestep
+        
+        
+    def get_data(self):
         """
             Returns all the data values in the data source
-        
         """
         
         if self.time_index == 'Default':
@@ -231,3 +253,17 @@ class NetCDFDatasource(IDataSource):
             var_units = ''
         
         return var_units
+        
+        
+    def get_init_date(self):
+        """
+            Returns the data of layer init_date
+        """
+        return self.dset['init_date']
+        
+        
+    def get_time_label(self):
+        """
+            Returns the value of time_label for given timestep
+        """
+        return self.dset['time_label'][self.timestep]
