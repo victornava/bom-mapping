@@ -73,5 +73,3 @@ class MissingParameterError(WMSBaseError):
     
 class InvalidParameterValueError(WMSBaseError):
     """ Exception for invalid values of parameters"""
-    
-    
