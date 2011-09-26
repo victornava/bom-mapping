@@ -74,11 +74,10 @@ class PlottingController(object):
     
     def __init__(self,parameters):
         """ Constructor """
-        self.__check_mandatory_parameters(parameters)
+        v = ParameterValidator(parameters)
+        self.parameters = v.validate()
         self.DPI = 100.0
-        self.parameters = parameters
-        
-        #FIXME: What if no bbox in dictionary
+       
         self.bbox = BBox(parameters["bbox"])
 
         # 1. Retrieve the data
@@ -387,11 +386,100 @@ class PlottingController(object):
         key = self.parameters["styles"][0]
         
         if not available_styles.has_key(key):
-            raise ex.OperationNotSupportedError(key)
+            raise ex.StyleNotDefinedError(key)
         
         return available_styles[key]
        
         
+
+            
+
+class ParameterValidator(object):
+    """ Class responsible for validating parameters passed to the controller
+    """
+    
+    def __init__(self,parameters):
+        self.parameters = parameters
+        
+        
+    def validate(self):
+        """ Validates the passed parameters and returns the dictionary with
+        changed values were necessary.
+        """
+        # 1. Validate that all mandatory arguments are supplied
+        self.__check_mandatory_parameters(self.parameters)
+        
+        # 2. Check that values that are not supplied have sane defaults
+        self.__check_defaults(self.parameters)
+        
+        # 3. Check that numerical values are really numerical
+        self.__check_numericals(self.parameters)
+        
+        return self.parameters
+        
+        
+    def __check_numericals(self,parameters):
+        """ Validates that numerical values are numerical """
+        #TODO: Add more values
+        # dictionary with names and types
+        check = { "width" : int, \
+                  "height" : int, \
+                  "n_color" : int}
+        for k in check:
+            self.__check_single_value(parameters,k,check[k])
+    
+        # check for values that need to be in a list
+        check = { "color_range" : int }
+        for k in check:
+            self.__check_list_value(parameters,k,check[k])
+    
+    
+    def __check_single_value(self,parameters,name,dtype):
+        """ Checks a single value for the given type
+        
+        parameters: dictionary with parameters
+        name: name of the parameters
+        dtype: data type to be converted to
+        """
+        try:
+            parameters[name] = dtype(parameters[name])
+        except:
+            raise ex.InvalidParameterValueError( name + '(' + \
+                                                 parameters[name] + ')')
+    
+    
+    def __check_list_value(self,parameters,name,dtype):
+        """ Check for values that need to be in a list 
+        
+        parameters: dictionary with parameters
+        name: name of the parameters
+        dtype: data type to be converted to
+        """
+       
+        try:
+            parameters[name] = list([dtype(a) for a in \
+                                        parameters[name].\
+                                                rsplit(',') ])
+        except:
+            raise ex.InvalidParameterValueError( name + '(' + \
+                                                 parameters[name] + ')')
+        
+    
+    def __check_defaults(self,parameters):
+        """ Check that not supplied optional arguments have sane defaults """
+        
+        # dictionary for default values
+        defaults = { 'styles' : ['contour', ] ,\
+                     'width' : '256' , \
+                     'height' : '256', \
+                     'format' : 'png'}
+                     #TODO: add defaults
+        
+        for key in defaults.keys():
+            if not parameters.has_key(key):
+                parameters[key] = defaults[key]
+
+    
     def __check_mandatory_parameters(self,parameters):
         """ Checks for mandatory parameters 
         
