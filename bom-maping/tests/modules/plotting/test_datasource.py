@@ -48,7 +48,10 @@ class TestDatasource(unittest.TestCase):
         #print self.d.get_data()
         
         #with self.assertRaises(NetCDFException):
-            
+        self.d = NetCDFDatasource(
+                       'http://yoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
+                        self.bbox,
+                        'SSTA_cc', plot_mask = False)
         try:
             print self.d.get_data()
         except NetCDFException,e:
@@ -68,9 +71,11 @@ class TestDatasource(unittest.TestCase):
         
     def test_get_var_unit(self):
         print "===get_var_units==="
+        
         self.d = NetCDFDatasource(
                        'http://yoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
                         self.bbox,
-                        'SST')
+                        'SSTA_cc')
+        
         print self.d.get_var_unit()
         
