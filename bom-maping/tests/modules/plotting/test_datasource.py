@@ -13,10 +13,10 @@ from modules.plotting.commons import BBox
 class TestDatasource(unittest.TestCase):
     
     def setUp(self):
-        self.bbox = BBox({  "min_lat" : -90.0,
+        self.bbox = BBox({  "min_lat" : 45.0,
                             "min_lon" : 0.0,
-                            "max_lat" : 90.0,
-                            "max_lon" : 360.0
+                            "max_lat" : 60.0,
+                            "max_lon" : 180.0
                         })
         
         self.d = NetCDFDatasource(
@@ -54,7 +54,7 @@ class TestDatasource(unittest.TestCase):
                         'SSTA_cc', plot_mask = False)
         try:
             print self.d.get_data()
-        except NetCDFException,e:
+        except Exception,e:
             print e.__str__()
             raise
         
@@ -76,7 +76,7 @@ class TestDatasource(unittest.TestCase):
         try:
             print "+++++contruct+++++"
             self.d = NetCDFDatasource(
-                    'http://ayoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
+                    'http://yoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
                     self.bbox,
                     'SSTA_cc')
             print self.d.get_var_unit()
