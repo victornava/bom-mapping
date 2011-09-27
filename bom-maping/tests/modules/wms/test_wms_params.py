@@ -69,7 +69,7 @@ class TestWMSParams(unittest.TestCase):
             self.assertEquals(target[k], parsed_subject[k])        
             
     def test_can_parse_bbox_with_missing_values(self):
-        subject = { "bbox" : "-180.0,-90.0,180.0"}
+        subject = {"request":"GetMap", "bbox" : "-180.0,-90.0,180.0"}
         target = {
             "bbox" : {
                 "min_lon": "-180.0",

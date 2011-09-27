@@ -28,6 +28,9 @@ class WMSBaseError(Exception):
     
     def __str__(self):
         return repr(self.code +": "+ self.message)
+        
+    def data(self):
+        return { "code": self.code, "message": self.message }
 
         
         
@@ -63,7 +66,6 @@ class OperationNotSupportedError(WMSBaseError):
     
     Should be raised, if there is no request e.g. GetCrazy
     """
-        
         
 ########################### Custom errors not in WMS
 

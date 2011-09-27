@@ -7,5 +7,6 @@
 *~
 *.pyc
 *-swp
+todo.txt
 pydap-server/
 
