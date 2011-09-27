@@ -4,7 +4,8 @@
 
 # install general dependencies
 function prototype_general_deps() {
-   yum install zlib udunits2-devel curl-devel freetype-devel libpng-devel blas-devel lapack-devel atlas gcc-gfortran tk-devel -y
+   yum install zlib udunits2-devel curl-devel freetype-devel libpng-devel \
+blas-devel lapack-devel atlas gcc-gfortran tk-devel -y
 }
 
 # install gcc devel environment
@@ -23,7 +24,7 @@ function install_user_tools() {
 }
 
 
-#prototype_general_deps
-#install_dev_tools
+prototype_general_deps
+install_dev_tools
 install_git
 #install_user_tools

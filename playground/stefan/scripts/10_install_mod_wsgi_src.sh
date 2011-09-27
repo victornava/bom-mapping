@@ -18,7 +18,7 @@ tar xvzf mod_wsgi-3.3.tar.gz
 
 cd mod_wsgi-3.3
 
-./configure --with-apxs=/usr/sbin/apxs --with-python=/usr/local/bin/python LD_RUN_PATH=/usr/local/lib/
+./configure --with-apxs=/usr/sbin/apxs --with-python=/usr/local/bin/python LD_RUN_PATH=/usr/local/lib
 
 make -j5
 make -j5 install
@@ -39,7 +39,7 @@ echo "Creating direcotry 'wsgi-scripts' under /var/www"
 mkdir /var/www/wsgi-scripts 2> /dev/null
 
 # http://code.google.com/p/modwsgi/wiki/ConfigurationDirectives#WSGIScriptAlias
-
+echo 'WSGIApplicationGroup %{GLOBAL}' >> wsgi.conf
 echo "WSGIScriptAlias /wsgi-scripts/ /var/www/wsgi-scripts/" >> wsgi.conf
 
 echo "Configuration file /etc/httpd/conf.d/wsgi.conf created. This is for testing purposes only. Configure properly for production environment."
