@@ -1,3 +1,5 @@
+
+
 class WMSParams():
     """Class for conditioning url parameters before calling the plotting module"""
     def __init__(self, request):
@@ -38,12 +40,9 @@ class WMSParams():
         params = self.to_dict()
 
         # iterate elements and apply the rules if there are any
+        # otherwise leave the oritinal parameter
         for key in params:
            if rules.has_key(key):
                for rule in rules[key]:
-                   try:
-                       params[key] = rule(params[key])
-                   except Exception, e:
-                       # TODO throw meaninful exception
-                       raise ValueError("Error parsing parameter: "+key)
+                   params[key] = rule(params[key])
         return params

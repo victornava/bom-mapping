@@ -20,7 +20,7 @@ class TestWMSParams(unittest.TestCase):
         d = WMSParams(request).to_dict()
         self.assertEquals(params, d)
     
-    def test_parse(self):
+    def test_can_parse_a_valid_request(self):
         subject = {
             "request":"GetMap",
             "version":"0.0.1",
@@ -67,6 +67,19 @@ class TestWMSParams(unittest.TestCase):
         parsed_subject = WMSParams(FakeRequest(subject)).parse()
         for k in target:
             self.assertEquals(target[k], parsed_subject[k])        
+            
+    def test_can_parse_bbox_with_missing_values(self):
+        subject = { "bbox" : "-180.0,-90.0,180.0"}
+        target = {
+            "bbox" : {
+                "min_lon": "-180.0",
+                "min_lat": "-90.0",
+                "max_lon": "180.0"
+            }
+        }
+        parsed_subject = WMSParams(FakeRequest(subject)).parse()
+        for k in target:
+            self.assertEquals(target[k], parsed_subject[k])
     
 
 class TestFakeRequest(unittest.TestCase):
