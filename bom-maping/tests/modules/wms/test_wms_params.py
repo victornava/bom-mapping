@@ -1,5 +1,4 @@
 from modules.wms.wms_params import WMSParams
-# import modules.plotting.commons as c
 import unittest
 
 class FakeRequest():
@@ -48,8 +47,8 @@ class TestWMSParams(unittest.TestCase):
                 "max_lon": "180.0",
                 "max_lat": "90.0",
             },
-            "width" : 300,
-            "height" : 400,
+            "width" : "300",
+            "height" : "400",
             "layers" : ["hr24_prcp"],
             "styles" : ["contour"],
             "crs" : {
@@ -60,10 +59,11 @@ class TestWMSParams(unittest.TestCase):
             "time" : "default",
             "time_index" : "default",
             "source_url" : "http://localhost:8001/atmos_latest.nc",
-            "color_range" : [-4,4],
-            "n_color" : 10,
+            "color_range" : ["-4","4"],
+            "n_color" : "10",
             "palette" : "jet"
         }
+        
         parsed_subject = WMSParams(FakeRequest(subject)).parse()
         for k in target:
             self.assertEquals(target[k], parsed_subject[k])        

@@ -34,6 +34,7 @@ Given /^The parameter (\w+) is missing$/ do |parameter|
   @params.delete(parameter)
 end
 
+# Given /^The value of "(.*)" parameter is "(.*)"$/ do |parameter, value|  
 Given /^The value of "(.*)" parameter is "(.*)"$/ do |parameter, value|  
   @params = @default_params
   @params[parameter] = value
