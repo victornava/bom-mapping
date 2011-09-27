@@ -56,7 +56,7 @@ class WMSParams():
             raise MissingParameterError("'request' parameter is missing")        
             
         if params['request'] not in config['operations']:
-            raise OperationNotSupportedError()
+            raise OperationNotSupportedError("operation '" +params['request']+"' is not supported")
                 
         if "format" in params.keys():
             if params["format"] in config["formats"]:

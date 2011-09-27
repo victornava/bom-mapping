@@ -1,10 +1,9 @@
 import sys
-# from flask import Flask, make_response, request
 from flask import *
-from modules.wms.wms_params import WMSParams
+from util.exceptions import *
+from modules.wms.wms_params import *
 import modules.plotting.plotting_controller as plotter
 import modules.capabilities.capabilities_controller as cap_controller
-from util.exceptions import *
 
 app = Flask(__name__)
 
@@ -75,9 +74,6 @@ def valid_operations():
         "GetCapabilities": get_capabilities
     }
     
-def fake_render_exception(data):
-    return "ServiceException:\n  code: "+data['code']+"\n  message: "+data['message']
-                        
 # can pass the port number as argument
 if __name__ == '__main__':
     port = 8007
