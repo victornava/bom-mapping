@@ -102,7 +102,7 @@ class IDataSource(object):
 
 from pydap.client import open_url
 import numpy as np
-from util.exceptions import NetCDFException
+import util.exceptions as ex
 
 class NetCDFDatasource(IDataSource):
     """
@@ -112,11 +112,11 @@ class NetCDFDatasource(IDataSource):
         from NetCDF files.
         
         url: url of OpenDAP data set
-        bbox: TODO
+        bbox: commons.bbox object
         varname: name of variable/layer/key in string
         time: TODO
-        time_index: int value of timestep
-        plot_mask: TODO
+        time_index: int value of timestep or 'Default'
+        plot_mask: boolean value of 
         
 
     """
@@ -143,8 +143,8 @@ class NetCDFDatasource(IDataSource):
         #self.bbox.display()
         try:
             self.dset = open_url(url)
-        except :
-            raise NetCDFException("Cannot open url")
+        except Exception,e:
+            raise ex.InvalidParameterValueError(repr(e))
         
         if self.time_index == 'Default':
             self.timestep = 0
@@ -159,6 +159,7 @@ class NetCDFDatasource(IDataSource):
             TODO : raise exception if invalid operation/unexpected error
         """
         #return self.dset['lat'][self.bbox.lat_min:self.bbox.lat_max]
+        
         return self.dset['lat'][:]
         
         
@@ -171,23 +172,19 @@ class NetCDFDatasource(IDataSource):
         return self.dset['lon'][:]
         
         
-    def do_masking(self, var):
+    def __do_masking(self, var):
         """
             Masks the layer/variable data with masking data depending upon the
             plot_mask parameter.
         """
-        #if 'mask' variable is present in data set
-        if 'mask' in self.dset.keys():
-            #Mask if plot_mask parameter set to True
-            if self.plot_mask == True:
-                maskvar = self.dset['mask'][self.timestep,:,:]
-                varm = np.ma.masked_array(var, mask=maskvar)
-                mask = varm.mask
-            else:
-                varm = np.ma.masked_array(var, mask=np.isinf(var))
-        else:
+        
+        if 'mask' not in self.dset.keys() or self.plot_mask == False:
             varm = np.ma.masked_array(var, mask=np.isinf(var))
-            
+        elif 'mask' in self.dset.keys() and self.plot_mask == True:
+            maskvar = self.dset['mask'][self.timestep,:,:]
+            varm = np.ma.masked_array(var, mask=maskvar)
+            mask = varm.mask
+        
         return varm
         
     def get_data(self):
@@ -195,21 +192,6 @@ class NetCDFDatasource(IDataSource):
             Returns all the data values in the data source
         """
         
-        """
-            Masking Logic
-            TODO: Complete the Logic
-        """
-        try:
-            var = self.dset[self.varname][ self.timestep,:,:]
-        except KeyError as ke:
-            
-            raise NetCDFException(repr(ke) + " ==> Variable " + self.varname +
-                                " does not exist in " +
-                                self.dset._id)
-        
-        varm = self.do_masking(var)
-        
-        return varm
         
         """
         TODO: Add logic to get the slice of data only
@@ -221,24 +203,39 @@ class NetCDFDatasource(IDataSource):
         """
         
         
+        
+        try:
+            var = self.dset[self.varname][ self.timestep,:,:]
+        except KeyError as ke:
+            raise ex.LayerNotDefined(self.varname + " in " + self.dset._id)
+        #Masking
+        varm = self.__do_masking(var)
+        
+        return varm
+        
+        
     def get_time_units(self):
         
         """
             Returns the unit in which data is represented.
-            TODO : raise exception if invalid operation/unexpected error
         """
-        
-        return self.dset['time'].attributes['units']
+        try:
+            time_units = self.dset['time'].attributes['units']
+        except KeyError,e:
+            raise ex.LayerNotDefined(repr(e))
+        return time_units
         
         
     def get_available_times(self):
         """
             Returns numpy array of availble 'time' variable values in data
             source.
-            TODO : raise exception if invalid operation/unexpected error
         """
-        
-        time_var = self.dset['time']
+        try:
+            time_var = self.dset['time']
+        except Exception,e:
+            raise ex.LayerNotDefined("time")
+            
         return np.array(time_var[:])
         
     def get_var_unit(self):

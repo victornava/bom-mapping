@@ -6,7 +6,7 @@
 
 import unittest
 from modules.plotting.datasource import NetCDFDatasource
-from util.exceptions import NetCDFException
+import util.exceptions as ex
 from modules.plotting.commons import BBox
 
 
@@ -72,20 +72,19 @@ class TestDatasource(unittest.TestCase):
     def test_get_var_unit(self):
         print "===get_var_units==="
         
-        self.d = NetCDFDatasource(
-                       'http://yoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
-                        self.bbox,
-                        'SSTA_cc')
-        
-        print self.d.get_var_unit()
+        #with self.assertRaises(ex.InvalidUrlError):
+        try:
+            print "+++++contruct+++++"
+            self.d = NetCDFDatasource(
+                    'http://ayoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
+                    self.bbox,
+                    'SSTA_cc')
+            print self.d.get_var_unit()
+        except ex.InvalidParameterValueError,e:
+            print e.__str__(), " ===> Manual printing error"
         
         
     def test_get_time_label(self):
         print "===get_time_label==="
         
-        self.d = NetCDFDatasource(
-                       'http://yoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
-                        self.bbox,
-                        'SSTA_cc')
-        
-        print self.d.get_time_label()
+        #print self.d.get_time_label()
