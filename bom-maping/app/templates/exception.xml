@@ -4,5 +4,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.opengis.net/ogc
 	http://schemas.opengis.net/wms/1.3.0/exceptions_1_3_0.xsd">
-		<ServiceException code="{{error['code']}}">{{error['message']}}</ServiceException>
+		<ServiceException
+			{% if error['code'] %}
+				code="{{error['code']}}"
+			{% endif %}
+			{% if error['locator'] %}
+				locator="{{error['locator']}}"
+			{% endif %}>
+			{% if error['message'] %}
+				{{error['message']}}
+			{% endif %}>
+		</ServiceException>
 </ServiceExceptionReport>
