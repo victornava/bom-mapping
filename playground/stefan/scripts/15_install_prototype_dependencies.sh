@@ -11,7 +11,8 @@ export PYTHONPATH=/usr/local/bin:/usr/local/lib/python2.7/site-packages
 
 
 function install_centos_deps() {
-   yum install zlib udunits2-devel curl-devel freetype-devel libpng-devel blas-devel lapack-devel atlas gcc-gfortran python-devel tk-devel -y
+   yum install zlib udunits2-devel curl-devel freetype-devel libpng-devel \
+blas-devel lapack-devel atlas gcc-gfortran tk-devel -y
 }
 
 function build_hdf() {

@@ -1,36 +1,33 @@
 import sys
-from flask import Flask, make_response, request
-from modules.wms.wms_params import WMSParams
+from flask import *
+from util.exceptions import *
+from modules.wms.wms_params import *
 import modules.plotting.plotting_controller as plotter
 import modules.capabilities.capabilities_controller as cap_controller
-
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
+    # Setup defaults
+    # format = config['formats'][0]
+    operations = valid_operations()
     try:
+        # TODO pass a config as argument
+        # params = WMSParams(request, config).parse()
         params = WMSParams(request).parse()
-        # return str(params)
-        operations = valid_operations()
-        
-        if "request" not in params.keys():
-            # TODO use appropiate error
-            raise ValueError("ServiceException => code:MissingParameter, message:request")
-            
-        try:
-            operation = operations[params['request']]
-        except KeyError:
-            # TODO use appropiate error
-            raise ValueError("ServiceException => code:OperationNotSupported")
-            
+        operation = operations[params['request']]
         return operation(params)
-                
+    except WMSBaseError, e:
+        data = e.data()
     except Exception, e:
-        # TODO call WMSException here
-        reply = "ServiceException:"+str(e)
-        # reply = str(e)
-    return reply    
+        data = { "code: UnexpectedError", "message: Something went wrong sorry." }
+    
+    # TODO replace exception.xml with appropiate template
+    output = render_template("exception.xml", data=data)
+    resp = make_response(output)
+    resp.headers['Content-Type'] = 'text/xml'
+    return resp
     
 def get_map(params):
     """docstring for ge"""
@@ -76,13 +73,7 @@ def valid_operations():
         "GetLeyend": get_leyend,
         "GetCapabilities": get_capabilities
     }
-
-class ServiceException(object):
-    """docstring for ServiceException"""
-    def __init__(self, arg):
-        super(ServiceException, self).__init__()
-        self.arg = arg
-                    
+    
 # can pass the port number as argument
 if __name__ == '__main__':
     port = 8007

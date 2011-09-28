@@ -1,0 +1,5 @@
+<exception>
+  <name>ServiceException</name>
+  <code>{{data['code']}}</code>
+  <message>{{data['message']}}</message>
+</exception>
