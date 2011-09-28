@@ -1,7 +1,7 @@
 import modules.plotting.plotting_controller as pc
 
 
-param = { "bbox": { "min_lat" : "-90.0",
+param = { "bbox": { "min_lat" : "-90",
                     "min_lon" : "0.0",
                     "max_lat" : "90.0",
                     "max_lon" : "360.0"
@@ -9,6 +9,7 @@ param = { "bbox": { "min_lat" : "-90.0",
           "width" : "1024" ,
           "height" : "768" ,
           "layers" : ["hr24_prcp", ] ,
+#          "layers" : ["tsair", ] ,
 #          "layers" : ["SSTA", ] ,
           "styles" : ["contour", ] ,
           "crs" : {   "name" : "EPSG" ,
@@ -20,8 +21,9 @@ param = { "bbox": { "min_lat" : "-90.0",
           "source_url" : "http://localhost:8001/atmos_latest.nc",
 #          "source_url" : "http://localhost:8001/ocean_latest.nc",
           "color_range" : "-10, 10" ,
-          "n_color" : "10" ,
-          "palette" : "jet"
+          "n_color" : "9" ,
+#          "palette" : "jet"
+          "palette" : "YlOrBr"
         }
         
 #c = pc.PlottingController(param)
