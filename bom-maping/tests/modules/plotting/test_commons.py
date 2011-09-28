@@ -71,7 +71,19 @@ class TestBBox(unittest.TestCase):
         self.assertRaises(ex.InvalidDimensionValueError,c.BBox,self.bbox)
     
     
-    # 3. Longitudes/Latitudes are not overlapping
+    # 4. Valid parameters
+    def test_boundary_values(self):
+        c.BBox(self.bbox)
+        
+    def test_normal_values(self):
+        self.bbox["min_lat"] = "-80.3253234"
+        self.bbox["max_lat"] = "45.123"
+        self.bbox["min_lon"] = "-45.233232423"
+        self.bbox["max_lon"] = "23.1234234324"
+        c.BBox(self.bbox)
+    
+    
+    # 5. Longitudes/Latitudes are not overlapping
     def test_min_lat_greater_max_lat(self):
         self.bbox["min_lat"] = "45.8"
         self.bbox["max_lat"] = "-18.2"
