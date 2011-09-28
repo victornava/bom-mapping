@@ -12,6 +12,8 @@ Download Links :
 
 5. http://aarnet.dl.sourceforge.net/project/matplotlib/matplotlib-toolkits/basemap-1.0.1/basemap-1.0.1.win32-py2.7.exe
 
+6. http://aarnet.dl.sourceforge.net/project/scipy/scipy/0.10.0b2/scipy-0.10.0b2-win32-superpack-python2.7.exe
+
 --------------------------------------------------------------------------------------------------------------------------
 Installation
 --------------------------------------------------------------------------------------------------------------------------
@@ -31,3 +33,7 @@ Installation
 7. Install Basemap
 
 8. Easy install pydap (cmd : easy_install pydap)
+
+9. Install Scipy
+
+10. Easy Install Jinja (cmd : easy_install Jinja2 )
