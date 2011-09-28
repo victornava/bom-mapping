@@ -49,8 +49,9 @@ class WMSParams():
         params  = self.parse()
         
         # FIXME pass this as argument to the constructor
+        # TODO: Is it ok to have "text/xml" & "json" format here? - Vas
         config = {
-            "formats": ["png", "jpeg"],
+            "formats": ["png", "jpeg", "text/xml", "application/json"],
             "operations" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"]
         }
         
