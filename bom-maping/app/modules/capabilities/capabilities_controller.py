@@ -2,9 +2,8 @@
 
 All functionality that has to do with getCapabilities goes into this module.
 """
-import util.wmsxml as xml
-import util.wmsjson as json
 
+# TODO : Load config files ( address info , abstract, fee etc., )
 
 def get_capabilities(params):
     """ Returns a capabilities in the specified format ( xml/json) """
@@ -21,42 +20,54 @@ class CapabilitiesController():
     def __init__(self, params):
         """ Constructor """
         self.params = params
-        
-        # considering XML as the default output format(MIME Type)
-        self.format = 'text/xml'
 
         # considering 1.3.0 as the default version
         self.version = '1.3.0'
 
 
     def get_capabilities(self):
-       
-        if "format" in self.params.keys():
-            if(self.params['format'] == 'application/json'):
-                self.format = 'application/json'
 
         # TODO - Get Capabilities 
         #( Service, Metadata, Contact .. )
         
+        service = self.__get_service()
+        capability = self.__get_capability()
+        contents = {"service" : service, "capability" : capability}
+        return contents
 
-        # Test content - Exception
-        contents = {'version': self.version , 'lang':'en' ,
-                    'exceptions':[{'text':'Test1', 'code':'E1', 'locator':'header'},
-                                  {'text':'Test2', 'code':'E2', 'locator':'footer'}]}
-
-        return self.__render_capabilities(contents)
-
-
-    def __render_capabilities(self,contents): 
-        if (self.format == 'application/json'):
-            return json.output(contents)
-        else:
-            return xml.output(contents)
 
     def __get_service(self):
+
+        # TODO
+        # contact_info = self.__get_service_contactinfo()
+        
+        # Test content for getCap()
+        service = { "name": "WMS", "title": "BOM - Australia" , "abstract" : "Map Overlay Web Service for the Australian Bureu of Meteorology"}
+        return service
+
+    def __get_service_contactinfo(self):
         # TODO
         pass
 
-    def __get_contact(self):
+    def __get_capability(self):
+
+        # TODO
+        # request = self.__get_capability_request()
+        # exception = self.__get_capability_exception()
+        # layer = self.__get_capability_layer()
+        
+        # Test content for getCap()
+        capability = { "request": "", "exception:" : "" , "layer" : ""}
+        return capability
+
+    def __get_capability_request(self):
+        # TODO
+        pass
+
+    def __get_capability_exception(self):
+        # TODO
+        pass
+    
+    def __get_capability_layer(self):
         # TODO
         pass
