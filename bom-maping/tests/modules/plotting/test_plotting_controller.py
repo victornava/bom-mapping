@@ -9,41 +9,42 @@ import util.exceptions as ex
 
 
 class TestPlottingController(unittest.TestCase):
-    
+   
     def setUp(self):
         self.param = { "bbox" : {  "min_lat" : "-90.0",
                                    "min_lon" : "0.0",
                                    "max_lat" : "90.0",
                                    "max_lon" : "360.0" 
                                 } ,
-                        "width" : "300" ,
-                        "height" : "400" ,
                         "layers" : ["hr24_prcpa", ] ,
                         "styles" : ["grid", ] ,
                         "crs" : {   "name" : "EPSG" ,
                                     "identifier" : "4283" 
                                 } ,
+                        "width" : "300" ,
+                        "height" : "400" ,
                         "format" : "png" ,
                         "time" : "Default" ,
                         "time_index" : "Default" ,
                         "source_url" : "http://localhost:8001/atmos_latest.nc",
-                        "color_scale_range" : ["-10", "10"] ,
-                        "n_colors" : "10" ,
+                        "color_scale_range" : ["-10", "10", ] ,
+                        "n_colors" : ["10", ] ,
                         "palette" : "jet"
                      }
-
         
     def test_get_contour(self):
-        c = pc.PlottingController(self.param)
-        self.assertIsNotNone(c.get_contour())
+        #c = pc.PlottingController(self.param)
+        self.param["styles"] = ["contour", ]
+        self.assertIsNotNone(pc.get_contour(self.param))
         
-#    def test_get_legend(self):
-#        c = pc.PlottingController(self.param)
-#        self.assertIsNotNone(c.get_legend())
+    def test_get_legend(self):
+        #c = pc.PlottingController(self.param)
+        self.assertIsNotNone(pc.get_legend(self.param))
         
-#    def test_get_full_figure(self):
-#        c = pc.PlottingController(self.param)
-#        self.assertIsNotNone(c.get_full_figure)
+    def test_get_full_figure(self):
+        #c = pc.PlottingController(self.param)
+        self.param["styles"] = ["grid_treshold", ]
+        self.assertIsNotNone(pc.get_full_figure(self.param))
 
 
 class TestParameterValidator(unittest.TestCase):

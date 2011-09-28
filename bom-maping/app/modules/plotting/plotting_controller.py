@@ -28,7 +28,7 @@ tuple: ()
         time_index: string
         source_url: string
         color_scale_range: [ string, string, ...]
-        n_colors: string
+        n_colors: [ string, ...]
         palette: string
         
 Author: Stefan Fuchs (s3260968@student.rmit.edu.au)

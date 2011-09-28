@@ -13,33 +13,26 @@ class WMSBaseError(Exception):
     def data(self):
         return { "code": self.code, "message": self.message }
         
-        
 class InvalidFormatError(WMSBaseError):
     """ Exception for representing an invalid image format. """
-
     
 class InvalidCRSError(WMSBaseError):
     """ Exception for representing an invalid CRS """
         
-        
 class LayerNotDefinedError(WMSBaseError):
     """ Exception for representing and invalid layer """
-      
         
 class StyleNotDefinedError(WMSBaseError):
     """ Exception for representing an invalid style 
     
     Should be raised if there is no such style, e.g. connntooour
     """
-  
         
 class MissingDimensionValueError(WMSBaseError):
     """ Excption for representing a missing dimension parameter """
         
-        
 class InvalidDimensionValueError(WMSBaseError):
     """ Excepton for representing an invalid dimension parameter"""
-        
         
 class OperationNotSupportedError(WMSBaseError):
     """ Excepton for representiong an invalid operation
@@ -52,8 +45,6 @@ class OperationNotSupportedError(WMSBaseError):
 class MissingParameterError(WMSBaseError):
     """ Exception for missing mandatory parameter"""
     
-    
 class InvalidParameterValueError(WMSBaseError):
     """ Exception for invalid values of parameters"""
-    
     
