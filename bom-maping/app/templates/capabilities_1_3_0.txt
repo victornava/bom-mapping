@@ -1,0 +1,7 @@
+{%- if cap['service'] %}
+	{%- set service = cap['service'] %}
+{%- endif %}
+{%- if cap['capability'] %}
+	{%- set capability = cap['capability']%}
+{%- endif %}
+<!-- TODO : " JSON Template " -->
