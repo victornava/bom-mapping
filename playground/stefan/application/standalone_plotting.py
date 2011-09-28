@@ -2,9 +2,9 @@ import modules.plotting.plotting_controller as pc
 
 
 param = { "bbox": { "min_lat" : "-90",
-                    "min_lon" : "-45.0",
-                    "max_lat" : "-0.0",
-                    "max_lon" : "45.0"
+                    "min_lon" : "0.0",
+                    "max_lat" : "90.0",
+                    "max_lon" : "360.0"
                    } ,
           "width" : "1024" ,
           "height" : "768" ,
@@ -29,9 +29,9 @@ param = { "bbox": { "min_lat" : "-90",
 #c = pc.PlottingController(param)
 #output = c.get_contour()
 
-#d = pc.get_contour(param)
+d = pc.get_contour(param)
 #d = pc.get_legend(param)
-d = pc.get_full_figure(param)
+#d = pc.get_full_figure(param)
 #print d
 
 img = open("test.png","w")

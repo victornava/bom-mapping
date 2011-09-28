@@ -10,13 +10,13 @@ tuple: ()
 
   parameters:
         bbox:   {
-                min_lat: float
-                min_lon: float
-                max_lat: float
-                max_lon: float
+                min_lat: string
+                min_lon: string
+                max_lat: string
+                max_lon: string
                 }
-        width : int
-        height : int
+        width : string
+        height : string
         layers : [string, ...]
         styles : [string, ...]
         crs:    {
@@ -27,9 +27,11 @@ tuple: ()
         time: string
         time_index: string
         source_url: string
-        color_scale_range: [int,int] min,max
-        n_color: int
+        color_scale_range: [ string, string, ...]
+        n_colors: string
         palette: string
+        
+Author: Stefan Fuchs (s3260968@student.rmit.edu.au)
 """
 import numpy as np
 import modules.plotting.plot_type as pt
@@ -44,7 +46,6 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.basemap import addcyclic
-#from time import strftime
 from mpl_toolkits.basemap import num2date
 
 
@@ -423,13 +424,13 @@ class ParameterValidator(object):
         #TODO: Add more values
         # dictionary with names and types
         check = { "width" : int, \
-                  "height" : int, \
-                  "n_color" : int}
+                  "height" : int }
         for k in check:
             self.__check_single_value(parameters,k,check[k])
     
         # check for values that need to be in a list
-        check = { "color_range" : int }
+        check = { "color_scale_range" : int , \
+                  "n_colors" : int }
         for k in check:
             self.__check_list_value(parameters,k,check[k])
     
@@ -445,7 +446,7 @@ class ParameterValidator(object):
             parameters[name] = dtype(parameters[name])
         except:
             raise ex.InvalidParameterValueError( name + '(' + \
-                                                 parameters[name] + ')')
+                                                 str(parameters[name]) + ')')
     
     
     def __check_list_value(self,parameters,name,dtype):
@@ -457,23 +458,20 @@ class ParameterValidator(object):
         """
        
         try:
-            parameters[name] = list([dtype(a) for a in \
-                                        parameters[name].\
-                                                rsplit(',') ])
+            parameters[name] = list([dtype(a) for a in parameters[name]])
         except:
             raise ex.InvalidParameterValueError( name + '(' + \
-                                                 parameters[name] + ')')
+                                                 ', '.join(parameters[name]) \
+                                                 + ')')
         
     
     def __check_defaults(self,parameters):
         """ Check that not supplied optional arguments have sane defaults """
         
         # dictionary for default values
-        defaults = { 'styles' : ['contour', ] ,\
-                     'width' : '256' , \
-                     'height' : '256', \
-                     'format' : 'png'}
-                     #TODO: add defaults
+        defaults = { "time_index" : "Default" ,\
+                     "time" : "Default" ,\
+                     "palette" : "jet" }
         
         for key in defaults.keys():
             if not parameters.has_key(key):
@@ -486,7 +484,9 @@ class ParameterValidator(object):
         This method checks if the parameters declared as mandatory were
         provided by the calling entity.
         """
-        mandatory_parameters = [ "bbox" ]
+        mandatory_parameters = [ "bbox" , "styles", "layers", "width", \
+                                 "height", "source_url", "format" , "crs", \
+                                 "color_scale_range", "n_colors" ]
         for key in mandatory_parameters:
             if not parameters.has_key(key):
                 raise ex.MissingParameterError(key)

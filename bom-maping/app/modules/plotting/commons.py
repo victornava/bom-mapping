@@ -2,7 +2,6 @@
 
 Author: Stefan Fuchs (s3260968@student.rmit.edu.au)
 """
-
 import util.exceptions as ex
 
 class BBox(object):
