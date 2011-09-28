@@ -12,7 +12,6 @@ class WMSBaseError(Exception):
         
     def data(self):
         return { "code": self.code, "message": self.message }
-
         
         
 class InvalidFormatError(WMSBaseError):
