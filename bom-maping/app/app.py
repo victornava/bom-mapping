@@ -14,8 +14,9 @@ def index():
     operations = valid_operations()
     try:
         # TODO pass a config as argument
-        # params = WMSParams(request, config).parse()
-        params = WMSParams(request).parse()
+        params = WMSParams(request, config).parse()
+        # params = WMSParams(request).parse()
+        # params = WMSParams(request, config).validate()
         operation = operations[params['request']]
         return operation(params)
     except WMSBaseError, e:
@@ -30,7 +31,7 @@ def index():
     return resp
     
 def get_map(params):
-    """docstring for ge"""
+    """docstring for get_map"""
     img = plotter.get_contour(params)
     resp = make_response(img)
     resp.headers['Content-Type'] = 'image/png'

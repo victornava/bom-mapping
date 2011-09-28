@@ -28,7 +28,8 @@ class WMSParams():
            "bbox": [to_list, bbox],
            "crs": [crs],
            "styles": [to_list],
-           "layers": [to_list]
+           "layers": [to_list],
+           "n_colors": [to_list]
         }        
    
         params = self.to_dict()
@@ -40,10 +41,12 @@ class WMSParams():
                for rule in rules[key]:
                    params[key] = rule(params[key])
         
-        # return params
-        return self.validate(params)
+        return params
+        # return self.validate(params)
     
-    def validate(self, params):
+    def validate(self, request="", config={}):
+        
+        params  = self.parse()
         
         # FIXME pass this as argument to the constructor
         config = {
