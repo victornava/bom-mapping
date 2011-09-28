@@ -221,6 +221,9 @@ class NetCDFDatasource(IDataSource):
             Returns all the data values in the data source
         """
         #finding lattitude indices
+        if self.varname not in self.dset.keys():
+            raise ex.LayerNotDefinedError(self.varname + " in " + self.dset._id)
+        
         indices = (self.dset[self.varname]['lat'][:] >= \
                         self.bbox.lat_min) & \
                   (self.dset[self.varname]['lat'][:] <= \
@@ -238,13 +241,10 @@ class NetCDFDatasource(IDataSource):
         lon_min_index = np.where(indices)[0].min()
         lon_max_index = np.where(indices)[0].max()
         
-        try:
-            var = self.dset[self.varname][self.timestep, \
-                                          lat_min_index:lat_max_index + 1, \
-                                          lon_min_index:lon_max_index + 1]
-        except KeyError as ke:
-            raise ex.LayerNotDefined(self.varname + " in " + self.dset._id)
-        #Masking
+        var = self.dset[self.varname][self.timestep, \
+                                      lat_min_index:lat_max_index + 1, \
+                                      lon_min_index:lon_max_index + 1]
+            
         varm = self.__do_masking(var)
         
         return varm
@@ -258,7 +258,7 @@ class NetCDFDatasource(IDataSource):
         try:
             time_units = self.dset['time'].attributes['units']
         except KeyError,e:
-            raise ex.LayerNotDefined(repr(e))
+            raise ex.LayerNotDefinedError(repr(e))
         return time_units
         
         

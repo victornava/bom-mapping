@@ -1,9 +1,9 @@
 import modules.plotting.plotting_controller as pc
 
 
-param = { "bbox": { "min_lat" : "-45.0",
+param = { "bbox": { "min_lat" : "-90.0",
                     "min_lon" : "90.0",
-                    "max_lat" : "45.0",
+                    "max_lat" : "-80.0",
                     "max_lon" : "270.0"
                    } ,
           "width" : "1024" ,
