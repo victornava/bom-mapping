@@ -2,12 +2,12 @@ import modules.plotting.plotting_controller as pc
 
 
 param = { "bbox": { "min_lat" : "-90.0",
-                    "min_lon" : "0.0",
-                    "max_lat" : "90.0",
-                    "max_lon" : "360.0"
+                    "min_lon" : "90.0",
+                    "max_lat" : "-80.0",
+                    "max_lon" : "270.0"
                    } ,
-          "width" : 1024 ,
-          "height" : 768 ,
+          "width" : "1024" ,
+          "height" : "768" ,
           "layers" : ["hr24_prcp", ] ,
 #          "layers" : ["SSTA", ] ,
           "styles" : ["contour", ] ,
@@ -16,11 +16,11 @@ param = { "bbox": { "min_lat" : "-90.0",
                   } ,
           "format" : "png" ,
           "time" : "Default" ,
-          "time_index" : 1 ,
+          "time_index" : "Default" ,
           "source_url" : "http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc",
 #          "source_url" : "http://localhost:8001/ocean_latest.nc",
-          "color_range" : [-10,10] ,
-          "n_color" : 10 ,
+          "color_range" : "-10, 10" ,
+          "n_color" : "10" ,
           "palette" : "jet"
         }
         

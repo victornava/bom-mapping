@@ -152,15 +152,18 @@ class NetCDFDatasource(IDataSource):
             self.timestep = int(self.time_index)
         
         
-        
     def get_lats(self):
         """
             Returns all the lattitude values in the data source.
             TODO : raise exception if invalid operation/unexpected error
         """
         #return self.dset['lat'][self.bbox.lat_min:self.bbox.lat_max]
+        indices = (self.dset['lat'][:] >= self.bbox.lat_min) & \
+                  (self.dset['lat'][:] <= self.bbox.lat_max)
         
-        return self.dset['lat'][:]
+        lat_min_index = np.where(indices)[0].min()
+        lat_max_index = np.where(indices)[0].max()
+        return self.dset['lat'][lat_min_index:lat_max_index + 1]
         
         
     def get_lons(self):
@@ -169,7 +172,13 @@ class NetCDFDatasource(IDataSource):
             TODO : raise exception if invalid operation/unexpected error
         """
         #return self.dset['lon'][self.bbox.lon_min:self.bbox.lon_max]
-        return self.dset['lon'][:]
+        
+        indices = (self.dset['lon'][:] >= self.bbox.lon_min) & \
+                  (self.dset['lon'][:] <= self.bbox.lon_max)
+        
+        lon_min_index = np.where(indices)[0].min()
+        lon_max_index = np.where(indices)[0].max()
+        return self.dset['lon'][lon_min_index:lon_max_index + 1]
         
         
     def __do_masking(self, var):
@@ -181,7 +190,27 @@ class NetCDFDatasource(IDataSource):
         if 'mask' not in self.dset.keys() or self.plot_mask == False:
             varm = np.ma.masked_array(var, mask=np.isinf(var))
         elif 'mask' in self.dset.keys() and self.plot_mask == True:
-            maskvar = self.dset['mask'][self.timestep,:,:]
+            #finding lattitude indices
+            indices = (self.dset['mask']['lat'][:] >= \
+                            self.bbox.lat_min) & \
+                      (self.dset['mask']['lat'][:] <= \
+                            self.bbox.lat_max)
+            
+            lat_min_index = np.where(indices)[0].min()
+            lat_max_index = np.where(indices)[0].max()
+            
+            #finding longitude indices
+            indices = (self.dset['mask']['lon'][:] >= \
+                            self.bbox.lon_min) & \
+                      (self.dset['mask']['lon'][:] <= \
+                            self.bbox.lon_max)
+            
+            lon_min_index = np.where(indices)[0].min()
+            lon_max_index = np.where(indices)[0].max()
+            
+            maskvar = self.dset['mask'][self.timestep, \
+                                        lat_min_index:lat_max_index + 1, \
+                                        lon_min_index:lon_max_index + 1]
             varm = np.ma.masked_array(var, mask=maskvar)
             mask = varm.mask
         
@@ -191,24 +220,31 @@ class NetCDFDatasource(IDataSource):
         """
             Returns all the data values in the data source
         """
+        #finding lattitude indices
+        if self.varname not in self.dset.keys():
+            raise ex.LayerNotDefinedError(self.varname + " in " + self.dset._id)
         
+        indices = (self.dset[self.varname]['lat'][:] >= \
+                        self.bbox.lat_min) & \
+                  (self.dset[self.varname]['lat'][:] <= \
+                        self.bbox.lat_max)
         
-        """
-        TODO: Add logic to get the slice of data only
-        try:
-            return self.dset[self.varname][ self.timestep,
-                                            self.bbox.lat_min:self.bbox.lat_max,
-                                            self.bbox.lon_min:self.bbox.lon_max
-                                          ]
-        """
+        lat_min_index = np.where(indices)[0].min()
+        lat_max_index = np.where(indices)[0].max()
         
+        #finding longitude indices
+        indices = (self.dset[self.varname]['lon'][:] >= \
+                        self.bbox.lon_min) & \
+                  (self.dset[self.varname]['lon'][:] <= \
+                        self.bbox.lon_max)
+            
+        lon_min_index = np.where(indices)[0].min()
+        lon_max_index = np.where(indices)[0].max()
         
-        
-        try:
-            var = self.dset[self.varname][ self.timestep,:,:]
-        except KeyError as ke:
-            raise ex.LayerNotDefined(self.varname + " in " + self.dset._id)
-        #Masking
+        var = self.dset[self.varname][self.timestep, \
+                                      lat_min_index:lat_max_index + 1, \
+                                      lon_min_index:lon_max_index + 1]
+            
         varm = self.__do_masking(var)
         
         return varm
@@ -222,7 +258,7 @@ class NetCDFDatasource(IDataSource):
         try:
             time_units = self.dset['time'].attributes['units']
         except KeyError,e:
-            raise ex.LayerNotDefined(repr(e))
+            raise ex.LayerNotDefinedError(repr(e))
         return time_units
         
         

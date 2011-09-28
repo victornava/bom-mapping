@@ -12,6 +12,7 @@ def index():
     # Setup defaults
     # format = config['formats'][0]
     operations = valid_operations()
+    
     try:
         # TODO pass a config as argument
         params = WMSParams(request, config).parse()
@@ -25,7 +26,7 @@ def index():
         data = { "code: UnexpectedError", "message: Something went wrong sorry." }
     
     # TODO replace exception.xml with appropiate template
-    output = render_template("exception.xml", error=data)
+    output = render_template("exceptions_1_3_0.xml", error=data)
     resp = make_response(output)
     resp.headers['Content-Type'] = 'text/xml'
     return resp
@@ -48,7 +49,6 @@ def get_leyend():
 def get_capabilities(params):
     """docstring for get_capabilities"""
     cap = cap_controller.get_capabilities(params)
-    resp = make_response(cap)
 
     # considering XML as the default output format(MIME Type)
     output_format = 'text/xml'
@@ -61,8 +61,14 @@ def get_capabilities(params):
             output_format = 'application/json'
 
     if(output_format == 'text/xml'):
+        # TODO : Capabilities XML Template
+        output = render_template("capabilities_1_3_0.xml", cap=cap)
+        resp = make_response(output)
         resp.headers['Content-Type'] = 'text/xml'
     else:
+        # TODO : Capabilities JSON Template or look for Flask - Dict to Json
+        output = render_template("capabilities_1_3_0.txt", cap=cap)
+        resp = make_response(output)
         resp.headers['Content-Type'] = 'application/json'
 
     return resp

@@ -13,10 +13,10 @@ from modules.plotting.commons import BBox
 class TestDatasource(unittest.TestCase):
     
     def setUp(self):
-        self.bbox = BBox({  "min_lat" : -90.0,
+        self.bbox = BBox({  "min_lat" : 45.0,
                             "min_lon" : 0.0,
-                            "max_lat" : 90.0,
-                            "max_lon" : 360.0
+                            "max_lat" : 60.0,
+                            "max_lon" : 180.0
                         })
         
         self.d = NetCDFDatasource(
@@ -26,7 +26,7 @@ class TestDatasource(unittest.TestCase):
         
         
     """
-        Test if get_lats() returns array of lats
+        1. Test if get_lats() returns array of lats
     """
     def test_get_lats(self):
         print "===get_lats==="
@@ -35,7 +35,7 @@ class TestDatasource(unittest.TestCase):
         
         
     """
-        Test if get_lons() returns array of lons
+        2. Test if get_lons() returns array of lons
     """
     def test_get_lons(self):
         print "===get_lons==="
@@ -43,21 +43,75 @@ class TestDatasource(unittest.TestCase):
         
         self.assertIsNotNone(self.d.get_lons())
         
+    """
+        3. Test if data is retrieved with right url, bbox params, varname
+    """
     def test_get_data(self):
         print "===get_data==="
-        #print self.d.get_data()
         
-        #with self.assertRaises(NetCDFException):
         self.d = NetCDFDatasource(
                        'http://yoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
                         self.bbox,
                         'SSTA_cc', plot_mask = False)
         try:
             print self.d.get_data()
-        except NetCDFException,e:
+        except Exception,e:
             print e.__str__()
             raise
         
+    """
+        4. Test if constructor raises InvalidParameterValueError error with
+        wrong url.
+    """
+    def test_url_error(self):
+        print "===get_data Url Error==="
+        
+        self.assertRaises(ex.InvalidParameterValueError, \
+                          NetCDFDatasource, \
+                          'http://wrong.cs.rmit.edu.au:8001/ocean_latest.nc', \
+                          self.bbox, 'SSTA_cc', plot_mask=True)
+        
+    """
+        5. Test if constructor raises LayerNotDefinedError error with
+        wrong varname
+    """
+    def test_layer_not_found_error(self):
+        print "===Layer not found error==="
+        
+        self.d = NetCDFDatasource(
+                       'http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc',
+                        self.bbox,
+                        'invalid_layer')
+                        
+        self.assertRaises(ex.LayerNotDefinedError, \
+                            self.d.get_data)
+        try:
+            self.d.get_data()
+        except Exception,e:
+            print e.__str__()
+            
+    """
+        6. Test if constructor raises InvalidParameterValueError error with
+        wrong varname
+    """
+    def test_bbox_(self):
+        print "===bbox param error==="
+        self.bbox = BBox({  "min_lat" : -90.0,
+                            "min_lon" : -90.0,
+                            "max_lat" : -80.0,
+                            "max_lon" : 360.0
+                        })
+        self.d = NetCDFDatasource(
+                       'http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc',
+                        self.bbox,
+                        'hr24_prcp')
+                        
+        self.assertRaises(Exception, \
+                            self.d.get_data)
+        #try:
+        self.d.get_data()
+        #except Exception,e:
+        #    print e.__str__()
         
     def test_get_time_units(self):
         print "===get_time_units==="
@@ -76,12 +130,13 @@ class TestDatasource(unittest.TestCase):
         try:
             print "+++++contruct+++++"
             self.d = NetCDFDatasource(
-                    'http://ayoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
+                    'http://yoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
                     self.bbox,
                     'SSTA_cc')
             print self.d.get_var_unit()
         except ex.InvalidParameterValueError,e:
             print e.__str__(), " ===> Manual printing error"
+            
         
         
     def test_get_time_label(self):
