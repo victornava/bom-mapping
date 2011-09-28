@@ -4,5 +4,5 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.opengis.net/ogc
 	http://schemas.opengis.net/wms/1.3.0/exceptions_1_3_0.xsd">
-		<ServiceException code="{{data['code']}}">{{data['message']}}</ServiceException>
+		<ServiceException code="{{error['code']}}">{{error['message']}}</ServiceException>
 </ServiceExceptionReport>

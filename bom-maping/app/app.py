@@ -24,7 +24,7 @@ def index():
         data = { "code: UnexpectedError", "message: Something went wrong sorry." }
     
     # TODO replace exception.xml with appropiate template
-    output = render_template("exception.xml", data=data)
+    output = render_template("exception.xml", error=data)
     resp = make_response(output)
     resp.headers['Content-Type'] = 'text/xml'
     return resp
