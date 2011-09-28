@@ -1,4 +1,7 @@
-""" This module contains common datatypes need in the plotting module """
+""" This module contains common datatypes need in the plotting module 
+
+Author: Stefan Fuchs (s3260968@student.rmit.edu.au)
+"""
 
 import util.exceptions as ex
 
@@ -56,21 +59,3 @@ class BBox(object):
         
         if self.lat_min > self.lat_max:
             raise ex.InvalidDimensionValueError("min_lat greater than max_lat")
-    
-        
-        """
-        # WMS Compliance page 16
-        if self.lon_min > self.lon_max or self.lat_min > self.lat_max:
-            #TODO: Replace Exception
-            raise ex.BBoxException("Bounding Box not correct.")
-        
-        # WMS Compliance page 16
-        if self.lat_min < -90.0 or self.lat_max > 90.0:
-            #TODO: Replace Exception
-            raise ex.BBoxException("Incorrect Latitudes.")
-        
-        # WMS Compliance page 16
-        if self.lon_min < -180.0 or self.lon_max > 360.0:
-            #TODO: Replace Exception
-            raise ex.BBoxException("Incorrect Longitudes")
-        """
