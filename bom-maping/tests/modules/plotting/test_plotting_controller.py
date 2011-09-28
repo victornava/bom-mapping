@@ -147,3 +147,25 @@ class TestParameterValidator(unittest.TestCase):
         v = pc.ParameterValidator(self.param)
         v.validate()
         self.assertEquals(self.param["palette"],"jet")
+        
+        
+    # 4) Check for invalid numerical values
+    def test_invalid_width(self):
+        self.param["width"] = "a1024"
+        v = pc.ParameterValidator(self.param)
+        self.assertRaises(ex.InvalidParameterValueError, v.validate)
+        
+    def test_invalid_height(self):
+        self.param["height"] = "e68"
+        v = pc.ParameterValidator(self.param)
+        self.assertRaises(ex.InvalidParameterValueError, v.validate)
+        
+    def test_invalid_color_scale_range(self):
+        self.param["color_scale_range"] = [ "-10a", "-34a"]
+        v = pc.ParameterValidator(self.param)
+        self.assertRaises(ex.InvalidParameterValueError, v.validate)
+        
+    def test_invalid_n_colors(self):
+        self.param["n_colors"] = [ "10a",]
+        v = pc.ParameterValidator(self.param)
+        self.assertRaises(ex.InvalidParameterValueError, v.validate)
