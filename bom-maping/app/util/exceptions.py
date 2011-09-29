@@ -60,3 +60,10 @@ class InvalidParameterValueError(WMSBaseError):
     
 class DatasourceNotSupportedError(WMSBaseError):
     """ Exception for invalid type od datasource """
+
+class InvalidServiceError(WMSBaseError):
+    """ Exception for representing an invalid service (!wms). """
+        
+class InvalidVersionError(WMSBaseError):
+    """ Exception for representing an invalid cap version (!1.3.0) """
+        

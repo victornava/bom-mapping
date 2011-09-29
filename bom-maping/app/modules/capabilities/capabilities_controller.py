@@ -3,6 +3,7 @@
 All functionality that has to do with getCapabilities goes into this module.
 """
 
+import util.exceptions as ex
 # TODO : Load config files ( address info , abstract, fee etc., )
 
 def get_capabilities(params):
@@ -22,7 +23,7 @@ class CapabilitiesController():
         self.params = params
 
         # considering 1.3.0 as the default version
-        self.version = '1.3.0'
+        # self.version = '1.3.0'
 
 
     def get_capabilities(self):
@@ -51,13 +52,13 @@ class CapabilitiesController():
 
     def __get_capability(self):
 
-        # TODO
-        # request = self.__get_capability_request()
-        # exception = self.__get_capability_exception()
-        # layer = self.__get_capability_layer()
+        request = self.__get_capability_request()
+        exception = self.__get_capability_exception()
+        layer = self.__get_capability_layer()
         
         # Test content for getCap()
-        capability = { "request": "", "exception:" : "" , "layer" : ""}
+        capability = { "request": request, "exception:" : exception ,
+                       "layer" : layer}
         return capability
 
     def __get_capability_request(self):
