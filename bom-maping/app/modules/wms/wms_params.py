@@ -34,7 +34,7 @@ class WMSParams():
         params = self.to_dict()
 
         # iterate elements and apply the rules if there are any
-        # otherwise leave the oritinal parameter
+        # otherwise leave the original parameter
         for key in params:
            if rules.has_key(key):
                for rule in rules[key]:
@@ -49,7 +49,9 @@ class WMSParams():
         # TODO: Is it ok to have "text/xml" & "json" format here? - Vas
         config = {
             "formats": ["png", "jpeg", "text/xml", "application/json"],
-            "operations" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"]
+            "operations" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
+            "service" : "WMS",
+            "version" : "1.3.0"
         }
         
         # FIXME use put this rules in a dict then iterate
@@ -63,5 +65,16 @@ class WMSParams():
             if params["format"] in config["formats"]:
                 format = params["format"]
             else:
-                raise InvalidFormatError("Format not supported")        
+                raise InvalidFormatError("Format not supported")
+
+        # TODO : Decide: How to respond if both invalid service & version are specified? - Vas
+        # TODO : if values specified has quotes [ e.g service="wms" ] strip "" instead of raising exception
+        if "service" in params.keys():
+            if(params["service"] !="" and params["service"].upper() != config["service"]):
+                raise InvalidServiceError(params['service']+" service is not supported")
+
+        if "version" in params.keys():
+            if(params["version"] != "" and params["version"] != config["version"]):
+                raise InvalidVersionError("version " +params['version']+" is not supported")
+
         return params
