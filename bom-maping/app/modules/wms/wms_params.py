@@ -1,9 +1,11 @@
 from util.exceptions import *
+from modules.wms.validator import *
 
 class WMSParams():
     """Class for conditioning url parameters before calling the plotting module"""
-    def __init__(self, request):
+    def __init__(self, request, context=None):
         self.request = request
+        self.context = context
         
     def to_dict(self):
         """Convert a flask request to dictionary with all keys lowercased"""
@@ -44,27 +46,21 @@ class WMSParams():
         return params
         # return self.validate(params)
     
-    def validate(self, request="", config={}):
-        
-        params  = self.parse()
-        
-        # FIXME pass this as argument to the constructor
-        # TODO: Is it ok to have "text/xml" & "json" format here? - Vas
-        config = {
-            "formats": ["png", "jpeg", "text/xml", "application/json"],
-            "operations" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"]
-        }
-        
-        # FIXME use put this rules in a dict then iterate
-        if "request" not in params.keys():
-            raise MissingParameterError("'request' parameter is missing")        
-            
-        if params['request'] not in config['operations']:
-            raise OperationNotSupportedError("operation '" +params['request']+"' is not supported")
-                
-        if "format" in params.keys():
-            if params["format"] in config["formats"]:
-                format = params["format"]
-            else:
-                raise InvalidFormatError("Format not supported")        
+    def validate(self):
+        params = self.parse();  
+        operations = self.context['operations']   
+        ensure("request").is_in(params).orRaise(MissingParameterError("request")).run()
+        ensure(params["request"]).is_in(operations).orRaise(OperationNotSupportedError(params["request"])).run()
         return params
+        
+    # def validate(self):
+    #     params = self.parse();  
+    #     operations = self.context['operations']
+    #     
+    #     if "request" not in params.keys():
+    #         raise MissingParameterError("'request' parameter is missing")        
+    # 
+    #     if params['request'] not in operations:
+    #         raise OperationNotSupportedError("operation '" +params['request']+"' is not supported")
+    #     
+    #     return params

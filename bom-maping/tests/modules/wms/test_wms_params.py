@@ -30,7 +30,7 @@ class TestWMSParams(unittest.TestCase):
             "time_index" : "default",
             "source_url" : "http://localhost:8001/atmos_latest.nc",
             "color_range" : "-4,4",
-            "n_color" : "10",
+            "n_colors" : "10",
             "palette" : "jet"
             }
         
@@ -56,7 +56,7 @@ class TestWMSParams(unittest.TestCase):
             "time_index" : "default",
             "source_url" : "http://localhost:8001/atmos_latest.nc",
             "color_range" : ["-4","4"],
-            "n_color" : "10",
+            "n_colors" : ["10"],
             "palette" : "jet"
             }
                 
@@ -67,52 +67,9 @@ class TestWMSParams(unittest.TestCase):
         self.assertEquals(params, d)
     
     def test_can_parse_a_valid_request(self):
-        subject = {
-            "request":"GetMap",
-            "version":"0.0.1",
-            "bbox" : "-180.0,-90.0,180.0,90.0",
-            "width" : "300",
-            "height" : "400",
-            "layers" : "hr24_prcp",
-            "styles" : "contour",
-            "crs" : "EPSG:4283",
-            "format" : "png",
-            "time" : "default",
-            "time_index" : "default",
-            "source_url" : "http://localhost:8001/atmos_latest.nc",
-            "color_range" : "-4,4",
-            "n_colors" : "-10,10",
-            "palette" : "jet"
-        }
-        target = {
-            "request":"GetMap",
-            "version": "0.0.1",
-            "bbox" : {
-                "min_lon": "-180.0",
-                "min_lat": "-90.0",
-                "max_lon": "180.0",
-                "max_lat": "90.0",
-            },
-            "width" : "300",
-            "height" : "400",
-            "layers" : ["hr24_prcp"],
-            "styles" : ["contour"],
-            "crs" : {
-                "name":"EPSG",
-                "identifier":"4283"
-            },
-            "format" : "png",
-            "time" : "default",
-            "time_index" : "default",
-            "source_url" : "http://localhost:8001/atmos_latest.nc",
-            "color_range" : ["-4","4"],
-            "n_colors" : ["-10","10"],
-            "palette" : "jet"
-        }
-        
-        parsed_subject = WMSParams(FakeRequest(subject)).parse()
-        for k in target:
-            self.assertEquals(target[k], parsed_subject[k])        
+        parsed_subject = WMSParams(FakeRequest(self.subject)).parse()
+        for k in self.target:
+            self.assertEquals(self.target[k], parsed_subject[k])        
             
     def test_can_parse_bbox_with_missing_values(self):
         subject = {"bbox" : "-180.0,-90.0,180.0"}
@@ -127,10 +84,12 @@ class TestWMSParams(unittest.TestCase):
         for k in target:
             self.assertEquals(target[k], parsed_subject[k])
             
-    def test_with_valid_parameters(self):        
+    def test_validate_with_valid_parameters(self):        
         subject = self.subject
         target = self.target
-        parsed_subject = WMSParams(FakeRequest(subject)).validate()
+        context = {"operations": ["GetMap", "GetCapabilities"]}
+        request = FakeRequest(subject)
+        parsed_subject = WMSParams(request, context).validate()
         for k in target:
             self.assertEquals(target[k], parsed_subject[k])
             
