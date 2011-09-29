@@ -82,8 +82,6 @@ class PlottingController(object):
         self.bbox = BBox(parameters["bbox"])
 
         # 1. Retrieve the data
-        #FIXME: Build argument list dynamically
-        #TODO: Make data source flexible
         self.dset = self.__evaluate_datasource_type() (
                                 self.parameters["source_url"], \
                                 self.bbox, \

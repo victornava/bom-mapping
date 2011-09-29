@@ -1,5 +1,5 @@
 from util.exceptions import *
-from modules.wms.validator import *
+#from modules.wms.validator import *
 
 class WMSParams():
     """Class for conditioning url parameters before calling the plotting module"""
