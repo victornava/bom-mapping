@@ -45,7 +45,7 @@ class IPlotType(object):
         self.lats = lats
         self.data = data
         
-        self.ncolors = self.parameters["n_color"]
+        self.ncolors = self.parameters["n_colors"][0]
         self.cmap = self.__cmap_discretise( mpl.cm.get_cmap( \
                                                 self.parameters["palette"]),\
                                             self.ncolors)
@@ -109,7 +109,7 @@ class GriddedPlot(IPlotType):
         IPlotType.plot(self)
         
         #colormap = mpl.cm.get_cmap(self.parameters["palette"])
-        crange = self.parameters["color_range"]
+        crange = self.parameters["color_scale_range"]
         
         self.main_render = self.m.pcolormesh(self.x, \
                                              self.y, \
@@ -135,7 +135,7 @@ class GriddedTresholdPlot(IPlotType):
         IPlotType.plot(self)
         
         #cmap = mpl.cm.get_cmap(self.parameters["palette"])
-        crange = self.parameters["color_range"]
+        crange = self.parameters["color_scale_range"]
         #ncolors = self.parameters["n_color"]
         
         increment = float(crange[1] - crange[0]) / float(self.ncolors)
@@ -165,8 +165,8 @@ class ContourPlot(IPlotType):
     def plot(self):
         
         #cmap = mpl.cm.get_cmap(self.parameters["palette"])
-        crange = self.parameters["color_range"]
-        ncolors = self.parameters["n_color"]
+        crange = self.parameters["color_scale_range"]
+        ncolors = self.parameters["n_colors"][0]
         
         self.data,lonwrap = addcyclic(self.data,self.lons)
         
