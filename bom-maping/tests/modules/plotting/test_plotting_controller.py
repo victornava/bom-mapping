@@ -45,6 +45,11 @@ class TestPlottingController(unittest.TestCase):
         #c = pc.PlottingController(self.param)
         self.param["styles"] = ["grid_treshold", ]
         self.assertIsNotNone(pc.get_full_figure(self.param))
+        
+    def test_invalid_data_source(self):
+        self.param["source_url"] = "http://localhost/test.lala"
+        self.assertRaises(ex.DatasourceNotSupportedError, \
+                          pc.PlottingController, self.param )
 
 
 class TestParameterValidator(unittest.TestCase):
