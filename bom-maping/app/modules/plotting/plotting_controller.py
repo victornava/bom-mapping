@@ -84,12 +84,14 @@ class PlottingController(object):
         # 1. Retrieve the data
         #FIXME: Build argument list dynamically
         #TODO: Make data source flexible
-        self.dset = ds.NetCDFDatasource( self.parameters["source_url"], \
-                                         self.bbox, \
-                                         self.parameters["layers"][0], \
-                                         self.parameters["time"], \
-                                         self.parameters["time_index"], \
-                                        )
+        self.dset = self.__evaluate_datasource_type() (
+                                self.parameters["source_url"], \
+                                self.bbox, \
+                                self.parameters["layers"][0], \
+                                self.parameters["time"], \
+                                self.parameters["time_index"], \
+                                True
+                                )
         self.lat = self.dset.get_lats()
         self.lon = self.dset.get_lons()
         self.var = self.dset.get_data()
@@ -390,11 +392,25 @@ class PlottingController(object):
             raise ex.StyleNotDefinedError(key)
         
         return available_styles[key]
-       
         
-
-            
-
+        
+    def __evaluate_datasource_type(self):
+        """ Evaluates what type of data source needs to be created based on
+            the file extension of the url """
+        
+        available_sources = { '.nc' : ds.NetCDFDatasource }
+        
+        key = None
+        for k in available_sources.keys():
+            if self.parameters["source_url"].endswith(k):
+                key = k
+                break;
+        
+        if key == None:
+            raise ex.DatasourceNotSupportedError("Unsupported Datasource")
+        
+        return available_sources[key]
+        
 class ParameterValidator(object):
     """ Class responsible for validating parameters passed to the controller
     """
@@ -427,14 +443,14 @@ class ParameterValidator(object):
                   "height" : int }
         for k in check:
             self.__check_single_value(parameters,k,check[k])
-    
+        
         # check for values that need to be in a list
         check = { "color_scale_range" : int , \
                   "n_colors" : int }
         for k in check:
             self.__check_list_value(parameters,k,check[k])
-    
-    
+        
+        
     def __check_single_value(self,parameters,name,dtype):
         """ Checks a single value for the given type
         

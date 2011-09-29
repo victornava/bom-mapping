@@ -48,3 +48,5 @@ class MissingParameterError(WMSBaseError):
 class InvalidParameterValueError(WMSBaseError):
     """ Exception for invalid values of parameters"""
     
+class DatasourceNotSupportedError(WMSBaseError):
+    """ Exception for invalid type od datasource """

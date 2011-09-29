@@ -21,8 +21,8 @@ class BBox(object):
         # Check that keys exist
         for key in expected_keys:
             if not bbox.has_key(key):
-                raise ex.MissingDimensionValueError("Missing value "\
-                                                     "in Bounding Box.")
+                raise ex.MissingDimensionValueError("Missing value in" \
+                                                    "Bounding Box")
         try:
             bbox = dict([(k,float(v)) for k,v in bbox.items()])
         except Exception, e:
