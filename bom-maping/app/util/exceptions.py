@@ -34,6 +34,16 @@ class MissingDimensionValueError(WMSBaseError):
 class InvalidDimensionValueError(WMSBaseError):
     """ Excepton for representing an invalid dimension parameter"""
         
+class CurrentUpdateSequenceError(WMSBaseError):
+    """ Excepton raised if the updatesequence parameter is equal to 
+        the current value of service metadata update sequence number. 
+    """
+        
+class InvalidUpdateSequenceError(WMSBaseError):
+    """ Excepton raised if the updatesequence parameter is greater than 
+        the current value of service metadata update sequence number. 
+    """
+        
 class OperationNotSupportedError(WMSBaseError):
     """ Excepton for representiong an invalid operation
     
