@@ -1,18 +1,6 @@
 from modules.wms.wms_params import WMSParams
 import unittest
 
-class FakeRequest():
-    """Fake Flask Request for testing. Expects a dict as argument"""
-    
-    def __init__(self, args):
-        self.args = args
-    
-    def get(self, key):
-        return self.args[key]
-    
-    def keys(self):
-        return self.args.keys()
-
 class TestWMSParams(unittest.TestCase):
     
     def setUp(self):
@@ -29,7 +17,7 @@ class TestWMSParams(unittest.TestCase):
             "time" : "default",
             "time_index" : "default",
             "source_url" : "http://localhost:8001/atmos_latest.nc",
-            "color_range" : "-4,4",
+            "color_scale_range" : "-4,4",
             "n_colors" : "10",
             "palette" : "jet"
             }
@@ -55,7 +43,7 @@ class TestWMSParams(unittest.TestCase):
             "time" : "default",
             "time_index" : "default",
             "source_url" : "http://localhost:8001/atmos_latest.nc",
-            "color_range" : ["-4","4"],
+            "color_scale_range" : ["-4","4"],
             "n_colors" : ["10"],
             "palette" : "jet"
             }
@@ -92,23 +80,34 @@ class TestWMSParams(unittest.TestCase):
         parsed_subject = WMSParams(request, context).validate()
         for k in target:
             self.assertEquals(target[k], parsed_subject[k])
+
+class FakeRequest():
+    """Fake Flask Request for testing. Expects a dict as argument"""
+
+    def __init__(self, args):
+        self.args = args
+
+    def get(self, key):
+        return self.args[key]
+
+    def keys(self):
+        return self.args.keys()
             
 
 class TestFakeRequest(unittest.TestCase):
+    def setUp(self):
+        self.params = {'a':'1', 'b':'2'}
+    
     def test_get(self):
-        params = {'a':'1', 'b':'2'}
-        fake_request = FakeRequest(params)
+        fake_request = FakeRequest(self.params)
         self.assertEquals(fake_request.get('a'), '1')
         self.assertEquals(fake_request.get('b'), '2')
         
     def test_args(self):
-        params = {'a':'1', 'b':'2'}
-        self.assertEquals(FakeRequest(params).args, params)
+        self.assertEquals(FakeRequest(self.params).args, self.params)
     
     def test_keys(self):
-        params = {'a':'1', 'b':'2'}
-        self.assertEquals(FakeRequest(params).args.keys(), ['a','b'])
-        
+        self.assertEquals(FakeRequest(self.params).args.keys(), ['a','b'])
         
 if __name__ == '__main__':
     unittest.main()

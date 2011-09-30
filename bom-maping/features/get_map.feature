@@ -18,7 +18,7 @@ Feature: Get map
   Scenario Outline: Invalid width or height
     Given The value of "<parameter>" parameter is "<value>"
     When I submit the request
-    Then it should return a "ServiceException" error with code "WMSBase"
+    Then it should return a "ServiceException" error with code "InvalidParameterValue"
   
   Examples:
     | parameter | value |

@@ -1,5 +1,4 @@
 from util.exceptions import *
-from modules.wms.validator import *
 
 class WMSParams():
     """Class for conditioning url parameters before calling the plotting module"""
@@ -26,7 +25,7 @@ class WMSParams():
         # then define a set of rules to apply to each element
         # each rule is a function we will call with the value of key as argument
         rules = { 
-           "color_range": [to_list],
+           "color_scale_range": [to_list],
            "bbox": [to_list, bbox],
            "crs": [crs],
            "styles": [to_list],
@@ -44,23 +43,15 @@ class WMSParams():
                    params[key] = rule(params[key])
         
         return params
-        # return self.validate(params)
     
     def validate(self):
         params = self.parse();  
-        operations = self.context['operations']   
-        ensure("request").is_in(params).orRaise(MissingParameterError("request")).run()
-        ensure(params["request"]).is_in(operations).orRaise(OperationNotSupportedError(params["request"])).run()
-        return params
+        operations = self.context['operations']
         
-    # def validate(self):
-    #     params = self.parse();  
-    #     operations = self.context['operations']
-    #     
-    #     if "request" not in params.keys():
-    #         raise MissingParameterError("'request' parameter is missing")        
-    # 
-    #     if params['request'] not in operations:
-    #         raise OperationNotSupportedError("operation '" +params['request']+"' is not supported")
-    #     
-    #     return params
+        if "request" not in params.keys():
+            raise MissingParameterError("'request' parameter is missing")        
+    
+        if params['request'] not in operations:
+            raise OperationNotSupportedError("operation '" +params['request']+"' is not supported")
+        
+        return params

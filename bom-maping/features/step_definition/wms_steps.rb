@@ -7,20 +7,18 @@ Before do
   @base_url = "http://localhost:8007?"
   @default_params = {
     "request" => "GetMap",
-    "bbox" => "0,-90,360,90",
-    "width"=> "300",
-    "height"=> "400",
-    # "layers"=> "hr24_prcp",
+    "bbox" => "-180,-90,180,90",
+    "width"=> "400",
+    "height"=> "300",
     "layers" => "SSTA",
     "styles" => "contour",
     "crs"=>"EPSG:4283",
     "format"=>"png" ,
     "time"=>"Default" ,
     "time_index"=>"Default" ,
-    # "source_url": "http://localhost:8001/atmos_latest.nc",
     "source_url" => "http://localhost:8001/ocean_latest.nc",
-    "color_range"=>"-10,10" ,
-    "n_color" => "10" ,
+    "color_scale_range" => "-10,10",
+    "n_colors" => "10" ,
     "palette" => "jet"
   }
   @url = ""
