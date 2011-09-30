@@ -7,7 +7,7 @@ param = { "bbox" : {  "min_lat" : "-90.0",
                       "max_lat" : "90.0",
                       "max_lon" : "360.0" 
                     } ,
-        "layers" : ["hr24_prcpa", ] ,
+        "layers" : ["hr24_prcp", ] ,
         #"layers" : ["tsair", ] ,
         "styles" : ["contour", ] ,
         "crs" : {   "name" : "EPSG" ,
@@ -29,9 +29,9 @@ param = { "bbox" : {  "min_lat" : "-90.0",
 #c = pc.PlottingController(param)
 #output = c.get_contour()
 
-d = pc.get_contour(param)
+#d = pc.get_contour(param)
 #d = pc.get_legend(param)
-#d = pc.get_full_figure(param)
+d = pc.get_full_figure(param)
 #print d
 
 img = open("test.png","w")

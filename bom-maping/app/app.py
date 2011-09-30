@@ -93,4 +93,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         port = int(sys.argv[1])
     app.debug = True
-    app.run(host='127.0.0.1', port=port)
+    app.run(host='0.0.0.0', port=port)
