@@ -10,7 +10,7 @@ app = Flask(__name__)
 config = {
     "formats": ["png", "jpeg"],
     "exeption_formats": ["xml", "json"],
-    "operations" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"]
+    "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"]
 }
 
 @app.route('/')
@@ -20,7 +20,7 @@ def index():
     
     try:
         # TODO pass a config as argument
-        params = WMSParams(request, config).validate()
+        params = WMSParams(request, config['requests']).validate()
         # params = WMSParams(request).parse()
         # params = WMSParams(request, config).validate()
         operation = operations[params['request']]
