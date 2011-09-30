@@ -3,7 +3,7 @@ Feature: Get map
   As a role
   I want feature
   
-  Scenario: Request with default parameters
+  Scenario: Returns an image for default parameters
     Given the parameters are set to "default"
     When I submit the request
     Then the response should be a "png" image

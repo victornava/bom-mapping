@@ -40,7 +40,9 @@ end
 
 When /^I submit the request$/ do
   # puts make_url(@base_url, @params)
-  @response = visit make_url(@base_url, @params)
+  url = make_url(@base_url, @params)
+  puts "\n"+url
+  @response = visit url
 end
 
 Then /^it should return a "([^"]*)" error with code "([^"]*)"$/ do |error, code|

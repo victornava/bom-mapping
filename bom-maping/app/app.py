@@ -15,8 +15,7 @@ config = {
 
 @app.route('/')
 def index():
-    # Setup defaults
-    # format = config['formats'][0]
+    # TODO Setup defaults
     operations = valid_operations()
     
     try:
@@ -41,6 +40,7 @@ def get_map(params):
     """docstring for get_map"""
     img = plotter.get_contour(params)
     resp = make_response(img)
+    # TODO change depending on the format parameter
     resp.headers['Content-Type'] = 'image/png'
     return resp
 
