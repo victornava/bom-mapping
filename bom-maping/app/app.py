@@ -31,7 +31,7 @@ def index():
     except Exception, e:
         data = { "code: UnexpectedError", "message: Something went wrong sorry." }
     
-    # Rendering the ServiceException Template
+    # TODO replace exception.xml with appropiate template
     output = render_template("exceptions_1_3_0.xml", error=data)
     resp = make_response(output)
     resp.headers['Content-Type'] = 'text/xml'
@@ -67,13 +67,12 @@ def get_capabilities(params):
             output_format = 'application/json'
 
     if(output_format == 'text/xml'):
-        # TODO : Update Capabilities XML Template
+        # TODO : Capabilities XML Template
         output = render_template("capabilities_1_3_0.xml", cap=cap)
         resp = make_response(output)
         resp.headers['Content-Type'] = 'text/xml'
     else:
-        # TODO : Update Capabilities JSON Template (or)
-        # look for Flask - Dict to JSON
+        # TODO : Capabilities JSON Template or look for Flask - Dict to Json
         output = render_template("capabilities_1_3_0.txt", cap=cap)
         resp = make_response(output)
         resp.headers['Content-Type'] = 'application/json'
