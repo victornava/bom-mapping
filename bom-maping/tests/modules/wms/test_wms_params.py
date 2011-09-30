@@ -1,4 +1,5 @@
 from modules.wms.wms_params import WMSParams
+from util.exceptions import *
 import unittest
 
 class TestWMSParams(unittest.TestCase):
@@ -72,14 +73,25 @@ class TestWMSParams(unittest.TestCase):
         for k in target:
             self.assertEquals(target[k], parsed_subject[k])
             
-    def test_validate_with_valid_parameters(self):        
+    def test_validate_with_valid_request(self):        
         subject = self.subject
         target = self.target
-        context = {"operations": ["GetMap", "GetCapabilities"]}
+        available_requests = ["GetMap", "GetCapabilities"]
         request = FakeRequest(subject)
-        parsed_subject = WMSParams(request, context).validate()
+        parsed_subject = WMSParams(request, available_requests).validate()
         for k in target:
             self.assertEquals(target[k], parsed_subject[k])
+            
+    def test_validate_with_missing_request(self):
+        del(self.subject['request'])
+        request = FakeRequest(self.subject)
+        func = WMSParams(request).validate
+        self.assertRaises(MissingParameterError, func)    
+    
+    def test_validate_with_invalid_request(self):
+        request = FakeRequest(self.subject)
+        func = WMSParams(request, ["blah"]).validate
+        self.assertRaises(OperationNotSupportedError, func)
 
 class FakeRequest():
     """Fake Flask Request for testing. Expects a dict as argument"""

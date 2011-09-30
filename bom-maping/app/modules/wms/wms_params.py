@@ -2,9 +2,9 @@ from util.exceptions import *
 
 class WMSParams():
     """Class for conditioning url parameters before calling the plotting module"""
-    def __init__(self, request, context=None):
+    def __init__(self, request, available_requests=[]):
         self.request = request
-        self.context = context
+        self.available_requests = available_requests
         
     def to_dict(self):
         """Convert a flask request to dictionary with all keys lowercased"""
@@ -46,12 +46,11 @@ class WMSParams():
     
     def validate(self):
         params = self.parse();  
-        operations = self.context['operations']
         
         if "request" not in params.keys():
             raise MissingParameterError("'request' parameter is missing")        
     
-        if params['request'] not in operations:
+        if params['request'] not in self.available_requests:
             raise OperationNotSupportedError("operation '" +params['request']+"' is not supported")
         
         return params
