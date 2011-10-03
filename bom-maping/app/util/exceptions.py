@@ -66,4 +66,14 @@ class InvalidServiceError(WMSBaseError):
         
 class InvalidVersionError(WMSBaseError):
     """ Exception for representing an invalid cap version (!1.3.0) """
+
+class SomethingWentWrongError(WMSBaseError):
+    """ Exception thrown when something unexpected happens """
+    
+    def __init__(self, message, original_exception):
+        super(SomethingWentWrongError, self).__init__(message)
+        self.original_exception = original_exception
+
+    
+    #TODO define get_stack_trace calling method on original_exception
         

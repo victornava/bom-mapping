@@ -9,6 +9,7 @@ class WMSParams():
         self.parse()
         self.apply_defaults()
         
+    
     def to_dict(self):
         """Convert a flask request to dictionary with all keys lowercased"""
         dictionary = {}
@@ -16,6 +17,7 @@ class WMSParams():
            dictionary[k.lower()] = self.request.args[k]
         self.dict = dictionary
         return self.dict
+    
     
     def parse(self):
         """ Parses the http request and translates it to the format
@@ -46,8 +48,8 @@ class WMSParams():
                for rule in rules[key]:
                    params[key] = rule(params[key])
         
-        # self.dict = params
         return params
+    
     
     def validate(self):
                 
@@ -59,6 +61,7 @@ class WMSParams():
         
         return self.dict
 
+    
     def apply_defaults(self):
         if(self.defaults):
             # overwrite keys/values on defaults from the request if any

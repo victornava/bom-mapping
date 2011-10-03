@@ -9,8 +9,8 @@ app = Flask(__name__)
 
 available = {
     "formats": ["png", "jpeg"],
-    "exeption_formats": ["xml", "json"],
-    "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"]
+    "exception_formats": ["xml", "json"],
+    "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
     "styles": ["grid", "contour", "grid_treshold"]
 }
 
@@ -36,25 +36,20 @@ defaults = {
 @app.route('/')
 def index():
     
+    # TODO I could ask the plotting controller for this info
     operations = valid_operations()
     
     try:
-        # TODO pass a config as argument
+        # raise Exception("something terrible wrong")
         params = WMSParams(request, available['requests'], defaults).validate()
-        # params = WMSParams(request).parse()
-        # params = WMSParams(request, config).validate()
         operation = operations[params['request']]
         return operation(params)
     except WMSBaseError, e:
-        data = e.data()
+        return handle_exception(e)
     except Exception, e:
-        data = { "code: UnexpectedError", "message: Something went wrong sorry." }
-    
-    # TODO replace exception.xml with appropiate template
-    output = render_template("exceptions_1_3_0.xml", error=data)
-    resp = make_response(output)
-    resp.headers['Content-Type'] = 'text/xml'
-    return resp
+        return handle_exception(SomethingWentWrongError("opps!", e))
+        
+    return handle_exception(exception)
     
 def get_map(params):
     """docstring for get_map"""
@@ -99,6 +94,16 @@ def get_capabilities(params):
 
     return resp
 
+    
+def handle_exception(exception):
+    """docstring for handle_exception"""
+    data = exception.data()
+    output = render_template("exceptions_1_3_0.xml", error=data)
+    resp = make_response(output)
+    resp.headers['Content-Type'] = 'text/xml'
+    return resp
+    
+    
 def valid_operations():
     return {
         "GetMap": get_map,
@@ -106,11 +111,6 @@ def valid_operations():
         "GetLeyend": get_leyend,
         "GetCapabilities": get_capabilities
     }
-    
-def set_defaults(defaults, request):
-    """docstring for set_defaults"""
-    
-    pass
     
     
 # TODO  pass optional config file as arg
