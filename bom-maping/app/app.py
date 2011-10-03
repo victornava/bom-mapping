@@ -7,6 +7,8 @@ import modules.capabilities.capabilities_controller as cap_controller
 
 app = Flask(__name__)
 
+# TODO : Decide : According to the WMS standard the formats should
+# be in MIME format e.g. xml -> text/xml etc., - Vas
 config = {
     "formats": ["png", "jpeg"],
     "exeption_formats": ["xml", "json"],
@@ -30,7 +32,7 @@ def index():
     except Exception, e:
         data = { "code: UnexpectedError", "message: Something went wrong sorry." }
     
-    # TODO replace exception.xml with appropiate template
+    # Rendering xml exception template
     output = render_template("exceptions_1_3_0.xml", error=data)
     resp = make_response(output)
     resp.headers['Content-Type'] = 'text/xml'
