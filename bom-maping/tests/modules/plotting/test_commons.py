@@ -54,21 +54,21 @@ class TestBBox(unittest.TestCase):
         
         
     # 3. Parameters are ourside of their range
-    def test_min_lat_to_small(self):
-        self.bbox["min_lat"] = "-90.1"
-        self.assertRaises(ex.InvalidDimensionValueError,c.BBox,self.bbox)
+#    def test_min_lat_to_small(self):
+#        self.bbox["min_lat"] = "-90.1"
+#        self.assertRaises(ex.InvalidDimensionValueError,c.BBox,self.bbox)
     
-    def test_max_lat_to_big(self):
-        self.bbox["max_lat"] = "90.1"
-        self.assertRaises(ex.InvalidDimensionValueError,c.BBox,self.bbox)
+#    def test_max_lat_to_big(self):
+#        self.bbox["max_lat"] = "90.1"
+#        self.assertRaises(ex.InvalidDimensionValueError,c.BBox,self.bbox)
         
-    def test_min_lon_to_small(self):
-        self.bbox["min_lon"] = "-180.1"
-        self.assertRaises(ex.InvalidDimensionValueError,c.BBox,self.bbox)
+#    def test_min_lon_to_small(self):
+#        self.bbox["min_lon"] = "-180.1"
+#        self.assertRaises(ex.InvalidDimensionValueError,c.BBox,self.bbox)
         
-    def test_max_lon_to_big(self):
-        self.bbox["max_lon"] = "360.1"
-        self.assertRaises(ex.InvalidDimensionValueError,c.BBox,self.bbox)
+#    def test_max_lon_to_big(self):
+#        self.bbox["max_lon"] = "360.1"
+#        self.assertRaises(ex.InvalidDimensionValueError,c.BBox,self.bbox)
     
     
     # 4. Valid parameters

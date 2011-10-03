@@ -753,7 +753,7 @@ def atmos_mask_test():
             "SAVE_LOCAL": "1",
             "REQUEST" : "GetFullFigure",
 #            "REQUEST" : "GetLegendGraphic",
-            "BBOX" : "0,-90,360,-45",
+            "BBOX" : "-100,-150,360,90",
 #            "BBOX" : "-180,-90,180,90",
             "WIDTH" : "800",
             "HEIGHT" : "400",

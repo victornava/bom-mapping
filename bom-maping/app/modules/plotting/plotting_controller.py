@@ -101,18 +101,30 @@ class PlottingController(object):
                                       self.var)
       
         # 2. Set up figure
+        self.bmapuclon = self.bbox.lon_max
+        self.bmaplclon = self.bbox.lon_min
+        self.bmapuclat = min(90, self.bbox.lat_max)
+        self.bmaplclat = max(-90, self.bbox.lat_min)
+        
         self.fig = Figure()
         self.canvas = FigureCanvas(self.fig)
-        
+      
         # 3. Set up basemap
+        ax = self.fig.add_axes( (0,0,1,1), \
+                                frame_on = False, \
+                                axis_bgcolor = 'k', \
+                                alpha = 0 , \
+                                visible = False )
+                                
         self.m = Basemap( projection = 'cyl', \
                           resolution = 'c' , \
-                          llcrnrlon = self.bbox.lon_min, \
-                          llcrnrlat = self.bbox.lat_min, \
-                          urcrnrlon = self.bbox.lon_max, \
-                          urcrnrlat = self.bbox.lat_max, \
+                          llcrnrlon = self.bmaplclon, \
+                          llcrnrlat = self.bmaplclat, \
+                          urcrnrlon = self.bmapuclon, \
+                          urcrnrlat = self.bmapuclat, \
                           suppress_ticks = True, \
-                          fix_aspect = False)
+                          fix_aspect = False, \
+                          ax = ax)
                          
                          
     def get_legend(self):
@@ -142,7 +154,31 @@ class PlottingController(object):
         
         Returns an image.
         """
-        ax = self.fig.add_axes( (0,0,1,1), \
+        # Calculate offsets for stuff
+        bmaplatmin, bmaplonmin = self.m(self.bbox.lat_min, self.bbox.lon_min)
+        bmaplatmax, bmaplonmax = self.m(self.bbox.lat_max, self.bbox.lon_max)
+        
+        print bmaplatmin, bmaplonmin
+        print bmaplatmax, bmaplonmax
+        
+        lon_offset1 = abs(self.bmaplclon - bmaplonmin)
+        lat_offset1 = abs(self.bmaplclat - bmaplatmin)
+        #lon_offset2 = abs(self.bmapuclon - bmaplonmax)
+        #lat_offset2 = abs(self.bmapuclat - bmaplatmax)
+        
+        lon_normstart = lon_offset1 / abs(bmaplonmax - bmaplonmin)
+        lat_normstart = lat_offset1 / abs(bmaplatmax - bmaplatmin)
+        
+        ax_xfrac = abs( self.bmapuclon - self.bmaplclon ) / \
+                   abs( bmaplonmax - bmaplonmin )
+                   
+        ax_yfrac = abs( self.bmapuclat - self.bmaplclat ) / \
+                   abs( bmaplatmax - bmaplatmin)
+        
+        coords = (lon_normstart, lat_normstart, ax_xfrac, ax_yfrac)
+        
+        #####
+        ax = self.fig.add_axes( coords, \
                                 frame_on = False, \
                                 axis_bgcolor = 'k')
         self.m.ax = ax

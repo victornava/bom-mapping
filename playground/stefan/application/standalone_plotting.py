@@ -2,12 +2,12 @@ import modules.plotting.plotting_controller as pc
 
 
         
-param = { "bbox" : {  "min_lat" : "-90.0",
+param = { "bbox" : {  "min_lat" : "-100.0",
                       "min_lon" : "0.0",
                       "max_lat" : "90.0",
                       "max_lon" : "360.0" 
                     } ,
-        "layers" : ["hr24_prcpa", ] ,
+        "layers" : ["hr24_prcp", ] ,
         #"layers" : ["tsair", ] ,
         "styles" : ["contour", ] ,
         "crs" : {   "name" : "EPSG" ,
