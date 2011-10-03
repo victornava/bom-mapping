@@ -7,7 +7,7 @@ import modules.capabilities.capabilities_controller as cap_controller
 
 app = Flask(__name__)
 
-config = {
+available = {
     "formats": ["png", "jpeg"],
     "exeption_formats": ["xml", "json"],
     "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"]
@@ -20,7 +20,7 @@ def index():
     
     try:
         # TODO pass a config as argument
-        params = WMSParams(request, config['requests']).validate()
+        params = WMSParams(request, available['requests']).validate()
         # params = WMSParams(request).parse()
         # params = WMSParams(request, config).validate()
         operation = operations[params['request']]
@@ -87,7 +87,7 @@ def valid_operations():
         "GetCapabilities": get_capabilities
     }
     
-# can pass the port number as argument
+# TODO  pass optional config file as arg
 if __name__ == '__main__':
     port = 8007
     if len(sys.argv) > 1:
