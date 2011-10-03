@@ -93,6 +93,19 @@ class TestWMSParams(unittest.TestCase):
         func = WMSParams(request, ["blah"]).validate
         self.assertRaises(OperationNotSupportedError, func)
 
+    def test_apply_defaults_properly(self):
+        del(self.subject['request'])
+        request = FakeRequest(self.subject)
+        defaults = { "request" : "GetCoffe" }
+        params = WMSParams(request, [], defaults).dict
+        self.assertEqual("GetCoffe", params['request'])
+        
+    def test_apply_defaults_dont_overwrite_request(self):
+        request = FakeRequest(self.subject)
+        defaults = { "request" : "GetCoffe" }
+        params = WMSParams(request, [], defaults).dict
+        self.assertEqual("GetMap", params['request'])
+
 class FakeRequest():
     """Fake Flask Request for testing. Expects a dict as argument"""
 

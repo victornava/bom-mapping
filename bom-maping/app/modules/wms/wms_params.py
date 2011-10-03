@@ -2,16 +2,20 @@ from util.exceptions import *
 
 class WMSParams():
     """Class for conditioning url parameters before calling the plotting module"""
-    def __init__(self, request, available_requests=[]):
+    def __init__(self, request, available_requests=[], defaults=None):
         self.request = request
         self.available_requests = available_requests
+        self.defaults = defaults
+        self.parse()
+        self.apply_defaults()
         
     def to_dict(self):
         """Convert a flask request to dictionary with all keys lowercased"""
         dictionary = {}
         for k in self.request.args.keys():
            dictionary[k.lower()] = self.request.args[k]
-        return dictionary
+        self.dict = dictionary
+        return self.dict
     
     def parse(self):
         """ Parses the http request and translates it to the format
@@ -42,15 +46,21 @@ class WMSParams():
                for rule in rules[key]:
                    params[key] = rule(params[key])
         
+        # self.dict = params
         return params
     
     def validate(self):
-        params = self.parse();  
-        
-        if "request" not in params.keys():
+                
+        if "request" not in self.dict.keys():
             raise MissingParameterError("'request' parameter is missing")        
     
-        if params['request'] not in self.available_requests:
-            raise OperationNotSupportedError("operation '" +params['request']+"' is not supported")
+        if self.dict['request'] not in self.available_requests:
+            raise OperationNotSupportedError("operation '" +self.dict['request']+"' is not supported")
         
-        return params
+        return self.dict
+
+    def apply_defaults(self):
+        if(self.defaults):
+            # overwrite keys/values on defaults from the request if any
+            self.dict = dict(self.defaults.items() + self.dict.items())
+        return self.dict
