@@ -14,7 +14,7 @@ param = { "bbox" : {  "min_lat" : "-100.0",
                     "identifier" : "4283" 
                 } ,
         "width" : "1024" ,
-        "height" : "768" ,
+        "height" : "0" ,
         "format" : "png" ,
         "time" : "Default" ,
         "time_index" : "Default" ,

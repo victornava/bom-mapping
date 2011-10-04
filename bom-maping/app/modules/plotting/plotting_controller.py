@@ -471,12 +471,13 @@ class ParameterValidator(object):
         
     def __check_numericals(self,parameters):
         """ Validates that numerical values are numerical """
-        #TODO: Add more values
         # dictionary with names and types
         check = { "width" : int, \
                   "height" : int }
         for k in check:
-            self.__check_single_value(parameters,k,check[k])
+            self.__check_single_value(parameters,k,check[k],True)
+            
+        #TODO: Add values where negative doesnt matter
         
         # check for values that need to be in a list
         check = { "color_scale_range" : int , \
@@ -485,18 +486,24 @@ class ParameterValidator(object):
             self.__check_list_value(parameters,k,check[k])
         
         
-    def __check_single_value(self,parameters,name,dtype):
+    def __check_single_value(self,parameters,name,dtype,neg_check = False):
         """ Checks a single value for the given type
         
         parameters: dictionary with parameters
         name: name of the parameters
         dtype: data type to be converted to
+        neg_check: Set to True if values have to be 1 or bigger
         """
         try:
             parameters[name] = dtype(parameters[name])
         except:
             raise ex.InvalidParameterValueError( name + '(' + \
                                                  str(parameters[name]) + ')')
+                                                 
+        if neg_check and parameters[name] < 1:
+            raise ex.InvalidParameterValueError( name + '(' + \
+                                                 str(parameters[name]) + ')')
+            
     
     
     def __check_list_value(self,parameters,name,dtype):
