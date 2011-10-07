@@ -48,7 +48,16 @@ class TestWMSParams(unittest.TestCase):
             "n_colors" : ["10"],
             "palette" : "jet"
             }
-                
+        
+        self.available = {
+                "formats": ["png", "jpeg"],
+                "image_formats": ["png", "jpeg"],
+                "capabilities_formats": ["xml"],
+                "exception_formats": ["xml"],
+                "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
+                "styles": ["grid", "contour", "grid_treshold"]
+            } 
+            
     def test_to_dict(self):
         params = {'a':'1', 'b':'2'}
         request = FakeRequest(params)
@@ -73,14 +82,11 @@ class TestWMSParams(unittest.TestCase):
         for k in target:
             self.assertEquals(target[k], parsed_subject[k])
             
-    def test_validate_with_valid_request(self):        
-        subject = self.subject
-        target = self.target
-        available_requests = ["GetMap", "GetCapabilities"]
-        request = FakeRequest(subject)
-        parsed_subject = WMSParams(request, available_requests).validate()
-        for k in target:
-            self.assertEquals(target[k], parsed_subject[k])
+    def test_validate_with_valid_request(self):
+        request = FakeRequest(self.subject)
+        parsed_subject = WMSParams(request, self.available).validate()
+        for k in self.target:
+            self.assertEquals(self.target[k], parsed_subject[k])
             
     def test_validate_with_missing_request(self):
         del(self.subject['request'])
@@ -90,14 +96,28 @@ class TestWMSParams(unittest.TestCase):
     
     def test_validate_with_invalid_request(self):
         request = FakeRequest(self.subject)
-        func = WMSParams(request, ["blah"]).validate
+        self.available = { 'requests' : ["blah"] }
+        func = WMSParams(request, self.available).validate
         self.assertRaises(OperationNotSupportedError, func)
         
-    def test_apply_defaults_dont_overwrite_request(self):
+    def test_validate_image_format(self):
+        self.subject['format'] = 'image/png'
         request = FakeRequest(self.subject)
-        defaults = { "request" : "GetCoffe" }
-        params = WMSParams(request, [], defaults).dict
-        self.assertEqual("GetMap", params['request'])
+        params = WMSParams(request, self.available).validate()
+        self.assertEquals('png', params['format'])
+        
+    def test_error_on_invalid_image_format(self):
+        self.subject['format'] = 'image/mp3'
+        request = FakeRequest(self.subject)
+        validate = WMSParams(request, self.available).validate
+        self.assertRaises(InvalidFormatError, validate)
+    
+    def test_error_on_invalid_capbilities_format(self):
+        self.subject['format'] = 'text/weirdformat'
+        self.subject['request'] = 'GetCapabilities'
+        request = FakeRequest(self.subject)
+        validate = WMSParams(request, self.available).validate
+        self.assertRaises(InvalidFormatError, validate)
 
 class FakeRequest():
     """Fake Flask Request for testing. Expects a dict as argument"""

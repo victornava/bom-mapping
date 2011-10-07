@@ -2,12 +2,9 @@ from util.exceptions import *
 
 class WMSParams():
     """Class for conditioning url parameters before calling the plotting module"""
-    def __init__(self, request, available_requests=[], defaults=None):
+    def __init__(self, request, available={}):
         self.request = request
-        self.available_requests = available_requests
-        self.defaults = defaults
-        # self.apply_defaults()
-        # self.to_dict()
+        self.available = available
         self.parse()
     
     def to_dict(self):
@@ -48,22 +45,29 @@ class WMSParams():
                for rule in rules[key]:
                    params[key] = rule(params[key])
         
-        return params
+        # remove the image/ part from image/png
+        if 'format' in params: 
+            format = params['format'].split("/")
+            params['format'] = format[len(format)-1]
+        
+        # return params
+        self.dict = params
+        return self.dict
     
     
     def validate(self):
-                
-        if "request" not in self.dict.keys():
+        if "request" not in self.dict:
             raise MissingParameterError("'request' parameter is missing")        
-    
-        if self.dict['request'] not in self.available_requests:
+
+        if self.dict['request'] not in self.available['requests']:
             raise OperationNotSupportedError("operation '" +self.dict['request']+"' is not supported")
         
+        # Handle capabilities format especial case
+        msg = "Format '" +self.dict["format"]+"' not supported for request '" + self.dict['request']
+        if self.dict['request'] == 'GetCapabilities':
+            if self.dict["format"] not in self.available['capabilities_formats']:
+                raise InvalidFormatError(msg)
+        elif self.dict["format"] not in self.available['image_formats']:
+            raise InvalidFormatError(msg)
+        
         return self.dict
-
-    
-    # def apply_defaults(self):
-    #     if(self.defaults):
-    #         # overwrite keys/values on defaults from the request if any
-    #         self.dict = dict(self.defaults.items() + self.dict.items())
-    #     return self.dict
