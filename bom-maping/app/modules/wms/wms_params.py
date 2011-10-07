@@ -6,9 +6,9 @@ class WMSParams():
         self.request = request
         self.available_requests = available_requests
         self.defaults = defaults
+        # self.apply_defaults()
+        # self.to_dict()
         self.parse()
-        self.apply_defaults()
-        
     
     def to_dict(self):
         """Convert a flask request to dictionary with all keys lowercased"""
@@ -40,7 +40,7 @@ class WMSParams():
         }        
    
         params = self.to_dict()
-
+        
         # iterate elements and apply the rules if there are any
         # otherwise leave the oritinal parameter
         for key in params:
@@ -62,8 +62,8 @@ class WMSParams():
         return self.dict
 
     
-    def apply_defaults(self):
-        if(self.defaults):
-            # overwrite keys/values on defaults from the request if any
-            self.dict = dict(self.defaults.items() + self.dict.items())
-        return self.dict
+    # def apply_defaults(self):
+    #     if(self.defaults):
+    #         # overwrite keys/values on defaults from the request if any
+    #         self.dict = dict(self.defaults.items() + self.dict.items())
+    #     return self.dict

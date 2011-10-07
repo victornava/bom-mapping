@@ -18,7 +18,7 @@ class TestWMSParams(unittest.TestCase):
             "time" : "default",
             "time_index" : "default",
             "source_url" : "http://localhost:8001/atmos_latest.nc",
-            "color_scale_range" : "-4,4",
+            "color_scale_range" : "auto",
             "n_colors" : "10",
             "palette" : "jet"
             }
@@ -44,7 +44,7 @@ class TestWMSParams(unittest.TestCase):
             "time" : "default",
             "time_index" : "default",
             "source_url" : "http://localhost:8001/atmos_latest.nc",
-            "color_scale_range" : ["-4","4"],
+            "color_scale_range" : ["auto"],
             "n_colors" : ["10"],
             "palette" : "jet"
             }
@@ -92,13 +92,6 @@ class TestWMSParams(unittest.TestCase):
         request = FakeRequest(self.subject)
         func = WMSParams(request, ["blah"]).validate
         self.assertRaises(OperationNotSupportedError, func)
-
-    def test_apply_defaults_properly(self):
-        del(self.subject['request'])
-        request = FakeRequest(self.subject)
-        defaults = { "request" : "GetCoffe" }
-        params = WMSParams(request, [], defaults).dict
-        self.assertEqual("GetCoffe", params['request'])
         
     def test_apply_defaults_dont_overwrite_request(self):
         request = FakeRequest(self.subject)

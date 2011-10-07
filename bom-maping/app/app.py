@@ -9,7 +9,9 @@ app = Flask(__name__)
 
 available = {
     "formats": ["png", "jpeg"],
-    "exception_formats": ["xml", "json"],
+    # "image_formats": ["png", "jpeg"],
+    # "capabilities_formats": ["xml"],
+    "exception_formats": ["xml"],
     "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
     "styles": ["grid", "contour", "grid_treshold"]
 }
