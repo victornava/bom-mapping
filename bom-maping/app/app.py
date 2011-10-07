@@ -1,4 +1,5 @@
 import sys
+import traceback
 from flask import *
 from util.exceptions import *
 from modules.wms.wms_params import *
@@ -14,7 +15,7 @@ available = {
     "exception_formats": ["xml"],
     "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
     "styles": ["grid", "contour", "grid_treshold"]
-}
+    }
 
 defaults = {
     "request":"GetMap",
@@ -33,88 +34,86 @@ defaults = {
     "color_scale_range" : "auto",
     "n_colors" : "7",
     "palette" : "jet"
-}
+    }
 
 @app.route('/')
 def index():
-    
-    operations = valid_operations()
-    
     try:
         params = WMSParams(request, available).validate()
-        operation = operations[params['request']]
-        return operation(params)
+        fn = valid_operations[params['request']]
+        content, format = fn(params, defaults)
+        response = make_response(content)
+        response.headers['Content-Type'] = content_type_for(format)
+        return response
     except WMSBaseError, e:
         return handle_exception(e)
     except Exception, e:
-        return handle_exception(SomethingWentWrongError("opps!", e))
-        
-def get_map(params):
-    """docstring for get_map"""
-    img = plotter.get_contour(params)
-    resp = make_response(img)
-    # TODO change depending on the format parameter
-    resp.headers['Content-Type'] = 'image/png'
-    return resp
-
-def get_full_figure():
-    """docstring for get_full_figure"""
-    pass
-    
-def get_leyend():
-    """docstring for get_leyend"""
-    pass
-    
-def get_capabilities(params):
-    """docstring for get_capabilities"""
+        if app.debug == True:
+            # let flask show the exception
+            raise e
+        else:
+            return handle_exception(SomethingWentWrongError("Sorry.", e))
+            
+def get_capabilities(params, defaults):
+    # TODO Should call it like this
+    # cap, format = cap_controller.get_capabilities(params, defauts)
+    # return render_template("capabilities_1_3_0.xml", cap=cap), format
     cap = cap_controller.get_capabilities(params)
-
-    # considering XML as the default output format(MIME Type)
-    output_format = 'text/xml'
-
-    # TODO: Decide:- how to respond for an non-supported output format request
-    # 1. Handle the request as XML format or 2. Throw an exception
+    return render_template("capabilities_1_3_0.xml", cap=cap), "xml"
     
-    if "format" in params.keys():
-        if(params['format'] == 'application/json'):
-            output_format = 'application/json'
-
-    if(output_format == 'text/xml'):
-        # TODO : Capabilities XML Template
-        output = render_template("capabilities_1_3_0.xml", cap=cap)
-        resp = make_response(output)
-        resp.headers['Content-Type'] = 'text/xml'
-    else:
-        # TODO : Capabilities JSON Template or look for Flask - Dict to Json
-        output = render_template("capabilities_1_3_0.txt", cap=cap)
-        resp = make_response(output)
-        resp.headers['Content-Type'] = 'application/json'
-
-    return resp
-
+def get_map(params, defaults):
+    # TODO Should call it like this
+    # return plotter.get_contour(params, defaults)
+    return plotter.get_contour(params), defaults['format']
+    
+def get_full_figure(params, defaults):
+    # TODO Should call it like this
+    # return plotter.get_full_figure(params, defaults)
+    return plotter.get_full_figure(params), defaults['format']
+    
+def get_legend(params, defaults):
+    # TODO Should call it like this
+    # return plotter.get_legend(params, defaults)
+    return plotter.get_legend(params), defaults['format']
     
 def handle_exception(exception):
-    """docstring for handle_exception"""
-    data = exception.data()
-    output = render_template("exceptions_1_3_0.xml", error=data)
+    output = render_template("exceptions_1_3_0.xml", error=exception.data())
     resp = make_response(output)
     resp.headers['Content-Type'] = 'text/xml'
     return resp
-    
-    
-def valid_operations():
-    return {
-        "GetMap": get_map,
-        "GetFullFigure": get_full_figure,
-        "GetLeyend": get_leyend,
-        "GetCapabilities": get_capabilities
+
+valid_operations = {
+    # make alias in plotter to get contour 
+    "GetMap": get_map,
+    "GetFullFigure": get_full_figure,
+    "GetLeyend": get_legend,
+    "GetCapabilities": get_capabilities
     }
-    
+
+# TODO shuold use this one after modules return -> content, format
+# valid_operations = {
+#     # make alias in plotter to get contour 
+#     "GetMap": plotter.get_contour,
+#     "GetFullFigure": plotter.get_full_figure,
+#     "GetLeyend": plotter.get_legend,
+#     "GetCapabilities": get_capabilities
+#     }
+
+def content_type_for(format):
+    format = format.lower()
+    if format in ['png', 'jpg', 'svg']:
+        return "image/"+format 
+    elif format in ['xml', 'html', 'json', 'txt']:
+        return "text/"+format
+    else:
+        raise InvalidFormatError("Don't know how to set content type for: " + str(format));
     
 # TODO  pass optional config file as arg
 if __name__ == '__main__':
     port = 8007
     if len(sys.argv) > 1:
         port = int(sys.argv[1])
+    # TODO remember to turn off before going live
     app.debug = True
+    # app.debug = False
     app.run(host='0.0.0.0', port=port)

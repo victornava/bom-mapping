@@ -45,8 +45,8 @@ class WMSParams():
                for rule in rules[key]:
                    params[key] = rule(params[key])
         
-        # remove the image/ part from image/png
         if 'format' in params: 
+            # remove the image/ part from image/png
             format = params['format'].split("/")
             params['format'] = format[len(format)-1]
         
@@ -63,11 +63,12 @@ class WMSParams():
             raise OperationNotSupportedError("operation '" +self.dict['request']+"' is not supported")
         
         # Handle capabilities format especial case
-        msg = "Format '" +self.dict["format"]+"' not supported for request '" + self.dict['request']
-        if self.dict['request'] == 'GetCapabilities':
-            if self.dict["format"] not in self.available['capabilities_formats']:
+        if "format" in self.dict:
+            msg = "Format '" +self.dict["format"]+"' not supported for request '" + self.dict['request']
+            if self.dict['request'] == 'GetCapabilities':
+                if self.dict["format"] not in self.available['capabilities_formats']:
+                    raise InvalidFormatError(msg)
+            elif self.dict["format"] not in self.available['image_formats']:
                 raise InvalidFormatError(msg)
-        elif self.dict["format"] not in self.available['image_formats']:
-            raise InvalidFormatError(msg)
         
         return self.dict

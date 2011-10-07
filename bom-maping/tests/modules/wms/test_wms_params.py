@@ -118,6 +118,11 @@ class TestWMSParams(unittest.TestCase):
         request = FakeRequest(self.subject)
         validate = WMSParams(request, self.available).validate
         self.assertRaises(InvalidFormatError, validate)
+        
+    def test_validate_with_empty_format(self):
+           del(self.subject['format'])
+           request = FakeRequest(self.subject)
+           validate = WMSParams(request, self.available).validate()
 
 class FakeRequest():
     """Fake Flask Request for testing. Expects a dict as argument"""
