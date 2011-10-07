@@ -18,6 +18,7 @@ Before do
     "time_index"=>"Default" ,
     "source_url" => "http://localhost:8001/ocean_latest.nc",
     "color_scale_range" => "auto",
+    # "color_scale_range" => "-4,4",
     "n_colors" => "10" ,
     "palette" => "jet"
   }

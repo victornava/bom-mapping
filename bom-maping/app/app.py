@@ -9,8 +9,8 @@ app = Flask(__name__)
 
 available = {
     "formats": ["png", "jpeg"],
-    # "image_formats": ["png", "jpeg"],
-    # "capabilities_formats": ["xml"],
+    "image_formats": ["png", "jpeg"],
+    "capabilities_formats": ["xml"],
     "exception_formats": ["xml"],
     "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
     "styles": ["grid", "contour", "grid_treshold"]
@@ -43,7 +43,7 @@ def index():
     
     try:
         # raise Exception("something terrible wrong")
-        params = WMSParams(request, available['requests'], defaults).validate()
+        params = WMSParams(request, available).validate()
         operation = operations[params['request']]
         return operation(params)
     except WMSBaseError, e:
