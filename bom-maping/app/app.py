@@ -38,11 +38,9 @@ defaults = {
 @app.route('/')
 def index():
     
-    # TODO I could ask the plotting controller for this info
     operations = valid_operations()
     
     try:
-        # raise Exception("something terrible wrong")
         params = WMSParams(request, available).validate()
         operation = operations[params['request']]
         return operation(params)
@@ -51,8 +49,6 @@ def index():
     except Exception, e:
         return handle_exception(SomethingWentWrongError("opps!", e))
         
-    return handle_exception(exception)
-    
 def get_map(params):
     """docstring for get_map"""
     img = plotter.get_contour(params)
