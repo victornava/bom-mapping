@@ -1,9 +1,11 @@
-avaliable = {
-    "format": ["png", "jpeg"],
-    "exception_format": ["xml", "json", "text"],
-    "request" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
-    "palette" : "jet"
-}
+available = {
+    "formats": ["png", "jpeg"],
+    "image_formats": ["png", "jpeg"],
+    "capabilities_formats": ["xml"],
+    "exception_formats": ["xml"],
+    "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
+    "styles": ["grid", "contour", "grid_treshold"]
+    }
 
 defaults = {
     "request":"GetMap",
@@ -22,13 +24,4 @@ defaults = {
     "color_scale_range" : "auto",
     "n_colors" : "7",
     "palette" : "jet"
-}
-
-# testing = {
-# 
-# }
-# 
-# config = {
-#     "production": production,
-#     "testing": testing,
-# }
+    }
