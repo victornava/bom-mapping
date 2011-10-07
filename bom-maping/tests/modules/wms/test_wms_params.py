@@ -50,12 +50,12 @@ class TestWMSParams(unittest.TestCase):
             }
         
         self.available = {
-                "formats": ["png", "jpeg"],
-                "image_formats": ["png", "jpeg"],
-                "capabilities_formats": ["xml"],
-                "exception_formats": ["xml"],
-                "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
-                "styles": ["grid", "contour", "grid_treshold"]
+            "formats": ["png", "jpeg"],
+            "image_formats": ["png", "jpeg"],
+            "capabilities_formats": ["xml"],
+            "exception_formats": ["xml"],
+            "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
+            "styles": ["grid", "contour", "grid_treshold"]
             } 
             
     def test_to_dict(self):
