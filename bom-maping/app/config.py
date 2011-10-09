@@ -16,7 +16,7 @@ defaults = {
     "layers" : "hr24_prcp",
     "styles" : "grid",
     "crs" : "EPSG:4283",
-    "format" : "png",
+    "format" : "image/png",
     "time" : "Default",
     "time_index" : "Default",
     "source_url" : "http://localhost:8001/atmos_latest.nc",
@@ -25,3 +25,7 @@ defaults = {
     "n_colors" : "7",
     "palette" : "jet"
     }
+    
+capabilities_info = {
+    "format" : "text/xml",
+}

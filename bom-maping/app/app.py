@@ -14,12 +14,20 @@ def index():
     try:
         params = WMSParams(request.args, config.available).validate()
         fn = valid_operations[params['request']]
-        content, format = fn(params, config.defaults)
+
+        if params['request'] == 'GetCapabilities':
+            defaults = config.capabilities_info
+        else:
+            defaults = WMSParams(config.defaults).parse()            
+
+        content, format = fn(params, defaults)
         response = make_response(content)
         response.headers['Content-Type'] = content_type_for(format)
         return response
+    
     except WMSBaseError, e:
         return handle_exception(e)
+    
     except Exception, e:
         if app.debug == True:
             # let flask show the exception
@@ -38,45 +46,21 @@ def get_capabilities(params, defaults):
     # cap, format = cap_controller.get_capabilities(params, defauts)
     # return render_template("capabilities_1_3_0.xml", cap=cap), format
     cap = cap_controller.get_capabilities(params)
-    return render_template("capabilities_1_3_0.xml", cap=cap), "xml"
-    
-def get_map(params, defaults):
-    # TODO Should call it like this
-    # return plotter.get_contour(params, defaults)
-    return plotter.get_contour(params), defaults['format']
-    
-def get_full_figure(params, defaults):
-    # TODO Should call it like this
-    # return plotter.get_full_figure(params, defaults)
-    return plotter.get_full_figure(params), defaults['format']
-    
-def get_legend(params, defaults):
-    # TODO Should call it like this
-    # return plotter.get_legend(params, defaults)
-    return plotter.get_legend(params), defaults['format']
-    
+    return render_template("capabilities_1_3_0.xml", cap=cap), 'xml'
+        
 def handle_exception(exception):
     output = render_template("exceptions_1_3_0.xml", error=exception.data())
     resp = make_response(output)
     resp.headers['Content-Type'] = 'text/xml'
     return resp
-
+    
+# TODO shuold use this one after modules return -> content, format
 valid_operations = {
-    # make alias in plotter to get contour 
-    "GetMap": get_map,
-    "GetFullFigure": get_full_figure,
-    "GetLeyend": get_legend,
+    "GetMap": plotter.get_contour,
+    "GetFullFigure": plotter.get_full_figure,
+    "GetLeyend": plotter.get_legend,
     "GetCapabilities": get_capabilities
     }
-
-# TODO shuold use this one after modules return -> content, format
-# valid_operations = {
-#     # make alias in plotter to get contour 
-#     "GetMap": plotter.get_contour,
-#     "GetFullFigure": plotter.get_full_figure,
-#     "GetLeyend": plotter.get_legend,
-#     "GetCapabilities": get_capabilities
-#     }
 
 def content_type_for(format):
     format = format.lower()
