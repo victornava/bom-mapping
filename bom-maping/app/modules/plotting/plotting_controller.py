@@ -49,17 +49,24 @@ from mpl_toolkits.basemap import addcyclic
 from mpl_toolkits.basemap import num2date
 
 
-def get_contour(parameters):
+# def get_contour(parameters):
+#     """ Returns a contour plot for the specified parameters """
+#     pc = PlottingController(parameters)
+#     return pc.get_contour()
+    
+# FIXME should accept defaults as argument and return: content, format
+def get_contour(parameters, defaults):
     """ Returns a contour plot for the specified parameters """
     pc = PlottingController(parameters)
-    return pc.get_contour()
+    return pc.get_contour(), 'png'    
     
-    
+# FIXME should accept defaults as argument and return: content, format
 def get_legend(parameters):
     """ Returns the scale only"""
     pc = PlottingController(parameters)
     return pc.get_legend()
 
+# FIXME should accept defaults as argument and return: content, format
 def get_full_figure(parameters):
     """ Returns a downloadable version and combines the contour plot, legend,
     a description for the plot overlayed with coastlines. """
