@@ -11,7 +11,7 @@ class WMSParams():
         """ Parses the http request and translates it to the format
            expected by the plotting controller
         """
-        # we define here some common funtions to set the types
+        # we define here some common funtions
         to_list = lambda s: s.split(",")
         bbox = lambda a: dict(zip(["min_lon","min_lat","max_lon","max_lat"], a))
         crs = lambda s: dict(zip(["name","identifier"], s.split(":")))
@@ -31,18 +31,16 @@ class WMSParams():
         params = dict((k.lower(), v) for k,v in self.params.items())
                 
         # iterate elements and apply the rules if there are any
-        # otherwise leave the oritinal parameter
+        # otherwise leave the original parameter as is
         for key in params:
            if rules.has_key(key):
                for rule in rules[key]:
                    params[key] = rule(params[key])
         
         if 'format' in params: 
-            # remove the image/ part from image/png
-            format = params['format'].split("/")
-            params['format'] = format[len(format)-1]
-        
-        # return params
+            # turn 'image/png' into 'png' 
+            params['format'] = params['format'].split('/')[-1]
+    
         self.dict = params
         return self.dict
     
