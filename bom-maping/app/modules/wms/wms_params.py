@@ -7,6 +7,7 @@ class WMSParams():
         self.available = available
         self.parse()
     
+    # this is not necesary
     def to_dict(self):
         """Convert a flask request to dictionary with all keys lowercased"""
         dictionary = {}
