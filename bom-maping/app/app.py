@@ -12,7 +12,7 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     try:
-        params = WMSParams(request, config.available).validate()
+        params = WMSParams(request.args, config.available).validate()
         fn = valid_operations[params['request']]
         content, format = fn(params, config.defaults)
         response = make_response(content)
@@ -26,6 +26,12 @@ def index():
             raise e
         else:
             return handle_exception(SomethingWentWrongError("Sorry.", e))
+            
+@app.route('/dev')
+def dev():
+    params = request.args
+    return params['styles']
+
             
 def get_capabilities(params, defaults):
     # TODO Should call it like this

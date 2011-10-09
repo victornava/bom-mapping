@@ -58,14 +58,9 @@ class TestWMSParams(unittest.TestCase):
             "styles": ["grid", "contour", "grid_treshold"]
             } 
             
-    def test_to_dict(self):
-        params = {'a':'1', 'b':'2'}
-        request = FakeRequest(params)
-        d = WMSParams(request).to_dict()
-        self.assertEquals(params, d)
     
     def test_can_parse_a_valid_request(self):
-        parsed_subject = WMSParams(FakeRequest(self.subject)).parse()
+        parsed_subject = WMSParams(self.subject).parse()
         for k in self.target:
             self.assertEquals(self.target[k], parsed_subject[k])        
             
@@ -76,81 +71,46 @@ class TestWMSParams(unittest.TestCase):
                 "min_lon": "-180.0",
                 "min_lat": "-90.0",
                 "max_lon": "180.0"
+                }
             }
-        }
-        parsed_subject = WMSParams(FakeRequest(subject)).parse()
+        parsed_subject = WMSParams(subject).parse()
         for k in target:
             self.assertEquals(target[k], parsed_subject[k])
-            
+
     def test_validate_with_valid_request(self):
-        request = FakeRequest(self.subject)
-        parsed_subject = WMSParams(request, self.available).validate()
+        parsed_subject = WMSParams(self.subject, self.available).validate()
         for k in self.target:
             self.assertEquals(self.target[k], parsed_subject[k])
-            
+
     def test_validate_with_missing_request(self):
         del(self.subject['request'])
-        request = FakeRequest(self.subject)
-        func = WMSParams(request).validate
+        func = WMSParams(self.subject).validate
         self.assertRaises(MissingParameterError, func)    
-    
+     
     def test_validate_with_invalid_request(self):
-        request = FakeRequest(self.subject)
         self.available = { 'requests' : ["blah"] }
-        func = WMSParams(request, self.available).validate
+        func = WMSParams(self.subject, self.available).validate
         self.assertRaises(OperationNotSupportedError, func)
         
     def test_validate_image_format(self):
         self.subject['format'] = 'image/png'
-        request = FakeRequest(self.subject)
-        params = WMSParams(request, self.available).validate()
+        params = WMSParams(self.subject, self.available).validate()
         self.assertEquals('png', params['format'])
-        
+             
     def test_error_on_invalid_image_format(self):
         self.subject['format'] = 'image/mp3'
-        request = FakeRequest(self.subject)
-        validate = WMSParams(request, self.available).validate
+        validate = WMSParams(self.subject, self.available).validate
         self.assertRaises(InvalidFormatError, validate)
-    
+
     def test_error_on_invalid_capbilities_format(self):
         self.subject['format'] = 'text/weirdformat'
         self.subject['request'] = 'GetCapabilities'
-        request = FakeRequest(self.subject)
-        validate = WMSParams(request, self.available).validate
+        validate = WMSParams(self.subject, self.available).validate
         self.assertRaises(InvalidFormatError, validate)
-        
-    def test_validate_with_empty_format(self):
-           del(self.subject['format'])
-           request = FakeRequest(self.subject)
-           validate = WMSParams(request, self.available).validate()
-
-class FakeRequest():
-    """Fake Flask Request for testing. Expects a dict as argument"""
-
-    def __init__(self, args):
-        self.args = args
-
-    def get(self, key):
-        return self.args[key]
-
-    def keys(self):
-        return self.args.keys()
             
-
-class TestFakeRequest(unittest.TestCase):
-    def setUp(self):
-        self.params = {'a':'1', 'b':'2'}
-    
-    def test_get(self):
-        fake_request = FakeRequest(self.params)
-        self.assertEquals(fake_request.get('a'), '1')
-        self.assertEquals(fake_request.get('b'), '2')
-        
-    def test_args(self):
-        self.assertEquals(FakeRequest(self.params).args, self.params)
-    
-    def test_keys(self):
-        self.assertEquals(FakeRequest(self.params).args.keys(), ['a','b'])
-        
+    def test_validate_with_empty_format(self):
+        del(self.subject['format'])
+        validate = WMSParams(self.subject, self.available).validate()
+          
 if __name__ == '__main__':
     unittest.main()
