@@ -10,10 +10,10 @@ class BBox(object):
     def __init__(self,bbox):
         """ Constructor
         bbox: {
-                min_lat: float
-                min_lon: float
-                max_lat: float
-                max_lon: float
+                min_lat: string
+                min_lon: string
+                max_lat: string
+                max_lon: string
                 }
         """
         expected_keys = ['min_lon', 'min_lat', 'max_lon', 'max_lat']
