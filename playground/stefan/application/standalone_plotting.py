@@ -2,7 +2,7 @@ import modules.plotting.plotting_controller as pc
 
 
         
-param = { "bbox" : {  "min_lat" : "-100.0",
+param = { "bbox" : {  "min_lat" : "-90.0",
                       "min_lon" : "0.0",
                       "max_lat" : "90.0",
                       "max_lon" : "360.0" 
@@ -14,11 +14,12 @@ param = { "bbox" : {  "min_lat" : "-100.0",
                     "identifier" : "4283" 
                 } ,
         "width" : "1024" ,
-        "height" : "0" ,
+        "height" : "768" ,
         "format" : "png" ,
         "time" : "Default" ,
         "time_index" : "Default" ,
-        "source_url" : "http://localhost:8001/atmos_latest.nc",
+        "source_url" : "http://localhost:8001/vertical_line.nc",
+#        "source_url" : "http://localhost:8001/atmos_latest.nc",
         #"source_url" : "http://localhost:8001/ocean_latest.nc",
         "color_scale_range" : ["-10", "10", ] ,
         "n_colors" : ["10", ] ,

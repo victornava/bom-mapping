@@ -53,25 +53,24 @@ from mpl_toolkits.basemap import num2date
 #     """ Returns a contour plot for the specified parameters """
 #     pc = PlottingController(parameters)
 #     return pc.get_contour()
-    
-# FIXME should accept defaults as argument and return: content, format
+   
 def get_contour(parameters, defaults):
     """ Returns a contour plot for the specified parameters """
-    pc = PlottingController(parameters)
-    return pc.get_contour(), 'png'    
+    pc = PlottingController(parameters, defaults)
+    return pc.get_contour(), parameters["format"]
     
-# FIXME should accept defaults as argument and return: content, format
-def get_legend(parameters):
+    
+def get_legend(parameters, defaults):
     """ Returns the scale only"""
-    pc = PlottingController(parameters)
-    return pc.get_legend()
+    pc = PlottingController(parameters, defaults)
+    return pc.get_legend(), parameters["format"]
 
-# FIXME should accept defaults as argument and return: content, format
-def get_full_figure(parameters):
+    
+def get_full_figure(parameters, defaults):
     """ Returns a downloadable version and combines the contour plot, legend,
     a description for the plot overlayed with coastlines. """
-    pc = PlottingController(parameters)
-    return pc.get_full_figure()
+    pc = PlottingController(parameters, defaults)
+    return pc.get_full_figure(), parameters["format"]
 
     
 class PlottingController(object):
@@ -80,9 +79,9 @@ class PlottingController(object):
     This class controlls all the plotting related functionality.
     """
     
-    def __init__(self,parameters):
+    def __init__(self, parameters, defaults):
         """ Constructor """
-        v = ParameterValidator(parameters)
+        v = ParameterValidator(parameters, defaults)
         self.parameters = v.validate()
         self.DPI = 100.0
        
@@ -456,27 +455,31 @@ class ParameterValidator(object):
     """ Class responsible for validating parameters passed to the controller
     """
     
-    def __init__(self,parameters):
+    def __init__(self, parameters, defaults):
+        """ Constructor
+        
+        parameters: Dictionary with values
+        defaults: Dictionary of smae layout with default values
+        """
         self.parameters = parameters
+        self.defaults = defaults
         
         
     def validate(self):
         """ Validates the passed parameters and returns the dictionary with
         changed values were necessary.
         """
-        # 1. Validate that all mandatory arguments are supplied
-        self.__check_mandatory_parameters(self.parameters)
         
-        # 2. Check that values that are not supplied have sane defaults
-        self.__check_defaults(self.parameters)
+        # 1. Check that all values are there. replace with defaults
+        self.__check_defaults(self.parameters, self.defaults)
         
-        # 3. Check that numerical values are really numerical
+        # 2. Check that values are of correct type
         self.__check_numericals(self.parameters)
         
         return self.parameters
         
         
-    def __check_numericals(self,parameters):
+    def __check_numericals(self, parameters):
         """ Validates that numerical values are numerical """
         # dictionary with names and types
         check = { "width" : int, \
@@ -529,28 +532,13 @@ class ParameterValidator(object):
                                                  + ')')
         
     
-    def __check_defaults(self,parameters):
+    def __check_defaults(self, parameters, defaults):
         """ Check that not supplied optional arguments have sane defaults """
-        
-        # dictionary for default values
-        defaults = { "time_index" : "Default" ,\
-                     "time" : "Default" ,\
-                     "palette" : "jet" }
         
         for key in defaults.keys():
             if not parameters.has_key(key):
                 parameters[key] = defaults[key]
-
-    
-    def __check_mandatory_parameters(self,parameters):
-        """ Checks for mandatory parameters 
-        
-        This method checks if the parameters declared as mandatory were
-        provided by the calling entity.
-        """
-        mandatory_parameters = [ "bbox" , "styles", "layers", "width", \
-                                 "height", "source_url", "format" , "crs", \
-                                 "color_scale_range", "n_colors" ]
-        for key in mandatory_parameters:
-            if not parameters.has_key(key):
-                raise ex.MissingParameterError(key)
+                
+        # Special case: color_scale_range = auto
+        if parameters["color_scale_range"][0] == "auto":
+            parameters["color_scale_range"] = [-4,4]
