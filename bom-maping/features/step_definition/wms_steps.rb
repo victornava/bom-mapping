@@ -4,7 +4,7 @@ require 'image_size'
 
 
 Before do
-  @base_url = "http://localhost:8007?"
+  @base_url = "http://localhost:8007"
   @default_params = {
     "request" => "GetMap",
     "bbox" => "-180,-90,180,90",
@@ -17,7 +17,6 @@ Before do
     "time"=>"Default" ,
     "time_index"=>"Default" ,
     "source_url" => "http://localhost:8001/ocean_latest.nc",
-    #"color_scale_range" => "-4,4",
     "color_scale_range" => "auto",
     "n_colors" => "10" ,
     "palette" => "jet"
@@ -73,19 +72,17 @@ end
 
 
 # helpers
-
 def visit(url)
   @response = Net::HTTP.get_response(URI.parse(url))
 end
 
 # Makes a url string based on the base_url string and a hash with the query parameters
 # input:
-#  url = http:localhost?
-#  params = {a => 1, b => 2}
-# out: http:localhost?a=1&b=2
+#   base_url = http:localhost
+#   params = {a => 1, b => 2}
+# output: http:localhost?a=1&b=2
 def make_url(base_url, params)
-  base_url << params.to_a.reduce([]){|a,kv| a << kv.join("=")}.join("&")
-  # base_url << "?" << params.to_a.reduce([]){|a,kv| a << kv.join("=")}.join("&")
+  base_url << "?" << params.to_a.reduce([]){|a,kv| a << kv.join("=")}.join("&")
 end
 
 def image_type(img)
