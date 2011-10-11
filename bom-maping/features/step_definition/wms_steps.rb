@@ -21,7 +21,6 @@ Before do
     "n_colors" => "10" ,
     "palette" => "jet"
   }
-  @url = ""
 end
 
 After do 
@@ -39,14 +38,12 @@ Given /^The value of "(.*)" parameter is "(.*)"$/ do |parameter, value|
 end
 
 When /^I submit the request$/ do
-  # puts make_url(@base_url, @params)
   url = make_url(@base_url, @params)
   puts "\n"+url
   @response = visit url
 end
 
 Then /^it should return a "([^"]*)" error with code "([^"]*)"$/ do |error, code|
-  # @response['content-type'].should include('text/html')
   @response.body.should include(error)
   @response.body.should include(code)
 end
@@ -61,16 +58,19 @@ Given /^the parameters are set to "([^"]*)"$/ do |param|
   @params = @default_params
 end
 
-Then /^the response should be a "([^"]*)" image$/ do |type|
-  @response['content-type'].should include("image/#{type}")
-  image_type(@response.body).should match(type)
+Then /^the response should be an image$/ do
+  @response['content-type'].should include("image")
+  is_image?(@response.body)
 end
 
 Then /^the "([^"]*)" of the image should be "([^"]*)"$/ do |param, value|
   image_size(@response.body)[param].should == value.to_i
 end
 
-
+Then /^the format of the image should be "([^"]*)"$/ do |format|
+  image_type(@response.body).should match(format)
+end
+  
 # helpers
 def visit(url)
   @response = Net::HTTP.get_response(URI.parse(url))
@@ -78,7 +78,7 @@ end
 
 # Makes a url string based on the base_url string and a hash with the query parameters
 # input:
-#   base_url = http:localhost
+#   base_url = http://localhost
 #   params = {a => 1, b => 2}
 # output: http:localhost?a=1&b=2
 def make_url(base_url, params)
@@ -90,6 +90,10 @@ def image_type(img)
 end
 
 def image_size(img)
-  size = ImageSize.new(img).get_size
-  {"width" => size[0], "height" => size[1]}
+  i = ImageSize.new(img)
+  {"width" => i.get_width, "height" => i.get_height}
+end
+
+def is_image?(img)
+  ImageSize.new(img).get_height.nil? ? false : true
 end

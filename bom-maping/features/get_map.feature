@@ -6,8 +6,20 @@ Feature: Get map
   Scenario: Returns an image for default parameters
     Given the parameters are set to "default"
     When I submit the request
-    Then the response should be a "png" image
+    Then the response should be an image
     
+  Scenario Outline: Can set the image format
+    Given the parameters are set to "default"
+      And The value of "format" parameter is "<content_type>"
+    When I submit the request
+      Then the response should be an image
+      And the format of the image should be "<format>"
+    
+    Examples:
+      |content_type | format|
+      |image/png    | png   |
+      # |image/jpg    | jpg   |
+      
   Scenario: Image has the right size
     Given The value of "width" parameter is "800"
       And The value of "height" parameter is "600"
