@@ -8,11 +8,12 @@ class WMSParams():
         self.parse()
     
     def parse(self):
-        """ Parses the http request and translates it to the format
-           expected by the plotting controller
+        """
+        Parses the http request and translates it to the format
+        expected by the plotting controller
         """
         # we define here some common funtions
-        to_list = lambda s: s.split(",")
+        to_list = lambda s: [v.strip() for v in s.split(",")]
         bbox = lambda a: dict(zip(["min_lon","min_lat","max_lon","max_lat"], a))
         crs = lambda s: dict(zip(["name","identifier"], s.split(":")))
 
@@ -24,7 +25,9 @@ class WMSParams():
            "crs": [crs],
            "styles": [to_list],
            "layers": [to_list],
-           "n_colors": [to_list]
+           "n_colors": [to_list],
+           "custom_levels": [to_list],
+           "custom_colors": [to_list]
         }        
         
         # lowercase all the keys
@@ -46,6 +49,13 @@ class WMSParams():
     
     
     def validate(self):
+        """
+        Validate the request and format parameters. It relies on a dictionary
+        that contains the valid values.
+          * Make sure the request is a valid operation (if present)
+          * Make sure the format is a valid (if present)
+        """
+        
         if "request" not in self.dict:
             raise MissingParameterError("'request' parameter is missing")        
 

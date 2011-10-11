@@ -111,6 +111,18 @@ class TestWMSParams(unittest.TestCase):
     def test_validate_with_empty_format(self):
         del(self.subject['format'])
         validate = WMSParams(self.subject, self.available).validate()
-          
+        
+    def test_parse_custom_variables(self):
+        self.subject['custom_levels'] = '0,10, 20'
+        self.subject['custom_colors'] = 'red,#202020,b'
+        self.subject['custom_min'] = 'cyan'
+        self.subject['custom_max'] = 'green'
+        parsed_subject = WMSParams(self.subject, self.available).parse()
+        self.assertEqual(['0','10','20'], parsed_subject['custom_levels'])
+        self.assertEqual(['red','#202020','b'], parsed_subject['custom_colors'])
+        self.assertEqual('cyan', parsed_subject['custom_min'])
+        self.assertEqual('green', parsed_subject['custom_max'])    
+    
 if __name__ == '__main__':
     unittest.main()
+    

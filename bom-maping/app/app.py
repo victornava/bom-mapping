@@ -13,13 +13,13 @@ app = Flask(__name__)
 def index():
     try:
         params = WMSParams(request.args, config.available).validate()
-        fn = valid_operations[params['request']]
-
+        
         if params['request'] == 'GetCapabilities':
             defaults = config.capabilities_info
         else:
             defaults = WMSParams(config.defaults).parse()            
 
+        fn = valid_operations[params['request']]
         content, format = fn(params, defaults)
         response = make_response(content)
         response.headers['Content-Type'] = content_type_for(format)
