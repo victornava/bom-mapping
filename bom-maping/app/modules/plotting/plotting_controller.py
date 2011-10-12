@@ -31,6 +31,13 @@ tuple: ()
         n_colors: [ string, ...]
         palette: string
         
+Optional parameters for custom colors:
+
+        custom_levels: [ string, ...]
+        custom_colors: [ string, ...]
+        custom_min: string | color value for min extend
+        custom_max: string | color value for max extend
+        
 Author: Stefan Fuchs (s3260968@student.rmit.edu.au)
 """
 import numpy as np
@@ -145,7 +152,7 @@ class PlottingController(object):
                                 frame_on = False, \
                                 axis_bgcolor = 'k')
         self.m.ax = ax
-        self.__create_contours(pt.GriddedPlot)
+        self.__create_contours(pt.ContourPlot)
       
         self.fig = Figure(figsize=(64/self.DPI,256/self.DPI))
         self.canvas = FigureCanvas(self.fig)
@@ -163,9 +170,6 @@ class PlottingController(object):
         # Calculate offsets for stuff
         bmaplatmin, bmaplonmin = self.m(self.bbox.lat_min, self.bbox.lon_min)
         bmaplatmax, bmaplonmax = self.m(self.bbox.lat_max, self.bbox.lon_max)
-        
-        print bmaplatmin, bmaplonmin
-        print bmaplatmax, bmaplonmax
         
         lon_offset1 = abs(self.bmaplclon - bmaplonmin)
         lat_offset1 = abs(self.bmaplclat - bmaplatmin)
@@ -281,7 +285,8 @@ class PlottingController(object):
                           self.m, \
                           self.lon, \
                           self.lat, \
-                          self.var)
+                          self.var, \
+                          self.fig )
         
         self.main_render = plot.plot()
 
@@ -476,9 +481,24 @@ class ParameterValidator(object):
         # 2. Check that values are of correct type
         self.__check_numericals(self.parameters)
         
+        # 3. Check for custom (optional) parameters
+        self.__check_optionals(self.parameters)
+        
         return self.parameters
+
         
+    def __check_defaults(self, parameters, defaults):
+        """ Check that not supplied optional arguments have sane defaults """
         
+        for key in defaults.keys():
+            if not parameters.has_key(key):
+                parameters[key] = defaults[key]
+                
+        # Special case: color_scale_range = auto
+        if parameters["color_scale_range"][0] == "auto":
+            parameters["color_scale_range"] = [-4,4]
+    
+    
     def __check_numericals(self, parameters):
         """ Validates that numerical values are numerical """
         # dictionary with names and types
@@ -494,6 +514,15 @@ class ParameterValidator(object):
                   "n_colors" : int }
         for k in check:
             self.__check_list_value(parameters,k,check[k])
+        
+        
+    def __check_optionals(self, parameters):
+        """ Calidates optional parameters """
+        check = { 'custom_levels' : float }
+        
+        for k in check:
+            if parameters.has_key(k):
+                self.__check_list_value(parameters,k,check[k])
         
         
     def __check_single_value(self,parameters,name,dtype,neg_check = False):
@@ -532,13 +561,3 @@ class ParameterValidator(object):
                                                  + ')')
         
     
-    def __check_defaults(self, parameters, defaults):
-        """ Check that not supplied optional arguments have sane defaults """
-        
-        for key in defaults.keys():
-            if not parameters.has_key(key):
-                parameters[key] = defaults[key]
-                
-        # Special case: color_scale_range = auto
-        if parameters["color_scale_range"][0] == "auto":
-            parameters["color_scale_range"] = [-4,4]
