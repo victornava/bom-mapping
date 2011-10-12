@@ -205,7 +205,6 @@ class ContourPlot(IPlotType):
         
         data_bl[data_nn.mask == 1] = data_nn[data_nn.mask == 1]
         
-        
         if self.parameters.has_key('custom_levels'):
             self.__print_custom_color_plot(x,y,data_bl)
         else:

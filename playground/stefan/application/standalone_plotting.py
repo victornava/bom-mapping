@@ -28,7 +28,7 @@ param = { "bbox" : {  "min_lat" : "-90.0",
                     } ,
         "layers" : ["hr24_prcp", ] ,
         #"layers" : ["tsair", ] ,
-        "styles" : ["grid", ] ,
+        "styles" : ["contour", ] ,
         "crs" : {   "name" : "EPSG" ,
                     "identifier" : "4283" 
                 } ,

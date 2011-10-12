@@ -280,13 +280,16 @@ class PlottingController(object):
         self.fig.set_dpi(self.DPI)
         self.fig.set_size_inches(self.parameters["width"]/self.DPI, \
                                  self.parameters["height"]/self.DPI)
-                                 
-        plot = style_type(self.parameters, \
-                          self.m, \
-                          self.lon, \
-                          self.lat, \
-                          self.var, \
-                          self.fig )
+        
+        try:
+            plot = style_type(self.parameters, \
+                              self.m, \
+                              self.lon, \
+                              self.lat, \
+                              self.var, \
+                              self.fig )
+        except Exception, e:
+            raise ex.InvalidParameterValueError(repr(e))
         
         self.main_render = plot.plot()
 
