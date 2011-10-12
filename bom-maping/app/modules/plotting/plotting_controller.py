@@ -447,6 +447,7 @@ class PlottingController(object):
             the file extension of the url """
         
         available_sources = { '.nc' : ds.NetCDFDatasource }
+#        available_sources = { '.nc' : ds.RemoteNetCDFDatasource }
         
         key = None
         for k in available_sources.keys():
