@@ -1,15 +1,17 @@
 """ Capabilities Controller
 
-All functionality that has to do with getCapabilities goes into this module.
+All functionality that has to do with getCapabilities goes into
+this module.
 
 """
+#TODO : Tweak for performance
 
 import config
 import util.exceptions as ex
 
 
 def get_capabilities(params,defaults):
-    """ Returns a capabilities dictionary & format """
+    """ Returns capabilities dictionary & format """
     cap = CapabilitiesController (params,defaults)
     return cap.get_capabilities()
 
@@ -30,7 +32,8 @@ class CapabilitiesController():
         self.defaults = defaults
         
         # lowercase all the keys/values
-        self.params = dict((k.lower(), v.lower()) for k,v in params.items())
+        self.params = dict((k.lower(), v.lower())
+                           for k,v in params.items())
         
         if 'format' not in self.params:
             self.params['format'] = defaults['format']
@@ -38,14 +41,16 @@ class CapabilitiesController():
         # convert 'text/xml' into 'xml' 
         self.params['format'] = self.params['format'].split('/')[-1]
 
-        # validate verion number & if it's not specified,assign the default value
+        # validate verion number & if it's not specified,
+        # assign the default value
         if "version" in self.params:
             if self.params['version'] != config.available['version']:
                 raise ex.InvalidVersionError(self.params['version'])
         else:
             self.params['version'] = defaults['version']
 
-        # validate service name & if it's not specified,assign the default value
+        # validate service name & if it's not specified,
+        # assign the default value
         if "service" in self.params:
             if self.params['service'] != config.available['service']:
                 raise ex.InvalidServiceError(self.params['service'])
@@ -80,21 +85,54 @@ class CapabilitiesController():
 
     def __get_capability(self):
 
-        request = self.__get_capability_request()
+        requests = self.__get_capability_request()
         exception = self.__get_capability_exception()
-        layer = self.__get_capability_layer()
+        layers = self.__get_capability_layer()
         
-        capability = { "request": request, "exception" : exception,
-                       "layer" : layer}
+        capability = { "requests": requests,
+                       "exception" : exception,
+                       "layers" : layers}
         return capability
 
     def __get_capability_request(self):
-        # TODO
-        return "request details"
+        
+        requests = {}
+        for request in config.available['requests']:
+            if request == 'GetCapabilities':
+                formats = config.available['capabilities_formats']
+            else:
+                formats = config.available['image_formats']
+
+            #TODO : Convert the file format in MIME repr
+            #  ( xml to text/xml .. )
+                
+            request_methods = config.available['request_methods']
+
+            #TODO : Fetch URI from service & pass here (or) use config file
+            url = 'http://0.0.0.0/'
+            requests.update({request :
+                             {"formats" : formats,
+                              "request_methods" : request_methods,
+                              "url" : url}})
+        return requests
 
     def __get_capability_exception(self):
         return {"formats" : config.available['exception_formats']}
     
     def __get_capability_layer(self):
-        # TODO
-        return "layer details"
+
+        #TODO: Authority URL ?
+        auth_url = "http://bom.gov.au"
+
+        #TODO: Check Styles
+        styles = {"name" :config.available['styles']}
+
+        layers = {"title":config.service_basic_info['title'],
+                  "crs":config.defaults['crs'],
+                  "auth_url": auth_url,
+                  "bbox" : config.defaults['bbox'].split(","),
+                  "styles" : styles}
+
+        #TODO : Different/Other layers ?
+
+        return layers
