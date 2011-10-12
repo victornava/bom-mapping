@@ -130,8 +130,29 @@
                     {%- endfor %}
 				</Exception>
 			{%- endif %}
-			{%- if capability['layer'] %}
-				<Layer>{{capability['layer']}}</Layer>
+			{%- if capability['layers'] %}
+				<Layer>
+					{% set layers = capability['layers'] %}
+					<Title>{{layers['title']}}</Title>
+					<CRS>{{layers['crs']}}</CRS>
+					<AuthorityURL name="DIF_ID">
+						<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" 
+										xlink:type="simple" 
+										xlink:href="{{layers['auth_url']}}"/>
+					</AuthorityURL>
+					{%- if layers['bbox'] %}
+					<!-- TODO : Check with Stef about bbox value -->
+						<EX_GeographicBoundingBox>
+							<westBoundLongitude>{{layers['bbox'][0]}}</westBoundLongitude>
+							<eastBoundLongitude>{{layers['bbox'][2]}}</eastBoundLongitude>
+							<southBoundLatitude>{{layers['bbox'][1]}}</southBoundLatitude>
+							<northBoundLatitude>{{layers['bbox'][3]}}</northBoundLatitude>
+						</EX_GeographicBoundingBox>
+						<!-- The optional resx and resy attributes indicate the X and Y spatial
+							resolution in the units of that CRS. -->
+						<BoundingBox CRS="" minx="{{layers['bbox'][1]}}" miny="{{layers['bbox'][0]}}" maxx="{{layers['bbox'][3]}}" maxy="{{layers['bbox'][2]}}" resx="" resy=""/>
+					{%- endif %}
+				</Layer>
 			{%- endif %}
 		</Capability>
 	<!-- End Capability Data -->
