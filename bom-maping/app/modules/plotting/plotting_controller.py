@@ -446,8 +446,8 @@ class PlottingController(object):
         """ Evaluates what type of data source needs to be created based on
             the file extension of the url """
         
-#        available_sources = { '.nc' : ds.NetCDFDatasource }
-        available_sources = { '.nc' : ds.RemoteNetCDFDatasource }
+        available_sources = { '.nc' : ds.NetCDFDatasource }
+#        available_sources = { '.nc' : ds.RemoteNetCDFDatasource }
         
         key = None
         for k in available_sources.keys():

@@ -58,8 +58,6 @@ def custom():
         "time_index": "Default" ,
         "source_url": "http://localhost:8001/atmos_latest.nc",
         #"source_url" : "http://localhost:8001/ocean_latest.nc",
-        "color_range" : "-10,10" ,
-        "n_color" : "10" ,
         "palette" : "jet",
         # Cust colors here
         "custom_colors" : "%23aabbcc,%23abc123,b,%23123123,m",
