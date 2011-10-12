@@ -20,7 +20,7 @@ class TestDatasource(unittest.TestCase):
                         })
         
         self.d = NetCDFDatasource(
-                       'http://yoursoft06.cs.rmit.edu.au:800/atmos_latest.nc',
+                       'http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc',
                         self.bbox,
                         'hr24_prcp')
         
@@ -93,7 +93,7 @@ class TestDatasource(unittest.TestCase):
     """
         6. Test if constructor raises InvalidParameterValueError error with
         wrong varname
-    """
+    
     def test_bbox_param(self):
         print "===bbox param error==="
         self.bbox = BBox({  "min_lat" : -90.0,
@@ -112,7 +112,7 @@ class TestDatasource(unittest.TestCase):
         self.d.get_data()
         #except Exception,e:
         #    print e.__str__()
-        
+    """
     def test_get_time_units(self):
         print "===get_time_units==="
         print self.d.get_time_units()
