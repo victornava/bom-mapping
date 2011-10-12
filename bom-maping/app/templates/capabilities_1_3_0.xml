@@ -22,6 +22,79 @@
 			{%- if service['abstract'] %}
 				<Abstract>{{service['abstract']}}</Abstract>
 			{%- endif %}
+			{%- if service['keywordlist'] %}
+				<KeywordList>
+					{%- for keyword in service['keywordlist'] %}
+						<Keywords>{{keyword}}</Keywords>
+					{%- else %}
+						WMS
+					{%- endfor %}
+				</KeywordList>
+			{%- endif %}
+			{%- if service['contact_info'] %}
+				<!-- Contact Information -->
+				<ContactInformation>
+				{%- if service['contact_info']['person'] %}
+					<ContactPersonPrimary>
+					{%- if service['contact_info']['person']['name'] %}
+						<ContactPerson>{{service['contact_info']['person']['name']}}</ContactPerson>
+					{%- endif %}
+					{%- if service['contact_info']['person']['organization'] %}
+						<ContactOrganization>{{service['contact_info']['person']['organization']}}</ContactOrganization>
+					{%- endif %}
+					</ContactPersonPrimary>
+				{%- endif %}
+				{%- if service['contact_info']['contact_address'] %}
+					<ContactAddress>
+					{%- if service['contact_info']['contact_address']['address_type'] %}
+						<AddressType>{{service['contact_info']['contact_address']['address_type']}}</AddressType>
+					{%- endif %}
+					{%- if service['contact_info']['contact_address']['address'] %}
+						<Address>{{service['contact_info']['contact_address']['address']}}</Address>
+					{%- endif %}
+					{%- if service['contact_info']['contact_address']['city'] %}
+						<City>{{service['contact_info']['contact_address']['city']}}</City>
+					{%- endif %}
+					{%- if service['contact_info']['contact_address']['state'] %}
+						<StateOrProvince>{{service['contact_info']['contact_address']['state']}}</StateOrProvince>
+					{%- endif %}
+					{%- if service['contact_info']['contact_address']['postcode'] %}
+						<PostCode>{{service['contact_info']['contact_address']['postcode']}}</PostCode>
+					{%- endif %}
+					{%- if service['contact_info']['contact_address']['country'] %}
+						<Country>{{service['contact_info']['contact_address']['country']}}</Country>
+					{%- endif %}
+					</ContactAddress>
+				{%- endif %}
+				{%- if service['contact_info']['phone'] %}
+					<ContactVoiceTelephone>{{service['contact_info']['phone']}}</ContactVoiceTelephone>
+				{%- endif %}
+				{%- if service['contact_info']['email'] %}
+					<ContactElectronicMailAddress>{{service['contact_info']['email']}}</ContactElectronicMailAddress>
+				{%- endif %}				
+				</ContactInformation>
+				<!-- End Contact Information -->
+			{%- endif %}
+			{%- if service['online_resource_url'] %}
+				<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" 
+					xlink:type="simple" 
+					xlink:href="{{service['online_resource_url']}}"/>
+			{%- endif %}
+			{%- if service['fees'] %}
+				<Fees>{{service['fees']}}</Fees>
+			{%- endif %}
+			{%- if service['access_constraints'] %}
+				<AccessConstraints>{{service['access_constraints']}}</AccessConstraints>
+			{%- endif %}
+			{%- if service['layer_limit'] %}
+				<LayerLimit>{{service['layer_limit']}}</LayerLimit>
+			{%- endif %}
+			{%- if service['max_width'] %}
+				<MaxWidth>{{service['max_width']}}</MaxWidth>
+			{%- endif %}
+			{%- if service['max_height'] %}
+				<MaxHeight>{{service['max_height']}}</MaxHeight>
+			{%- endif %}
 		</Service>
 	<!-- End Service Metadata -->
 
@@ -31,7 +104,11 @@
 				<Request>{{capability['request']}}</Request>
 			{%- endif %}
 			{%- if capability['exception'] %}
-				<Exception>{{capability['exception']}}</Exception>
+				<Exception>
+					{%- for exception_format in capability['exception']['formats'] %}
+						<Format>{{exception_format}}</Format>
+                    {%- endfor %}
+				</Exception>
 			{%- endif %}
 			{%- if capability['layer'] %}
 				<Layer>{{capability['layer']}}</Layer>
