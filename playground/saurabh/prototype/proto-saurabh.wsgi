@@ -285,6 +285,7 @@ def transform_lons(coords,lon,f):
         idx = np.argsort(lont)
         lont = lont[idx]
         ft = f[:,idx]
+	#test
         ft, lont = addcyclic(ft,lont)
         return coords,lont,ft
 
@@ -350,8 +351,9 @@ def get_pasap_plot_title(dset,
         units = ''
     valid_time = datetime.datetime.strftime(
         num2date(time_var[timestep],time_units),"%Y%m%d")
-    start_date = datetime.datetime.strftime(
-        num2date(dset['init_date'][0],time_units),"%Y%m%d")
+    #start_date = datetime.datetime.strftime(
+    #    num2date(dset['init_date'][0],time_units),"%Y%m%d")
+    start_date = "some date" 
 
     #period_label = str(dset['time_label'][timestep])
     period_label = "period_label cannot be created, added manually(@357) - saurabh" 
@@ -706,30 +708,31 @@ def ocean_mask_test():
         for name, value in {
             "INVOCATION" : "terminal",
             "SAVE_LOCAL": "1",
-            "REQUEST" : "GetFullFigure",
-            "BBOX" : "00,-90,360,90",
+            "REQUEST" : "GetMap",
+            #"BBOX" : "00,-90,360,90",
+            "BBOX" : "-90,0,90,360",
             "WIDTH" : "640",
-            "HEIGHT" : "300",
-            "DAP_URL" : 'http://yoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
-            "LAYER" : 'SSTA',
+            "HEIGHT" : "480",
+            "DAP_URL" : 'http://yoursoft06.cs.rmit.edu.au:8001/test.nc',
+            "LAYER" : 'temp',
             #"STYLE" : 'contour'
-            "STYLE" : 'grid'
+            "STYLE" : 'contour'
 	    #"TRANSPARENT" : 'FALSE'
         }.items():
             params.list.append(cgi.MiniFieldStorage(name, value))
         doWMS(params)
 
-def atmos_mask_test():
+def test():
         params = cgi.FieldStorage()
         for name, value in {
             "INVOCATION" : "terminal",
             "SAVE_LOCAL": "1",
             "REQUEST" : "GetFullFigure",
-            "BBOX" : "70,-50,180,-5",
-            "WIDTH" : "640",
-            "HEIGHT" : "300",
-            "DAP_URL" : 'http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc',
-            "LAYER" : 'hr24_prcp',
+            "BBOX" : "0,-90,360,90",
+            "WIDTH" : "1024",
+            "HEIGHT" : "980",
+            "DAP_URL" : 'http://yoursoft06.cs.rmit.edu.au:8001/test.nc',
+            "LAYER" : 'temp',
             "STYLE" : 'contour'
             #"STYLE" : 'grid'
         }.items():
@@ -743,7 +746,8 @@ if __name__ == '__main__':
         os.environ['INVOCATION'] = 'terminal'
 
         # Some test parameters for debugging
-        ocean_mask_test()
+        #ocean_mask_test()
+        test()
         #atmos_mask_test()
 
     elif 'CGI' in os.environ.get('GATEWAY_INTERFACE',''):
