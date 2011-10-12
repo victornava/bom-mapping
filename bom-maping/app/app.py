@@ -15,7 +15,7 @@ def index():
         params = WMSParams(request.args, config.available).validate()
         
         if params['request'] == 'GetCapabilities':
-            defaults = config.capabilities_info
+            defaults = config.capabilities_defaults
         else:
             defaults = WMSParams(config.defaults).parse()            
 
@@ -42,11 +42,8 @@ def dev():
 
             
 def get_capabilities(params, defaults):
-    # TODO Should call it like this
-    # cap, format = cap_controller.get_capabilities(params, defauts)
-    # return render_template("capabilities_1_3_0.xml", cap=cap), format
-    cap = cap_controller.get_capabilities(params)
-    return render_template("capabilities_1_3_0.xml", cap=cap), 'xml'
+    cap,format = cap_controller.get_capabilities(params,defaults)
+    return render_template("capabilities_1_3_0.xml", cap=cap), format
         
 def handle_exception(exception):
     output = render_template("exceptions_1_3_0.xml", error=exception.data())
