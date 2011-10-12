@@ -1,9 +1,8 @@
 available = {
-    "formats": ["png", "jpeg"],
     "image_formats": ["png", "jpeg"],
     "capabilities_formats": ["xml"],
     "exception_formats": ["xml"],
-    "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
+    "requests" : ["GetMap", "GetFullFigure", "GetLegend", "GetCapabilities"],
     "styles": ["grid", "contour", "grid_treshold"]
     }
 

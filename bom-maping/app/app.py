@@ -58,7 +58,7 @@ def handle_exception(exception):
 valid_operations = {
     "GetMap": plotter.get_contour,
     "GetFullFigure": plotter.get_full_figure,
-    "GetLeyend": plotter.get_legend,
+    "GetLegend": plotter.get_legend,
     "GetCapabilities": get_capabilities
     }
 

@@ -50,7 +50,6 @@ class TestWMSParams(unittest.TestCase):
             }
         
         self.available = {
-            "formats": ["png", "jpeg"],
             "image_formats": ["png", "jpeg"],
             "capabilities_formats": ["xml"],
             "exception_formats": ["xml"],

@@ -26,14 +26,14 @@ end
 After do 
 end
 
-Given /^The parameter (\w+) is missing$/ do |parameter|
+Given /^the parameter (\w+) is missing$/ do |parameter|
   @params = @default_params
   @params.delete(parameter)
 end
 
 # Given /^The value of "(.*)" parameter is "(.*)"$/ do |parameter, value|  
-Given /^The value of "(.*)" parameter is "(.*)"$/ do |parameter, value|  
-  @params = @default_params
+Given /^the value of "(.*)" parameter is "(.*)"$/ do |parameter, value|  
+  # @params = @default_params
   @params[parameter] = value
 end
 
@@ -53,9 +53,8 @@ Then /^the message should contain "?([^"]*)"?$/ do |message|
 end
 
 # get map feature
-
-Given /^the parameters are set to "([^"]*)"$/ do |param|
-  @params = @default_params
+Given /^the parameters are set to "([^"]*)"$/ do |state|
+  @params = (state == 'default') ? @default_params : {}
 end
 
 Then /^the response should be an image$/ do
@@ -70,6 +69,12 @@ end
 Then /^the format of the image should be "([^"]*)"$/ do |format|
   image_type(@response.body).should match(format)
 end
+
+#get_capabilities
+Then /^the response should be an "([^"]*)" document$/ do |format|
+  @response['content-type'].should include("text/#{format}")
+end
+
   
 # helpers
 def visit(url)
