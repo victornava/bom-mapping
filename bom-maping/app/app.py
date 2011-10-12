@@ -13,7 +13,9 @@ app = Flask(__name__)
 def index():
     try:
         params = WMSParams(request.args, config.available).validate()
-        
+
+        # TODO: GetCap module has access to the config file, so no need
+        # to pass default variable here. - Vas
         if params['request'] == 'GetCapabilities':
             defaults = config.capabilities_defaults
         else:
