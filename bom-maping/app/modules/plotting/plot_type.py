@@ -110,7 +110,7 @@ class GriddedPlot(IPlotType):
     def plot(self):
         IPlotType.plot(self)
         
-        #colormap = mpl.cm.get_cmap(self.parameters["palette"])
+        cmap = mpl.cm.get_cmap(self.parameters["palette"])
         crange = self.parameters["color_scale_range"]
         
         self.main_render = self.m.pcolormesh(self.x, \
@@ -118,7 +118,8 @@ class GriddedPlot(IPlotType):
                                              self.data[:,:], \
                                              vmin=crange[0], \
                                              vmax=crange[1], \
-                                             cmap=self.cmap)
+#                                             cmap=self.cmap)
+                                             cmap=cmap)
                                              
         return self.main_render
         
@@ -135,21 +136,22 @@ class GriddedTresholdPlot(IPlotType):
     
     def plot(self):
         IPlotType.plot(self)
-        
-        #cmap = mpl.cm.get_cmap(self.parameters["palette"])
+        cmap = mpl.cm.get_cmap(self.parameters["palette"])
         crange = self.parameters["color_scale_range"]
         #ncolors = self.parameters["n_color"]
         
         increment = float(crange[1] - crange[0]) / float(self.ncolors)
         cbounds = list(np.arange(crange[0],crange[1] + increment, increment ))
         
-        cnorm = mpl.colors.BoundaryNorm(cbounds,self.cmap.N)
+#        cnorm = mpl.colors.BoundaryNorm(cbounds,self.cmap.N)
+        cnorm = mpl.colors.BoundaryNorm(cbounds,cmap.N)
         self.main_render = self.m.pcolor( self.x, \
                                           self.y, \
                                           self.data[:,:], \
                                           vmin=crange[0], \
                                           vmax=crange[1], \
-                                          cmap=self.cmap, \
+#                                          cmap=self.cmap, \
+                                          cmap=cmap, \
                                           norm=cnorm)
         
         return self.main_render
@@ -236,7 +238,7 @@ class ContourPlot(IPlotType):
                                             data[:,:], \
                                             cbounds, \
                                             cmap=self.cmap, \
-                                            extend='none')
+                                            extend='both')
         
         contours = self.m.contour(x,y,data,cbounds,colors='k')
         contours.clabel(colors='k',rightside_up=True,fmt='%1.1f',inline=True)

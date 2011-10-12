@@ -55,9 +55,9 @@ param = { "bbox" : {  "min_lat" : "-90.0",
 #c = pc.PlottingController(param)
 #output = c.get_contour()
 
-#d,f = pc.get_contour(param,defaults)
+d,f = pc.get_contour(param,defaults)
 #d,f = pc.get_legend(param,defaults)
-d,f = pc.get_full_figure(param,defaults)
+#d,f = pc.get_full_figure(param,defaults)
 #print d
 
 print "format: %s" % f
