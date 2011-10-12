@@ -96,12 +96,32 @@
 				<MaxHeight>{{service['max_height']}}</MaxHeight>
 			{%- endif %}
 		</Service>
-	<!-- End Service Metadata -->
+	{#<!-- End Service Metadata -->#}
 
 	<!-- Capability Data -->
 		<Capability>
-			{%- if capability['request'] %}
-				<Request>{{capability['request']}}</Request>
+			{%- if capability['requests'] %}
+				<Request>
+					{% set requests = capability['requests'] %}
+					{%- for request in requests %}
+						<{{request}}>
+							{%- for format in requests[request]['formats'] %}
+								<Format>{{format}}</Format>
+							{%- endfor %}
+							<DCPType>
+								<HTTP>
+									{%- for request_method in requests[request]['request_methods'] %}
+										<{{request_method}}>
+											<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+												xlink:type="simple"
+												xlink:href="{{requests[request]['url']}}?" />
+										</{{request_method}}>
+									{%- endfor %}
+								</HTTP>
+							</DCPType>
+						</{{request}}>
+					{%- endfor %}
+				</Request>
 			{%- endif %}
 			{%- if capability['exception'] %}
 				<Exception>
