@@ -2,6 +2,8 @@ available = {
     "formats": ["png", "jpeg"],
     "image_formats": ["png", "jpeg"],
     "capabilities_formats": ["xml"],
+    "version": "1.3.0",
+    "service": "wms",
     "exception_formats": ["xml"],
     "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
     "styles": ["grid", "contour", "grid_treshold"]
@@ -26,7 +28,7 @@ defaults = {
     "palette" : "jet"
     }
     
-capabilities_info = {
+capabilities_defaults = {
     "format" : "text/xml",
     "version" : "1.3.0",
     "service" : "wms"
