@@ -9,6 +9,9 @@ import config
 
 app = Flask(__name__)
 
+
+#FIX: Support for POST method : Error Code : 405
+
 @app.route('/')
 def index():
     try:
