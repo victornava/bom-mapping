@@ -35,13 +35,25 @@ class TestDatasource(unittest.TestCase):
         
         
     """
-        2. Test if get_lons() returns array of lons
+        2. Test if get_lats() returns LayerNotDefinedError for varname which 
+    """
+    def test_get_latitudes(self):
+        print "===get_lats for invalid_layer==="
+        self.d = NetCDFDatasource('http://opendap.jpl.nasa.gov/opendap/' + \
+                            'GeodeticsGravity/tellus/L3/eof_ocean_mass/' + \
+                            'netcdf/GRC_CSR_RL04_DPC_OCN_eofr_200302_201103.nc',
+                        self.bbox,
+                        'Water_Thickness')
+        print self.assertRaises(ex.LayerNotDefinedError, self.d.get_lats)
+        
+    """
+        3. Test if get_lons() returns array of lons
     """
     def test_get_lons(self):
         print "===get_lons==="
         print self.d.get_lons()
         
-        self.assertIsNotNone(self.d.get_lons())
+        self.assertRaises(None, self.d.get_lons)
         
     """
         3. Test if data is retrieved with right url, bbox params, varname
