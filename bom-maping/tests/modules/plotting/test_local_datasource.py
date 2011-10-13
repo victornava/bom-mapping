@@ -1,11 +1,11 @@
 """
     Author: Saurabh Pandit(s3270950@student.rmit.edu.au)
     
-    Unit tests for NetCDFDatasource module
+    Unit tests for LocalNetCDFDatasource module
 """
 
 import unittest
-from modules.plotting.datasource import NetCDFDatasource
+from modules.plotting.datasource import LocalNetCDFDatasource
 import util.exceptions as ex
 from modules.plotting.commons import BBox
 
@@ -19,8 +19,8 @@ class TestDatasource(unittest.TestCase):
                             "max_lon" : 80.0
                         })
         
-        self.d = NetCDFDatasource(
-                       'http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc',
+        self.d = LocalNetCDFDatasource(
+                       '/home/saurabh/Downloads/atmos_latest.nc',
                         self.bbox,
                         'hr24_prcp')
         
@@ -49,8 +49,8 @@ class TestDatasource(unittest.TestCase):
     def test_get_data(self):
         print "===get_data==="
         
-        self.d = NetCDFDatasource(
-                       'http://yoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
+        self.d = LocalNetCDFDatasource(
+                       '/home/saurabh/Downloads/ocean_latest.nc',
                         self.bbox,
                         'SST', plot_mask = False)
         try:
@@ -67,8 +67,8 @@ class TestDatasource(unittest.TestCase):
         print "===get_data Url Error==="
         
         self.assertRaises(ex.InvalidParameterValueError, \
-                          NetCDFDatasource, \
-                          'http://wrong.cs.rmit.edu.au:8001/ocean_latest.nc', \
+                          LocalNetCDFDatasource, \
+                          '/wrong/ocean_latest.nc', \
                           self.bbox, 'SSTA_cc', plot_mask=True)
         
     """
@@ -78,8 +78,8 @@ class TestDatasource(unittest.TestCase):
     def test_layer_not_found_error(self):
         print "===Layer not found error==="
         
-        self.d = NetCDFDatasource(
-                       'http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc',
+        self.d = LocalNetCDFDatasource(
+                       '/home/saurabh/Downloads/atmos_latest.nc',
                         self.bbox,
                         'invalid_layer')
         
@@ -91,9 +91,8 @@ class TestDatasource(unittest.TestCase):
             print e.__str__()
             
     """
-        6. Test if constructor raises InvalidParameterValueError error with
-        wrong varname
-    
+        6. 
+    """
     def test_bbox_param(self):
         print "===bbox param error==="
         self.bbox = BBox({  "min_lat" : -90.0,
@@ -101,18 +100,18 @@ class TestDatasource(unittest.TestCase):
                             "max_lat" : 80.0,
                             "max_lon" : 360.0
                         })
-        self.d = NetCDFDatasource(
-                       'http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc',
+        self.d = LocalNetCDFDatasource(
+                       '/home/saurabh/Downloads/atmos_latest.nc',
                         self.bbox,
                         'hr24_prcp')
                         
         self.assertRaises(Exception, \
                             self.d.get_data)
-        #try:
-        self.d.get_data()
-        #except Exception,e:
-        #    print e.__str__()
-    """
+        try:
+            print self.d.get_data()
+        except Exception,e:
+            print e.__str__()
+        
     def test_get_time_units(self):
         print "===get_time_units==="
         print self.d.get_time_units()
@@ -129,8 +128,8 @@ class TestDatasource(unittest.TestCase):
         #with self.assertRaises(ex.InvalidUrlError):
         try:
             print "+++++contruct+++++"
-            self.d = NetCDFDatasource(
-                    'http://yoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
+            self.d = LocalNetCDFDatasource(
+                    '/home/saurabh/Downloads/ocean_latest.nc',
                     self.bbox,
                     'SSTA_cc')
             print self.d.get_var_unit()

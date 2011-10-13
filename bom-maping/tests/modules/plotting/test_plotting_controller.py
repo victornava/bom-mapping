@@ -245,3 +245,6 @@ class TestParameterValidator(unittest.TestCase):
         self.param["n_colors"] = [ "10a",]
         v = pc.ParameterValidator(self.param, self.defaults)
         self.assertRaises(ex.InvalidParameterValueError, v.validate)
+        
+    # 5) Validate Custom colors
+    #TODO: Write tests

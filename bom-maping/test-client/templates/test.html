@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>BOM-WMS</title>
+	<style>
+		body{font:12px/1.3 "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;}
+		form{width:600px;overflow:hidden;float:left;}
+		form label{clear:both;float:left;margin-bottom:10px;width:150px;line-height:20px;}
+		form input,select{float:left;width:250px;margin-bottom:10px;height:20px;}
+		form input.button{clear:both;margin-left:10px;width:75px;height:20px;border:solid 0;color:#0856a1;text-transform:uppercase;}
+	</style>
+</head>
+<body>
+	
+	<div>
+	
+		<h1>BOM-WMS</h1>
+		<form method="get" action="http://localhost:8007">
+			{%- if config.available.requests %}
+			<label for="request">Request</label>
+			<select id="request" name="request"> 
+			{%- for request in config.available.requests %}
+				<option value="{{request}}" >{{request}}</option>
+			{%- endfor %}
+			</select>
+			{%- endif %}
+			
+			{%- if config.available.formats %}
+			<label for="format">Format </label>
+			<select id="format" name="format"> 
+			{%- for format in config.available.image_formats %}
+				<option value="{{format}}" >{{format}}</option>
+			{%- endfor %}
+			{%- for format in config.available.capabilities_formats %}
+				<option value="{{format}}" >{{format}}</option>
+			{%- endfor %}
+			</select>
+			{%- endif %}
+			
+			{%- if config.available.version %}
+			<label for="version">Version </label>
+			<select id="version" name="version">
+				<option value="{{config.available.version}}" selected="selected">
+				{{config.available.version}}</option>
+			</select>
+			{%- endif %}
+			
+			{%- if config.available.service %}
+			<label for="service">Service</label>
+			<select id="service" name="service">
+				<option value="{{config.available.service}}" selected="selected">
+				{{config.available.service}}</option>
+			</select>
+			{%- endif %}
+			
+			<label for="updatesequence">Update Sequence</label>
+			<input id="updatesequence" name="updatesequence"type="text" />
+			
+			{%- if config.available.styles %}
+			<label for="styles">Styles</label>
+			<select id="styles" name="styles"> 
+			{%- for style in config.available.styles %}
+				<option value="{{style}}" >{{style}}</option>
+			{%- endfor %}
+			</select>
+			{%- endif %}
+			
+			<label for="width">Width</label>
+			<input id="width" name="width" type="text" />
+			
+			<label for="height">Height</label>
+			<input id="height" name="height" type="text" />
+
+			<label for="layers">Layers</label>
+			<input id="layers" name="layers" type="text" />
+
+			<label for="crs">CRS</label>
+			<input id="crs" name="crs" type="text" />
+
+			<label for="time">Time</label>
+			<input id="time" name="time" type="text" />
+
+			<label for="time_index">Time Index</label>
+			<input id="time_index" name="time_index" type="text" />
+
+			<label for="source_url">Source URL</label>
+			<input id="source_url" name="source_url" type="text" />
+			
+			<label for="color_scale_range">Color Scale Range</label>
+			<input id="color_scale_range" name="color_scale_range" type="text" />
+
+			<label for="n_colors">n Colors</label>
+			<input id="n_colors" name="n_colors"type="text" />			
+			
+			<label for="palette">palette</label>
+			<input id="palette" name="Palette"type="text" />			
+			
+			<label for="color_levels">Color Levels</label>
+			<input id="color_levels" name="color_levels" type="text" />			
+			
+			<label for="colors">Colors</label>
+			<input id="colors" name="colors" type="text" />
+
+			<label for="min_color">Min Color</label>
+			<input id="min_color" name="min_color" type="text" />
+			
+			<label for="max_color">Max Color</label>
+			<input id="max_color" name="max_color" type="text" />
+			
+			<input id="submit" class="button" type="submit" name="submit" value="Submit" />
+			<input id="reset" class="button" type="reset" name="reset" value="Reset" />
+		</form>	
+
+	</div>
+	
+	<div id="op">
+		
+	</div>
+	
+</body>
+</html>

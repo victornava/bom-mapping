@@ -28,7 +28,7 @@ class IPlotType(object):
     __metaclass__ = ABCMeta
     
     @abstractmethod
-    def __init__(self,parameters,m,lons,lats,data):
+    def __init__(self,parameters,m,lons,lats,data, fig):
         """ Constructor
         
         parameters: dictionary of parameters defined in
@@ -37,6 +37,7 @@ class IPlotType(object):
         lons: numpy array of longitudes
         lats: numpy array of latitudes
         data: numpy aray of data
+        fig: the figure
         """
         
         self.parameters = parameters
@@ -44,6 +45,7 @@ class IPlotType(object):
         self.lons = lons
         self.lats = lats
         self.data = data
+        self.fig = fig
         
         self.ncolors = self.parameters["n_colors"][0]
         self.cmap = self.__cmap_discretise( mpl.cm.get_cmap( \
@@ -100,15 +102,15 @@ class GriddedPlot(IPlotType):
     Class responsible for creating gridded plots
     """
     
-    def __init__(self,parameters,m,lons,lats,data):
+    def __init__(self,parameters,m,lons,lats,data,fig):
         """ Constructor """
-        IPlotType.__init__(self,parameters,m,lons,lats,data)
+        IPlotType.__init__(self,parameters,m,lons,lats,data,fig)
 
         
     def plot(self):
         IPlotType.plot(self)
         
-        #colormap = mpl.cm.get_cmap(self.parameters["palette"])
+        cmap = mpl.cm.get_cmap(self.parameters["palette"])
         crange = self.parameters["color_scale_range"]
         
         self.main_render = self.m.pcolormesh(self.x, \
@@ -116,7 +118,8 @@ class GriddedPlot(IPlotType):
                                              self.data[:,:], \
                                              vmin=crange[0], \
                                              vmax=crange[1], \
-                                             cmap=self.cmap)
+#                                             cmap=self.cmap)
+                                             cmap=cmap)
                                              
         return self.main_render
         
@@ -126,28 +129,29 @@ class GriddedTresholdPlot(IPlotType):
     Class responsible for creating gridded treshold plots
     """
     
-    def __init__(self,parameters,m,lons,lats,data):
+    def __init__(self,parameters,m,lons,lats,data,fig):
         """ Constructor """
-        IPlotType.__init__(self,parameters,m,lons,lats,data)
+        IPlotType.__init__(self,parameters,m,lons,lats,data,fig)
     
     
     def plot(self):
         IPlotType.plot(self)
-        
-        #cmap = mpl.cm.get_cmap(self.parameters["palette"])
+        cmap = mpl.cm.get_cmap(self.parameters["palette"])
         crange = self.parameters["color_scale_range"]
         #ncolors = self.parameters["n_color"]
         
         increment = float(crange[1] - crange[0]) / float(self.ncolors)
         cbounds = list(np.arange(crange[0],crange[1] + increment, increment ))
         
-        cnorm = mpl.colors.BoundaryNorm(cbounds,self.cmap.N)
+#        cnorm = mpl.colors.BoundaryNorm(cbounds,self.cmap.N)
+        cnorm = mpl.colors.BoundaryNorm(cbounds,cmap.N)
         self.main_render = self.m.pcolor( self.x, \
                                           self.y, \
                                           self.data[:,:], \
                                           vmin=crange[0], \
                                           vmax=crange[1], \
-                                          cmap=self.cmap, \
+#                                          cmap=self.cmap, \
+                                          cmap=cmap, \
                                           norm=cnorm)
         
         return self.main_render
@@ -157,26 +161,26 @@ class ContourPlot(IPlotType):
     Class responsible for creating contour plots
     """
     
-    def __init__(self,parameters,m,lons,lats,data):
+    def __init__(self,parameters,m,lons,lats,data,fig):
         """ Constructor """
-        IPlotType.__init__(self,parameters,m,lons,lats,data)
+        IPlotType.__init__(self,parameters,m,lons,lats,data,fig)
         
         
     def plot(self):
         
-        #cmap = mpl.cm.get_cmap(self.parameters["palette"])
-        crange = self.parameters["color_scale_range"]
-        ncolors = self.parameters["n_colors"][0]
+        #crange = self.parameters["color_scale_range"]
+        #ncolors = self.parameters["n_colors"][0]
         
         self.data,lonwrap = addcyclic(self.data,self.lons)
         
-        increment = float(crange[1] - crange[0]) / float(ncolors-2)
-        cbounds = list(np.arange(crange[0],crange[1] + increment, increment ))
+        #increment = float(crange[1] - crange[0]) / float(ncolors-2)
+        #cbounds = list(np.arange(crange[0],crange[1] + increment, increment ))
         # TODO: Color stuff
         
         #cmap = self.cmap_discretise(cmap,ncolors)
         
-        colvs = [-999]+cbounds+[999]
+        #FIXME: Do we need this?
+        #colvs = [-999]+cbounds+[999]
         
         # Sort latitudes and data
         lat_idx = np.argsort(self.lats)
@@ -203,13 +207,107 @@ class ContourPlot(IPlotType):
         
         data_bl[data_nn.mask == 1] = data_nn[data_nn.mask == 1]
         
+        if self.parameters.has_key('color_levels'):
+            self.__print_custom_color_plot(x,y,data_bl)
+        else:
+            self.__print_cmap_plot(x,y,data_bl)
+        """
         self.main_render = self.m.contourf( x, \
                                             y, \
                                             data_bl[:,:], \
                                             cbounds, \
                                             cmap=self.cmap, \
-                                            extend='both')
-        contours = self.m.contour(x,y,data_bl,cbounds,colors='k')
-        contours.clabel(colors='k',rightside_up=True,fmt='%1.1f',inline=True)
+                                            extend='none')
+                                            """
+        #contours = self.m.contour(x,y,data_bl,cbounds,colors='k')
+        #contours.clabel(colors='k',rightside_up=True,fmt='%1.1f',inline=True)
         
         return self.main_render
+
+        
+    def __print_cmap_plot(self,x,y,data):
+        """ Creates standard contour plot """
+        crange = self.parameters["color_scale_range"]
+        ncolors = self.parameters["n_colors"][0]
+        
+        increment = float(crange[1] - crange[0]) / float(ncolors-2)
+        cbounds = list(np.arange(crange[0],crange[1] + increment, increment ))
+        
+        self.main_render = self.m.contourf( x, \
+                                            y, \
+                                            data[:,:], \
+                                            cbounds, \
+                                            cmap=self.cmap, \
+                                            extend='both')
+        
+        contours = self.m.contour(x,y,data,cbounds,colors='k')
+        contours.clabel(colors='k',rightside_up=True,fmt='%1.1f',inline=True)
+        
+    
+    def __print_custom_color_plot(self,x,y,data):
+        """ Creates contour plot with custom colors """
+        extend = self.__find_extend()
+        
+        self.main_render = self.m.contourf( x, \
+                                            y, \
+                                            data[:,:], \
+                                levels=self.parameters['color_levels'], \
+                                            extend=extend, \
+                                            ** self.__find_correct_color())
+                                            
+        if self.__has_min_ext():
+            self.main_render.cmap.set_under(self.parameters["min_color"])
+            
+        if self.__has_max_ext():
+            self.main_render.cmap.set_over(self.parameters["max_color"])
+            
+        contours = self.m.contour( x, \
+                                   y, \
+                                   data, \
+                                   levels=self.parameters['color_levels'], \
+                                   colors='k')
+        
+
+        
+        contours.clabel(colors='k',rightside_up=True,fmt='%1.1f',inline=True)
+        
+        # FIXME: This is a workaround to display the extend properly
+        ax = self.fig.add_axes((1,1,1,1), visible = False)
+        self.fig.colorbar(self.main_render, ax=ax)
+        
+        
+    def __find_extend(self):
+        """ Finds out the correct extend
+       
+http://matplotlib.sourceforge.net/api/pyplot_api.html#matplotlib.pyplot.
+contourf
+        """
+        
+        if self.__has_min_ext() and self.__has_max_ext():
+            return 'both'
+        
+        if self.__has_min_ext():
+            return 'min'
+            
+        if self.__has_max_ext():
+            return 'max'
+            
+        return 'neither'
+        
+    
+    def __find_correct_color(self):
+        """ Returns a dictionary with the correct colors to be used.
+        
+        If no custom colors were specified, the supplied cmap will be used.
+        """
+        if self.parameters.has_key('colors'):
+            return { 'colors' : self.parameters['colors'] }
+        else:
+            return { 'cmap' : self.cmap }
+    
+    def __has_min_ext(self):
+        return self.parameters.has_key('min_color')
+        
+        
+    def __has_max_ext(self):
+        return self.parameters.has_key('max_color')

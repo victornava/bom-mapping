@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    links = ["ours","prototype"]
+    links = ["ours","prototype", "custom"]
     
     html = ""
     for link in links:
@@ -34,6 +34,36 @@ def new():
         "color_range" : "-10,10" ,
         "n_color" : "10" ,
         "palette" : "jet"
+    }
+    
+    url += "&".join("=".join(i) for i in params.items())
+    return "<a href="+url+">"+url+"</a>"
+    
+@app.route('/custom')
+def custom():
+    
+    url = "http://localhost:8007/?"
+    
+    params = {
+        "request":"GetMap",
+        "bbox":"-180,-90,1800,90",
+        "width": "694",
+        "height": "573",
+        "layers": "hr24_prcp",
+        #"layers" : "SSTA",
+        "styles" : "contour",
+        "crs" : "EPSG:4283",
+        "format" : "png" ,
+        "time" : "Default" ,
+        "time_index": "Default" ,
+        "source_url": "http://localhost:8001/atmos_latest.nc",
+        #"source_url" : "http://localhost:8001/ocean_latest.nc",
+        "palette" : "jet",
+        # Cust colors here
+        "custom_colors" : "%23aabbcc,%23abc123,b,%23123123,m",
+        "custom_levels" : "0,2.5,3.0,5,10,15",
+        "custom_min" : "cyan",
+        "custom_max" : "yellow"
     }
     
     url += "&".join("=".join(i) for i in params.items())
