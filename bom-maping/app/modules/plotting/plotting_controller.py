@@ -33,10 +33,10 @@ tuple: ()
         
 Optional parameters for custom colors:
 
-        custom_levels: [ string, ...]
-        custom_colors: [ string, ...]
-        custom_min: string | color value for min extend
-        custom_max: string | color value for max extend
+        color_levels: [ string, ...]
+        colors: [ string, ...]
+        min_color: string | color value for min extend
+        max_color: string | color value for max extend
         
 Author: Stefan Fuchs (s3260968@student.rmit.edu.au)
 """
@@ -522,7 +522,7 @@ class ParameterValidator(object):
         
     def __check_optionals(self, parameters):
         """ Calidates optional parameters """
-        check = { 'custom_levels' : float }
+        check = { 'color_levels' : float }
         
         for k in check:
             if parameters.has_key(k):

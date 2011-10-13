@@ -207,7 +207,7 @@ class ContourPlot(IPlotType):
         
         data_bl[data_nn.mask == 1] = data_nn[data_nn.mask == 1]
         
-        if self.parameters.has_key('custom_levels'):
+        if self.parameters.has_key('color_levels'):
             self.__print_custom_color_plot(x,y,data_bl)
         else:
             self.__print_cmap_plot(x,y,data_bl)
@@ -251,20 +251,20 @@ class ContourPlot(IPlotType):
         self.main_render = self.m.contourf( x, \
                                             y, \
                                             data[:,:], \
-                                levels=self.parameters['custom_levels'], \
+                                levels=self.parameters['color_levels'], \
                                             extend=extend, \
                                             ** self.__find_correct_color())
                                             
         if self.__has_min_ext():
-            self.main_render.cmap.set_under(self.parameters["custom_min"])
+            self.main_render.cmap.set_under(self.parameters["min_color"])
             
         if self.__has_max_ext():
-            self.main_render.cmap.set_over(self.parameters["custom_max"])
+            self.main_render.cmap.set_over(self.parameters["max_color"])
             
         contours = self.m.contour( x, \
                                    y, \
                                    data, \
-                                   levels=self.parameters['custom_levels'], \
+                                   levels=self.parameters['color_levels'], \
                                    colors='k')
         
 
@@ -300,14 +300,14 @@ contourf
         
         If no custom colors were specified, the supplied cmap will be used.
         """
-        if self.parameters.has_key('custom_colors'):
-            return { 'colors' : self.parameters['custom_colors'] }
+        if self.parameters.has_key('colors'):
+            return { 'colors' : self.parameters['colors'] }
         else:
             return { 'cmap' : self.cmap }
     
     def __has_min_ext(self):
-        return self.parameters.has_key('custom_min')
+        return self.parameters.has_key('min_color')
         
         
     def __has_max_ext(self):
-        return self.parameters.has_key('custom_max')
+        return self.parameters.has_key('max_color')
