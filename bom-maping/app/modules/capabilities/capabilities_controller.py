@@ -31,8 +31,8 @@ class CapabilitiesController():
 
         self.defaults = defaults
         
-        # lowercase all the keys/values
-        self.params = dict((k.lower(), v.lower())
+        # lowercase all the keys
+        self.params = dict((k.lower(), v)
                            for k,v in params.items())
         
         if 'format' not in self.params:
