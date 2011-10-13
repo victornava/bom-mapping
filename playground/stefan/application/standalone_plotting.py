@@ -44,10 +44,10 @@ param = { "bbox" : {  "min_lat" : "-90.0",
         "n_colors" : ["10", ] ,
         "palette" : "jet" ,
         #"palette" : "YlOrBr"
-        "custom_colors" : ["r", "#123abc", "#abc123","#abcdef" , "m"] ,
-        "custom_levels" : ["0" , "2.5" ,"3.0", "5" , "10" , "15"] ,
-        "custom_min" : "cyan" ,
-        "custom_max" : "#00aaff"
+        "colors" : ["r","#11ffcc","g", "#123abc", "#abc123","#abcdef" , "m"] ,
+        "color_levels" : ["-2", "-1","0" , "2.5" ,"3.0", "5" , "10" , "15"] ,
+        #"min_color" : "cyan" ,
+        "max_color" : "#00aaff"
 }
 
 
