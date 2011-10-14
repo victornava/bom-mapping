@@ -5,7 +5,7 @@ available = {
     "version" : "1.3.0",
     "service" : "wms",
     "exception_formats": ["xml"],
-    "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
+    "requests" : ["GetMap", "GetFullFigure", "GetLegend", "GetCapabilities"],
     "styles": ["grid", "contour", "grid_treshold"],
     "request_methods" : ["GET","POST"]
     }
