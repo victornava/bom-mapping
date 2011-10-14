@@ -16,9 +16,7 @@ app = Flask(__name__)
 def index():
     try:
         params = WMSParams(request.args, config.available).validate()
-
-        # TODO: GetCap module has access to the config file, so no need
-        # to pass default variable here. - Vas
+        
         if params['request'] == 'GetCapabilities':
             defaults = config.capabilities_defaults
         else:
@@ -72,8 +70,7 @@ def content_type_for(format):
         return "text/"+format
     else:
         raise InvalidFormatError("Don't know how to set content type for: " + str(format));
-    
-# TODO  pass optional config file as arg
+
 if __name__ == '__main__':
     port = 8007
     if len(sys.argv) > 1:

@@ -26,8 +26,8 @@ class WMSParams():
            "styles": [to_list],
            "layers": [to_list],
            "n_colors": [to_list],
-           "custom_levels": [to_list],
-           "custom_colors": [to_list]
+           "color_levels": [to_list],
+           "colors": [to_list]
         }        
         
         # lowercase all the keys
