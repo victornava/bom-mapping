@@ -57,7 +57,7 @@ end
 
 Then /^the response should be an image$/ do
   @response['content-type'].should include("image")
-  is_image?(@response.body)
+  is_image?(@response.body).should == true
 end
 
 Then /^the "([^"]*)" of the image should be "([^"]*)"$/ do |param, value|
