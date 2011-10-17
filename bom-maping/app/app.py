@@ -3,6 +3,7 @@ import traceback
 from flask import *
 from util.exceptions import *
 from modules.wms.wms_params import *
+from modules.wms.helpers import *
 import modules.plotting.plotting_controller as plotter
 import modules.capabilities.capabilities_controller as cap_controller
 import config
@@ -61,15 +62,6 @@ valid_operations = {
     "GetLegend": plotter.get_legend,
     "GetCapabilities": get_capabilities
     }
-
-def content_type_for(format):
-    format = format.lower()
-    if format in ['png', 'jpg', 'svg']:
-        return "image/"+format 
-    elif format in ['xml', 'html', 'json', 'txt']:
-        return "text/"+format
-    else:
-        raise InvalidFormatError("Don't know how to set content type for: " + str(format));
 
 if __name__ == '__main__':
     port = 8007
