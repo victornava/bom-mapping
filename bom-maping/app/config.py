@@ -25,7 +25,8 @@ defaults = {
     # "source_url" : "http://opendap.bom.gov.au:8080/thredds/dodsC/PASAP/atmos_latest.nc",
     "color_scale_range" : "auto",
     "n_colors" : "7",
-    "palette" : "jet"
+    "palette" : "jet",
+    "line_style" : "solid"
     }
     
 capabilities_defaults = {

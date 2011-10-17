@@ -118,7 +118,6 @@ class GriddedPlot(IPlotType):
                                              self.data[:,:], \
                                              vmin=crange[0], \
                                              vmax=crange[1], \
-#                                             cmap=self.cmap)
                                              cmap=cmap)
                                              
         return self.main_render
@@ -138,19 +137,16 @@ class GriddedTresholdPlot(IPlotType):
         IPlotType.plot(self)
         cmap = mpl.cm.get_cmap(self.parameters["palette"])
         crange = self.parameters["color_scale_range"]
-        #ncolors = self.parameters["n_color"]
         
         increment = float(crange[1] - crange[0]) / float(self.ncolors)
         cbounds = list(np.arange(crange[0],crange[1] + increment, increment ))
         
-#        cnorm = mpl.colors.BoundaryNorm(cbounds,self.cmap.N)
         cnorm = mpl.colors.BoundaryNorm(cbounds,cmap.N)
         self.main_render = self.m.pcolor( self.x, \
                                           self.y, \
                                           self.data[:,:], \
                                           vmin=crange[0], \
                                           vmax=crange[1], \
-#                                          cmap=self.cmap, \
                                           cmap=cmap, \
                                           norm=cnorm)
         
@@ -168,19 +164,7 @@ class ContourPlot(IPlotType):
         
     def plot(self):
         
-        #crange = self.parameters["color_scale_range"]
-        #ncolors = self.parameters["n_colors"][0]
-        
         self.data,lonwrap = addcyclic(self.data,self.lons)
-        
-        #increment = float(crange[1] - crange[0]) / float(ncolors-2)
-        #cbounds = list(np.arange(crange[0],crange[1] + increment, increment ))
-        # TODO: Color stuff
-        
-        #cmap = self.cmap_discretise(cmap,ncolors)
-        
-        #FIXME: Do we need this?
-        #colvs = [-999]+cbounds+[999]
         
         # Sort latitudes and data
         lat_idx = np.argsort(self.lats)
@@ -211,16 +195,6 @@ class ContourPlot(IPlotType):
             self.__print_custom_color_plot(x,y,data_bl)
         else:
             self.__print_cmap_plot(x,y,data_bl)
-        """
-        self.main_render = self.m.contourf( x, \
-                                            y, \
-                                            data_bl[:,:], \
-                                            cbounds, \
-                                            cmap=self.cmap, \
-                                            extend='none')
-                                            """
-        #contours = self.m.contour(x,y,data_bl,cbounds,colors='k')
-        #contours.clabel(colors='k',rightside_up=True,fmt='%1.1f',inline=True)
         
         return self.main_render
 
@@ -240,7 +214,12 @@ class ContourPlot(IPlotType):
                                             cmap=self.cmap, \
                                             extend='both')
         
-        contours = self.m.contour(x,y,data,cbounds,colors='k')
+        contours = self.m.contour(x, \
+                                  y, \
+                                  data, \
+                                  cbounds,colors='k', \
+                                  linestyles=self.parameters["line_style"])
+        
         contours.clabel(colors='k',rightside_up=True,fmt='%1.1f',inline=True)
         
     
@@ -265,7 +244,8 @@ class ContourPlot(IPlotType):
                                    y, \
                                    data, \
                                    levels=self.parameters['color_levels'], \
-                                   colors='k')
+                                   colors='k', \
+                                   linestyles=self.parameters["line_style"])
         
 
         
