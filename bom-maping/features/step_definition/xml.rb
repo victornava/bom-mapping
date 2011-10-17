@@ -164,7 +164,7 @@ xml = '
 
 module XML
   def self.has_tag(xml, tag)
-    regexp = Regexp.new("<\s*#{tag}\s*>.*<\/\s*#{tag}\s*>", Regexp::MULTILINE | Regexp::MULTILINE)
+    regexp = Regexp.new("<\s*#{tag}[^>]*>.*<\/\s*#{tag}\s*>", Regexp::MULTILINE | Regexp::MULTILINE)
     regexp =~ xml ? true : false
   end
 end
@@ -173,3 +173,4 @@ tag = "Service"
 
 puts XML.has_tag(xml, tag)
 puts XML.has_tag(xml, "Capability")
+puts XML.has_tag(xml, "WMS_Capabilities")

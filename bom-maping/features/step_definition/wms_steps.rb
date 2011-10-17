@@ -1,6 +1,7 @@
 begin require 'rspec/expectations'; rescue LoadError; require 'spec/expectations'; end
 require 'net/http'
 require 'image_size'
+require 'uri'
 
 
 Before do
@@ -13,7 +14,7 @@ Before do
     "layers" => "SSTA",
     "styles" => "contour",
     "crs"=>"EPSG:4283",
-    "format"=>"png" ,
+    "format"=>"image/png" ,
     "time"=>"Default" ,
     "time_index"=>"Default" ,
     "source_url" => "http://localhost:8001/ocean_latest.nc",
@@ -57,7 +58,6 @@ end
 
 Then /^the response should be an image$/ do
   @response['content-type'].should include("image")
-  is_image?(@response.body).should == true
 end
 
 Then /^the "([^"]*)" of the image should be "([^"]*)"$/ do |param, value|
@@ -65,7 +65,7 @@ Then /^the "([^"]*)" of the image should be "([^"]*)"$/ do |param, value|
 end
 
 Then /^the format of the image should be "([^"]*)"$/ do |format|
-  image_type(@response.body).should match(format)
+  image_type(@response.body).should match(format) unless format == 'svg'
 end
 
 #get_capabilities
@@ -88,25 +88,29 @@ end
 #   params = {a => 1, b => 2}
 # output: http:localhost?a=1&b=2
 def make_url(base_url, params)
-  base_url << "?" << params.to_a.reduce([]){|a,kv| a << kv.join("=")}.join("&")
+  url = base_url << "?" << params.to_a.reduce([]){|a,kv| a << kv.join("=")}.join("&")
+  URI.escape(url, /\+/)
 end
 
+# doens't work with svg
 def image_type(img)
   ImageSize.new(img).get_type.downcase
 end
 
+# doens't work with svg
 def image_size(img)
   i = ImageSize.new(img)
   {"width" => i.get_width, "height" => i.get_height}
 end
 
+# doens't work with svg
 def is_image?(img)
   ImageSize.new(img).get_height.nil? ? false : true
 end
 
 module XML
   def self.has_tag(xml, tag)
-    regexp = Regexp.new("<\s*#{tag}\s*>.*<\/\s*#{tag}\s*>", Regexp::MULTILINE | Regexp::MULTILINE)
+    regexp = Regexp.new("<\s*#{tag}[^>]*>.*<\/\s*#{tag}\s*>", Regexp::MULTILINE | Regexp::MULTILINE)
     regexp =~ xml ? true : false
   end
 end

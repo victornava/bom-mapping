@@ -11,7 +11,8 @@ Feature: Get capabilities
 		Given the parameters are set to "empty"
 			And the value of "request" parameter is "GetCapabilities"
     When I submit the request
-    Then the document should have tag "Service"
+    Then the document should have tag "WMS_Capabilities"
+			And the document should have tag "Service"
   
   
   

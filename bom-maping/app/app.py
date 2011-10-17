@@ -41,8 +41,9 @@ def index():
             
 @app.route('/dev')
 def dev():
+    # return "blah"
     params = request.args
-    return params['styles']
+    return params['format']
 
             
 def get_capabilities(params, defaults):

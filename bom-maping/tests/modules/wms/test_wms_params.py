@@ -14,7 +14,7 @@ class TestWMSParams(unittest.TestCase):
             "layers" : "hr24_prcp",
             "styles" : "contour",
             "crs" : "EPSG:4283",
-            "format" : "png",
+            "format" : "image/png",
             "time" : "default",
             "time_index" : "default",
             "source_url" : "http://localhost:8001/atmos_latest.nc",
