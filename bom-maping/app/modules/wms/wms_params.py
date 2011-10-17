@@ -1,4 +1,5 @@
 from util.exceptions import *
+from modules.wms.helpers import *
 
 class WMSParams():
     """Class for conditioning url parameters before calling the plotting module"""
@@ -42,7 +43,7 @@ class WMSParams():
         
         if 'format' in params: 
             # turn 'image/png' into 'png' 
-            params['format'] = params['format'].split('/')[-1]
+            params['format'] = format_for(params['format'])
     
         self.dict = params
         return self.dict
@@ -55,7 +56,7 @@ class WMSParams():
           * Make sure the request is a valid operation (if present)
           * Make sure the format is a valid (if present)
         """
-        
+
         if "request" not in self.dict:
             raise MissingParameterError("'request' parameter is missing")        
 
@@ -64,7 +65,7 @@ class WMSParams():
         
         # Handle capabilities format especial case
         if "format" in self.dict:
-            msg = "Format '" +self.dict["format"]+"' not supported for request '" + self.dict['request'] +"'"
+            msg = "Format '" +str(self.dict["format"])+"' not supported for request '" + str(self.dict['request']) +"'"
             if self.dict['request'] == 'GetCapabilities':
                 if self.dict["format"] not in self.available['capabilities_formats']:
                     raise InvalidFormatError(msg)
