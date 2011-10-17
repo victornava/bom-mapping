@@ -21,7 +21,7 @@ Feature: Get map
     Examples:
       |content_type | format|
       |image/png    | png   |
-      |image/jpg    | jpg   |
+      |image/svg    | svg   |
       
   Scenario: Image has the right size
     Given the parameters are set to "default"
