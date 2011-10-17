@@ -64,7 +64,7 @@ class WMSParams():
         
         # Handle capabilities format especial case
         if "format" in self.dict:
-            msg = "Format '" +self.dict["format"]+"' not supported for request '" + self.dict['request']
+            msg = "Format '" +self.dict["format"]+"' not supported for request '" + self.dict['request'] +"'"
             if self.dict['request'] == 'GetCapabilities':
                 if self.dict["format"] not in self.available['capabilities_formats']:
                     raise InvalidFormatError(msg)

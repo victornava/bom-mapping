@@ -1,5 +1,4 @@
 available = {
-    "formats": ["png", "jpeg"],
     "image_formats" : ["png", "jpeg"],
     "capabilities_formats": ["xml"],
     "version" : "1.3.0",

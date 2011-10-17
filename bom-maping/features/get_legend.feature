@@ -1,7 +1,4 @@
 Feature: Get legend
-  In order to value
-  As a role
-  I want feature
 
   Scenario: can get the legend
     Given the parameters are set to "default"

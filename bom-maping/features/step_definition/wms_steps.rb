@@ -73,7 +73,10 @@ Then /^the response should be an "([^"]*)" document$/ do |format|
   @response['content-type'].should include("text/#{format}")
 end
 
-  
+Then /^the document should have tag "([^"]*)"$/ do |tag|
+  XML::has_tag(@response.body, tag).should be_true
+end
+
 # helpers
 def visit(url)
   @response = Net::HTTP.get_response(URI.parse(url))
@@ -99,4 +102,11 @@ end
 
 def is_image?(img)
   ImageSize.new(img).get_height.nil? ? false : true
+end
+
+module XML
+  def self.has_tag(xml, tag)
+    regexp = Regexp.new("<\s*#{tag}\s*>.*<\/\s*#{tag}\s*>", Regexp::MULTILINE | Regexp::MULTILINE)
+    regexp =~ xml ? true : false
+  end
 end

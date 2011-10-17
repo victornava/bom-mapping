@@ -2,25 +2,6 @@ Feature: WMS Parameter Validation
   In order to ensure WMS compliance
   As a User
   I want to get meaningful xml exceptions when I summit an invalid request
-  
-  # Scenario Outline: Missing parameters
-  #   Given the parameter <parameter> is missing   
-  #   When I submit the request 
-  #   Then it should return a "ServiceException" error with code "MissingParameter"
-  #     And the message should contain <parameter>
-  #     
-  # Examples:
-    # | parameter |
-    # | request   |
-    # | bbox      |
-    # | crs       | crs parameter is missing        |
-    # | width     | width parameter is missing      |
-    # | height    | height parameter is missing     |
-    # | format    | format parameter is missing     |
-    # | version   | version parameter is missing    |
-    # | layers    | layers parameter is missing     |
-    # | styles    | styles parameter is missing     |
-    
 
   Scenario: request parameter is not supported
     Given the parameters are set to "default"
@@ -73,6 +54,3 @@ Feature: WMS Parameter Validation
   #   Given the parameters are set to "default"
   #   When event
   #   Then outcome
-  
-  
-  
