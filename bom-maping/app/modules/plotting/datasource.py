@@ -105,7 +105,7 @@ import numpy as np
 import util.exceptions as ex
 from mpl_toolkits.basemap import NetCDFFile
 from dap.exceptions import ClientError
-            
+import os
             
 class NetCDFDatasource(IDataSource):
     """
@@ -144,20 +144,36 @@ class NetCDFDatasource(IDataSource):
                             plot_mask \
                             )
         
-        #self.bbox.display()
-        
+        self.__validate_url(url)
+        self.data_dir = ""
         try:
             self.dset = NetCDFFile(url)
         except ClientError,ce:
-            raise ex.InvalidParameterValueError(repr(ce.value) + "- " + url)
+            raise ex.InvalidParameterValueError(repr(ce.value) \
+                                                + "- source_url: "\
+                                                + url)
         except Exception,e:
-            raise ex.InvalidParameterValueError(repr(e))
+            raise ex.InvalidParameterValueError(repr(e) + " - " + url)
         
         if self.time_index == 'Default':
             self.timestep = 0
         else:
             self.timestep = int(self.time_index)
-
+        
+        
+        
+    def __validate_url(self, url):
+        """
+            Validates url and raises appropriate exception if invalid.
+        """
+        #Check if datasource is local or remote
+        if not url.startswith("http"):
+            if url.count("..") > 0 or not os.path.isabs(url):
+                raise ex.InvalidParameterValueError("Relative url - " + url)
+            if not os.path.exists(url):
+                raise ex.InvalidParameterValueError("Url does not exist - " \
+                                                    + url)
+        
     def get_lats(self):
         """
             Returns all the lattitude values in the data source.

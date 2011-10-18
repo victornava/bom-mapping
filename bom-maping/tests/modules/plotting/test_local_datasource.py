@@ -8,6 +8,7 @@ import unittest
 from modules.plotting.datasource import NetCDFDatasource
 import util.exceptions as ex
 from modules.plotting.commons import BBox
+import os
 
 
 class TestDatasource(unittest.TestCase):
@@ -24,6 +25,23 @@ class TestDatasource(unittest.TestCase):
                         self.bbox,
                         'hr24_prcp')
         
+        
+    """
+        1. Test if datasource raises error for relative url.
+    """
+    def test_relative_url_error(self):
+        print "===Relative Url Error==="
+        
+        self.assertRaises(ex.InvalidParameterValueError, \
+                    NetCDFDatasource, \
+                    '/../../../../../../../saurabh/Downloads/atmos_latest.nc',\
+                    self.bbox, 'SSTA_cc', plot_mask=True)
+                    
+        self.assertRaises(ex.InvalidParameterValueError, \
+                    NetCDFDatasource, \
+                    '/home/saurabh/Downloads/atmos_latest.nc',\
+                    self.bbox, 'SSTA_cc', plot_mask=True)
+        print os.path.curdir
         
     """
         1. Test if get_lats() returns array of lats
@@ -53,7 +71,7 @@ class TestDatasource(unittest.TestCase):
         print "===get_lons==="
         print self.d.get_lons()
         
-        self.assertRaises(None, self.d.get_lons)
+        #self.assertRaises(None, self.d.get_lons)
         
     """
         3. Test if data is retrieved with right url, bbox params, varname
