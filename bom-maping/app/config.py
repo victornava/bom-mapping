@@ -26,7 +26,7 @@ defaults = {
     "color_scale_range" : "auto",
     "n_colors" : "7",
     "palette" : "jet",
-    "line_style" : "solid"
+    "line_style" : None
     }
     
 capabilities_defaults = {
