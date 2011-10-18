@@ -14,7 +14,7 @@ class TestWMSParams(unittest.TestCase):
             "layers" : "hr24_prcp",
             "styles" : "contour",
             "crs" : "EPSG:4283",
-            "format" : "png",
+            "format" : "image/png",
             "time" : "default",
             "time_index" : "default",
             "source_url" : "http://localhost:8001/atmos_latest.nc",
@@ -50,7 +50,6 @@ class TestWMSParams(unittest.TestCase):
             }
         
         self.available = {
-            "formats": ["png", "jpeg"],
             "image_formats": ["png", "jpeg"],
             "capabilities_formats": ["xml"],
             "exception_formats": ["xml"],
@@ -113,15 +112,15 @@ class TestWMSParams(unittest.TestCase):
         validate = WMSParams(self.subject, self.available).validate()
         
     def test_parse_custom_variables(self):
-        self.subject['custom_levels'] = '0,10, 20'
-        self.subject['custom_colors'] = 'red,#202020,b'
-        self.subject['custom_min'] = 'cyan'
-        self.subject['custom_max'] = 'green'
+        self.subject['color_levels'] = '0,10, 20'
+        self.subject['colors'] = 'red,#202020,b'
+        self.subject['max_color'] = 'cyan'
+        self.subject['min_color'] = 'green'
         parsed_subject = WMSParams(self.subject, self.available).parse()
-        self.assertEqual(['0','10','20'], parsed_subject['custom_levels'])
-        self.assertEqual(['red','#202020','b'], parsed_subject['custom_colors'])
-        self.assertEqual('cyan', parsed_subject['custom_min'])
-        self.assertEqual('green', parsed_subject['custom_max'])    
+        self.assertEqual(['0','10','20'], parsed_subject['color_levels'])
+        self.assertEqual(['red','#202020','b'], parsed_subject['colors'])
+        self.assertEqual('cyan', parsed_subject['max_color'])
+        self.assertEqual('green', parsed_subject['min_color'])    
     
 if __name__ == '__main__':
     unittest.main()

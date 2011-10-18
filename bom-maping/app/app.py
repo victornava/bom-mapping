@@ -3,19 +3,21 @@ import traceback
 from flask import *
 from util.exceptions import *
 from modules.wms.wms_params import *
+from modules.wms.helpers import *
 import modules.plotting.plotting_controller as plotter
 import modules.capabilities.capabilities_controller as cap_controller
 import config
 
 app = Flask(__name__)
 
+
+#FIX: Support for POST method : Error Code : 405
+
 @app.route('/')
 def index():
     try:
         params = WMSParams(request.args, config.available).validate()
-
-        # TODO: GetCap module has access to the config file, so no need
-        # to pass default variable here. - Vas
+        
         if params['request'] == 'GetCapabilities':
             defaults = config.capabilities_defaults
         else:
@@ -39,8 +41,9 @@ def index():
             
 @app.route('/dev')
 def dev():
+    # return "blah"
     params = request.args
-    return params['styles']
+    return params['format']
 
             
 def get_capabilities(params, defaults):
@@ -57,20 +60,10 @@ def handle_exception(exception):
 valid_operations = {
     "GetMap": plotter.get_contour,
     "GetFullFigure": plotter.get_full_figure,
-    "GetLeyend": plotter.get_legend,
+    "GetLegend": plotter.get_legend,
     "GetCapabilities": get_capabilities
     }
 
-def content_type_for(format):
-    format = format.lower()
-    if format in ['png', 'jpg', 'svg']:
-        return "image/"+format 
-    elif format in ['xml', 'html', 'json', 'txt']:
-        return "text/"+format
-    else:
-        raise InvalidFormatError("Don't know how to set content type for: " + str(format));
-    
-# TODO  pass optional config file as arg
 if __name__ == '__main__':
     port = 8007
     if len(sys.argv) > 1:

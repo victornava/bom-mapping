@@ -1,11 +1,10 @@
 available = {
-    "formats": ["png", "jpeg"],
-    "image_formats" : ["png", "jpeg"],
+    "image_formats" : ["png", "svg"],
     "capabilities_formats": ["xml"],
     "version" : "1.3.0",
     "service" : "wms",
     "exception_formats": ["xml"],
-    "requests" : ["GetMap", "GetFullFigure", "GetLeyend", "GetCapabilities"],
+    "requests" : ["GetMap", "GetFullFigure", "GetLegend", "GetCapabilities"],
     "styles": ["grid", "contour", "grid_treshold"],
     "request_methods" : ["GET","POST"]
     }
@@ -26,7 +25,8 @@ defaults = {
     # "source_url" : "http://opendap.bom.gov.au:8080/thredds/dodsC/PASAP/atmos_latest.nc",
     "color_scale_range" : "auto",
     "n_colors" : "7",
-    "palette" : "jet"
+    "palette" : "jet",
+    "line_style" : "solid"
     }
     
 capabilities_defaults = {

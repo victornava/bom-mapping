@@ -48,7 +48,7 @@ CS = p.contourf(X,Y,Z,levels=levels, \
 CS.cmap.set_under('cyan')
 CS.cmap.set_over('yellow')
 #p.figure()
-
+p.contour(X,Y,Z,levels=levels,colors='k',linestyles='dashed')
 #print CS.cmap
 #p.colorbar(CS)
 

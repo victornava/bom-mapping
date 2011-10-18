@@ -46,8 +46,9 @@ param = { "bbox" : {  "min_lat" : "-90.0",
         #"palette" : "YlOrBr"
         "colors" : ["r","#11ffcc","g", "#123abc", "#abc123","#abcdef" , "m"] ,
         "color_levels" : ["-2", "-1","0" , "2.5" ,"3.0", "5" , "10" , "15"] ,
-        #"min_color" : "cyan" ,
-        "max_color" : "#00aaff"
+        "min_color" : "cyan" ,
+        "max_color" : "#00aaff",
+        "line_style" : "dotted"
 }
 
 
