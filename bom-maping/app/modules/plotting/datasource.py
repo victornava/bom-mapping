@@ -106,6 +106,7 @@ import util.exceptions as ex
 from mpl_toolkits.basemap import NetCDFFile
 from dap.exceptions import ClientError
 import os
+import sys
             
 class NetCDFDatasource(IDataSource):
     """
@@ -129,9 +130,10 @@ class NetCDFDatasource(IDataSource):
                 url, \
                 bbox, \
                 varname, \
+                data_dir = '', \
                 time = 'Default', \
                 time_index = 'Default', \
-                plot_mask = True
+                plot_mask = True \
                 ) :
         
         # Pass parameters to the super constructor
@@ -144,10 +146,12 @@ class NetCDFDatasource(IDataSource):
                             plot_mask \
                             )
         
-        self.__validate_url(url)
-        self.data_dir = ""
+        self.data_dir = data_dir
+        
+        self.__validate_url(self.url)
+        
         try:
-            self.dset = NetCDFFile(url)
+            self.dset = NetCDFFile(self.url)
         except ClientError,ce:
             raise ex.InvalidParameterValueError(repr(ce.value) \
                                                 + "- source_url: "\
@@ -165,13 +169,20 @@ class NetCDFDatasource(IDataSource):
     def __validate_url(self, url):
         """
             Validates url and raises appropriate exception if invalid.
+            If datasource is local appends url to the base data directory and 
+            looks for data set under that directory.
+            If file is not present in base data directory checks if url is
+            a actual path to the dataset if yes then serves data from that
+            directory.
         """
         #Check if datasource is local or remote
         if not url.startswith("http"):
-            if url.count("..") > 0 or not os.path.isabs(url):
-                raise ex.InvalidParameterValueError("Relative url - " + url)
-            if not os.path.exists(url):
-                raise ex.InvalidParameterValueError("Url does not exist - " \
+            self.url = self.data_dir + url
+            if self.url.count("..") > 0 or not os.path.isabs(self.url):
+                raise ex.InvalidParameterValueError("Relative url - " \
+                                                    + url)
+            if not os.path.exists(self.url):
+                raise ex.InvalidParameterValueError("Url does not exist - "\
                                                     + url)
         
     def get_lats(self):

@@ -14,34 +14,41 @@ import os
 class TestDatasource(unittest.TestCase):
     
     def setUp(self):
-        self.bbox = BBox({  "min_lat" : -90.0,
-                            "min_lon" : -80.0,
-                            "max_lat" : 90.0,
-                            "max_lon" : 80.0
+        self.bbox = BBox({  "min_lat" : -82.0,
+                            "min_lon" : -85.0,
+                            "max_lat" : 86.0,
+                            "max_lon" : 87.0
                         })
-        
+        """
         self.d = NetCDFDatasource(
                        '/home/saurabh/Downloads/atmos_latest.nc',
                         self.bbox,
                         'hr24_prcp')
-        
+        """
+        self.d = NetCDFDatasource(
+                       '/atmos_latest.nc',
+                        self.bbox,
+                        'hr24_prcp',
+                        '/home/saurabh/Downloads')
         
     """
         1. Test if datasource raises error for relative url.
     """
     def test_relative_url_error(self):
         print "===Relative Url Error==="
-        
+        #Should raise an error for relative url
         self.assertRaises(ex.InvalidParameterValueError, \
                     NetCDFDatasource, \
                     '/../../../../../../../saurabh/Downloads/atmos_latest.nc',\
                     self.bbox, 'SSTA_cc', plot_mask=True)
-                    
+        
+        # No back slash at the start of the file name
         self.assertRaises(ex.InvalidParameterValueError, \
                     NetCDFDatasource, \
-                    '/home/saurabh/Downloads/atmos_latest.nc',\
-                    self.bbox, 'SSTA_cc', plot_mask=True)
-        print os.path.curdir
+                    'atmos_latest.nc',\
+                    self.bbox, 'SSTA_cc', plot_mask=True, \
+                    data_dir = '/home/saurabh/Downloads')
+        
         
     """
         1. Test if get_lats() returns array of lats
@@ -80,9 +87,11 @@ class TestDatasource(unittest.TestCase):
         print "===get_data==="
         
         self.d = NetCDFDatasource(
-                       '/home/saurabh/Downloads/ocean_latest.nc',
+                       '/ocean_latest.nc',
                         self.bbox,
-                        'SST', plot_mask = False)
+                        'SST',
+                        plot_mask = False,
+                        data_dir = '/home/saurabh/Downloads')
         try:
             print self.d.get_data()
         except Exception,e:
@@ -98,7 +107,7 @@ class TestDatasource(unittest.TestCase):
         
         self.assertRaises(ex.InvalidParameterValueError, \
                           NetCDFDatasource, \
-                          'http://wrong.cs.rmit.edu.au:8001/ocean_latest.nc', \
+                          '/wrong/ocean_latest.nc', \
                           self.bbox, 'SSTA_cc', plot_mask=True)
         
     """
@@ -160,16 +169,11 @@ class TestDatasource(unittest.TestCase):
         try:
             print "+++++contruct+++++"
             self.d = NetCDFDatasource(
-                    'http://yoursoft06.cs.rmit.edu.au:8001/ocean_latest.nc',
+                    '/ocean_latest.nc',
                     self.bbox,
-                    'SSTA_cc')
+                    'SSTA_cc',
+                    '/home/saurabh/Downloads')
             print self.d.get_var_unit()
         except ex.InvalidParameterValueError,e:
             print e.__str__(), " ===> Manual printing error"
-            
-        
-        
-    def test_get_time_label(self):
-        print "===get_time_label==="
-        
-        #print self.d.get_time_label()
+       
