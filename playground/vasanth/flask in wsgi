@@ -1,0 +1,58 @@
+---------------------------------------------------------------------------------------------------
+
+1. Copy our app directory to /var/www/bom/
+2. Install mod_wsgi & disable mod_python in apache
+3. configure virtual hosts/httpd conf file
+
+<VirtualHost *:80>
+    ServerName bom.localhost
+    ServerAlias www.bom.localhost
+	ServerAdmin postmaster@bom.localhost
+	#Alias / C:/xampp/htdocs/bom/bom.wsgi  <-- Windows #replace linux equi here
+	#Alias / /var/www/bom/bom.wsgi  <-- Linux
+	DocumentRoot "C:/xampp/htdocs/bom"   <-- Windows #replace linux equi here
+	<Directory "C:/xampp/htdocs/bom">  <-- Windows #replace linux equi here
+		WSGIApplicationGroup %{GLOBAL}
+		Options ExecCGI
+		AddHandler wsgi-script .wsgi
+		Order allow,deny
+		Allow from all
+    </Directory>	
+    ErrorLog "logs/bom.localhost-error.log"
+    CustomLog "logs/bom.localhost-access.log" combined
+    LogLevel info
+</VirtualHost>
+
+4. check system path for our app,
+
+echo %PATH% <-- Windows
+C:\Perl\site\bin;C:\Perl\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\
+Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Git\cmd;
+C:\Program Files (x86)\Git\bin;C:\Python27\Scripts;C:\Program Files\Java\jdk1.6.
+0_27\bin\java.exe;C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v1.
+0\;C:\xampp\php;C:\xampp\mysql\bin;C:\xampp\htdocs\bom\app
+
+echo $PATH <-- Linux
+../var/www/bom/app
+
+5. in our app.py remove everything under ,if __name__ == '__main__': 
+	if __name__ == '__main__':
+		#port = 8007
+		#if len(sys.argv) > 1:
+		#    port = int(sys.argv[1])
+		# TODO remember to turn off before going live
+		#app.debug = True
+		# app.debug = False
+		#app.run()
+
+
+6. create bom.wsgi under /var/www/bom/ with the following contents
+####
+from app import app as application
+####
+
+
+7. restart apache
+8. http://bom.localhost/?request=GetCapabilities  or http://localhost/?request=GetCapabilities
+
+---------------------------------------------------------------------------------------------------
