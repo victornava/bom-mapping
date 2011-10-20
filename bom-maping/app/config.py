@@ -67,4 +67,4 @@ contact_info = {
     "email" : "xyz@bom.gov.au"
     }
 
-data_dir = "/home/saurabh/Downloads"
+data_dir = ""
