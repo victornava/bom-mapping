@@ -105,6 +105,7 @@ import numpy as np
 import util.exceptions as ex
 from mpl_toolkits.basemap import NetCDFFile
 from dap.exceptions import ClientError
+from config import data_dir
 import os
 import sys
             
@@ -130,7 +131,6 @@ class NetCDFDatasource(IDataSource):
                 url, \
                 bbox, \
                 varname, \
-                data_dir = '', \
                 time = 'Default', \
                 time_index = 'Default', \
                 plot_mask = True \
@@ -146,7 +146,6 @@ class NetCDFDatasource(IDataSource):
                             plot_mask \
                             )
         
-        self.data_dir = data_dir
         
         self.__validate_url(self.url)
         
@@ -177,7 +176,7 @@ class NetCDFDatasource(IDataSource):
         """
         #Check if datasource is local or remote
         if not url.startswith("http"):
-            self.url = self.data_dir + url
+            self.url = data_dir + url
             if self.url.count("..") > 0 or not os.path.isabs(self.url):
                 raise ex.InvalidParameterValueError("Relative url - " \
                                                     + url)

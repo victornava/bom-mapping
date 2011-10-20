@@ -28,8 +28,7 @@ class TestDatasource(unittest.TestCase):
         self.d = NetCDFDatasource(
                        '/atmos_latest.nc',
                         self.bbox,
-                        'hr24_prcp',
-                        '/home/saurabh/Downloads')
+                        'hr24_prcp')
         
     """
         1. Test if datasource raises error for relative url.
@@ -46,8 +45,7 @@ class TestDatasource(unittest.TestCase):
         self.assertRaises(ex.InvalidParameterValueError, \
                     NetCDFDatasource, \
                     'atmos_latest.nc',\
-                    self.bbox, 'SSTA_cc', plot_mask=True, \
-                    data_dir = '/home/saurabh/Downloads')
+                    self.bbox, 'SSTA_cc', plot_mask=True)
         
         
     """
@@ -90,8 +88,7 @@ class TestDatasource(unittest.TestCase):
                        '/ocean_latest.nc',
                         self.bbox,
                         'SST',
-                        plot_mask = False,
-                        data_dir = '/home/saurabh/Downloads')
+                        plot_mask = False)
         try:
             print self.d.get_data()
         except Exception,e:
@@ -118,7 +115,7 @@ class TestDatasource(unittest.TestCase):
         print "===Layer not found error==="
         
         self.d = NetCDFDatasource(
-                       '/home/saurabh/Downloads/atmos_latest.nc',
+                       '/atmos_latest.nc',
                         self.bbox,
                         'invalid_layer')
         
@@ -171,8 +168,7 @@ class TestDatasource(unittest.TestCase):
             self.d = NetCDFDatasource(
                     '/ocean_latest.nc',
                     self.bbox,
-                    'SSTA_cc',
-                    '/home/saurabh/Downloads')
+                    'SSTA_cc')
             print self.d.get_var_unit()
         except ex.InvalidParameterValueError,e:
             print e.__str__(), " ===> Manual printing error"
