@@ -1,0 +1,106 @@
+This file lists the dependencies for this application, as well as describes
+how to install these dependencies on CentOS 5. Scripts are provided to
+automate these tasks on CentOS 5. This was not tested for Linux distributions,
+but should work for RHEL 5 as well.
+
+Dependencies:
+=============
+
+    from Package Manager:
+    =====================
+
+        * zlib 
+        * udunits2-devel
+        * curl-devel
+        * freetype-devel
+        * libpng-devel
+        * blas-devel
+        * lapack-devel
+        * atlas
+        * gcc-gfortran
+        * tk-devel
+        * 'Development Tools'
+
+        optional:
+        ---------
+
+        * git
+
+    installed by Hand:
+    ==================
+
+    * Python 2.7.x
+    * numpy
+    * scipy
+    * basemap
+    * matplotlib
+    * flask
+
+Installation in CentOS 5.6:
+===========================
+
+    * Source files will be downloaded to /usr/local/src.
+
+    1 .Preparations
+    ===============
+
+First, we will make sure that all the things we need to install our software
+are installed on the system.
+
+    * https://github.com/victornava/bom-mapping/blob/master/playground/stefan/scripts/00_install_general_utils.sh
+
+This script takes care of a couple of settings, and installs the dependencies
+that come with CentOS. The script is commented, so just select the functions
+that you need to run. If all the dependencies are there already, go to the
+next step.
+
+
+    2. Python 2.7
+    =============
+
+The next step is to install the latest Python 2.x version. In our case, we will
+install Python 2.7.2. The script that will do that for you can be found under
+
+    * https://github.com/victornava/bom-mapping/blob/master/playground/stefan/scripts/05_install_python_2.7_src.sh
+
+This downloads, compiles and installs PYthon 2.7.2 into /usr/local, and updates
+the linker. This is necessary for the next step, when we compile mod_wsgi
+against this Python version.
+
+
+    3. mod_wsgi
+    ===========
+
+Now we'll install mod_wsgi 3.3, compile it against the new version of Python.
+The script that does that for you can be found here:
+
+    * https://github.com/victornava/bom-mapping/blob/master/playground/stefan/scripts/10_install_mod_wsgi_src.sh
+
+
+    4. Dependencies for Prototype
+    =============================
+
+The are the dependencies that need to be installed in order for the prototype
+to work. I am not sure, but since we are using a newer version of Python, it
+might be a good idea to start from scratch installing the dependencies. Scripts
+that help re provided here:
+
+    * https://github.com/victornava/bom-mapping/blob/master/playground/stefan/scripts/15_install_prototype_dependencies.sh
+
+    5. Dependencies for new Application
+    ===================================
+
+The last step is to install the additional dependencies for the new application,
+and to downloaded the lateat version from trunk into the current users home
+directory. This script will help you with that:
+
+    * https://github.com/victornava/bom-mapping/blob/master/playground/stefan/scripts/25_install_bom_dependencies.sh
+
+    6. Pydap server (optional)
+    ==========================
+
+If you want to run a pydap server locally, do the following:
+
+    * cd
+    * paster create -t pydap myserver
+    * paster serve ./myserver/server.ini &

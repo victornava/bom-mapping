@@ -22,3 +22,10 @@ make -j5 install
 
 cd /usr/local/lib/python2.7/config
 ln -s ../../libpython2.7.so .
+
+# make the linker aware of the new version of python
+echo "Updating linker ..."
+sleep 2
+cd /etc/ld.so.conf.d
+echo '/usr/local/lib' > python.conf
+ldconfig -v

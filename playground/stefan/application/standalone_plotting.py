@@ -18,7 +18,8 @@ defaults = { "request":"GetMap",
                         "source_url" : "http://localhost:8001/atmos_latest.nc",
                           "color_scale_range" : ["auto", ],
                           "n_colors" : ["7", ],
-                          "palette" : "jet"
+                          "palette" : "jet",
+                          "line_style" : None
                         }
         
 param = { "bbox" : {  "min_lat" : "-90.0",
@@ -46,15 +47,19 @@ param = { "bbox" : {  "min_lat" : "-90.0",
         #"palette" : "YlOrBr"
         "colors" : ["r","#11ffcc","g", "#123abc", "#abc123","#abcdef" , "m"] ,
         "color_levels" : ["-2", "-1","0" , "2.5" ,"3.0", "5" , "10" , "15"] ,
-        "min_color" : "cyan" ,
-        "max_color" : "#00aaff",
-        "line_style" : "dotted"
+        "min_color" : "yellow" ,
+        #"max_color" : "#00aaff",
+       # "line_style" : "dotted"
 }
 
 
         
 #c = pc.PlottingController(param)
 #output = c.get_contour()
+
+import pylab
+
+pylab.ion()
 
 d,f = pc.get_contour(param,defaults)
 #d,f = pc.get_legend(param,defaults)
@@ -65,3 +70,5 @@ print "format: %s" % f
 img = open("test.png","w")
 img.write(d)
 img.close()
+
+

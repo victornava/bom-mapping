@@ -65,6 +65,8 @@ function build_matplotlib() {
    wget http://sourceforge.net/projects/matplotlib/files/matplotlib/matplotlib-1.0.1/matplotlib-1.0.1.tar.gz
    tar xzvf matplotlib-1.0.1.tar.gz
    cd matplotlib-1.0.1
+   # sed necessary to build matplotlib without errors
+   sed -i -e 's/Tkinter\.__version__\.split()\[-2\]/Tkinter\.__version__/g' setupext.py
    $PYTHON setup.py build
    $PYTHON setup.py install --prefix=/usr/local
 }

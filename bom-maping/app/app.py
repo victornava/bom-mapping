@@ -64,11 +64,11 @@ valid_operations = {
     "GetCapabilities": get_capabilities
     }
 
-if __name__ == '__main__':
-    port = 8007
-    if len(sys.argv) > 1:
-        port = int(sys.argv[1])
+#if __name__ == '__main__':
+#    port = 8007
+#    if len(sys.argv) > 1:
+#        port = int(sys.argv[1])
     # TODO remember to turn off before going live
-    app.debug = True
+#    app.debug = True
     # app.debug = False
-    app.run(host='0.0.0.0', port=port)
+#    app.run(host='0.0.0.0', port=port)
