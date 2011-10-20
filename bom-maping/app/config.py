@@ -66,3 +66,5 @@ contact_info = {
     "phone" : "+61 XXXX XXXX",
     "email" : "xyz@bom.gov.au"
     }
+
+data_dir = "/home/saurabh/Downloads"
