@@ -6,14 +6,14 @@ PYTHON=/usr/local/bin/python
 EASY_INSTALL=/usr/local/bin/easy_install
 
 cd
-path="`pwd`/bom-mapping/bom-maping/app"
+path="/opt/bom-mapping/bom-maping/app"
 
 function install_flask() {
    $EASY_INSTALL Flask
 }
 
 function checkout_app() {
-   cd
+   cd /opt
    git clone http://github.com/victornava/bom-mapping.git
    echo "export PYTHONPATH=$path:/usr/local/lib/python2.7/site-packages" >> /etc/profile.d/bom.sh
 }
@@ -31,7 +31,7 @@ function create_wsgi_file() {
    cd /var/www/wsgi-scripts
    # This helps getting over some MPLCOFIG error occuring with mod_wsgi
    echo "import os" > $NAME
-   echo "os.environ['HOME']='/tmp'" >> $NAME
+   echo "os.environ['MPLCONFIGDIR']='/tmp'" >> $NAME
 
    echo "from app import app as application" >> $NAME
 }

@@ -40,6 +40,7 @@ Installation in CentOS 5.6:
 ===========================
 
     * Source files will be downloaded to /usr/local/src.
+    * Log in as root user. Things will be installed into /usr/local and /opt
 
     1 .Preparations
     ===============
