@@ -26,7 +26,7 @@ def new():
         "layers" : "SSTA",
         "styles" : "contour",
         "crs" : "EPSG:4283",
-        "format" : "png" ,
+        "format" : "image/png" ,
         "time" : "Default" ,
         "time_index": "Default" ,
         # "source_url": "http://localhost:8001/atmos_latest.nc",
