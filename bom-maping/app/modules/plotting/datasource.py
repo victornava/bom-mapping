@@ -156,7 +156,9 @@ class NetCDFDatasource(IDataSource):
                                                 + "- source_url: "\
                                                 + url)
         except Exception,e:
-            raise ex.InvalidParameterValueError(repr(e) + " - " + url)
+            raise ex.InvalidParameterValueError(repr(e) \
+                                                + " - source_url: " \
+                                                + url)
         
         if self.time_index == 'Default':
             self.timestep = 0
