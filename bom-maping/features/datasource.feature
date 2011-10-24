@@ -14,7 +14,7 @@ Feature: Datasource
     
   Scenario: error on netcdf file that doesn't exists
     Given the parameters are set to "default"
-    And the value of "source_url" parameter is "http://localhost:8001?i_dont_exit.nc"
+    And the value of "source_url" parameter is "http://localhost:8001/i_dont_exit.nc"
     When I submit the request
     Then it should return a "ServiceException" error with code "InvalidParameterValue"
       And the message should contain "source_url"
@@ -37,3 +37,4 @@ Feature: Datasource
     And the value of "source_url" parameter is "/Users/vic/dev/bom-mapping/code/bom-maping/pydap-server/data/ocean_latest.nc"
     When  I submit the request
     Then the response should be an image
+
