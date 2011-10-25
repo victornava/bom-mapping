@@ -6,7 +6,7 @@ available = {
     "exception_formats": ["xml"],
     "requests" : ["GetMap", "GetFullFigure", "GetLegend", "GetCapabilities"],
     "styles": ["grid", "contour", "grid_treshold"],
-    "request_methods" : ["GET","POST"]
+    "request_methods" : ["GET"]
     }
 
 defaults = {
@@ -46,8 +46,8 @@ service_basic_info = {
     "fees" : "0",
     "access_constraints" : "none",
     "layer_limit" : "0",
-    "max_width" : "0",
-    "max_height" : "0"
+    "max_width" : "256",
+    "max_height" : "256"
     }
 
 # Contact Information
