@@ -26,6 +26,39 @@ class TestDatasource(unittest.TestCase):
         
         
     """
+        1. Contructor
+    """
+    #1.1. All valid params, should not throw any exceptions
+    def test_contruct_valid_params(self):
+        print "===test contruct valid params==="
+        self.d = NetCDFDatasource(
+                       'http://yoursoft06.cs.rmit.edu.au:8001/atmos_latest.nc',
+                        self.bbox,
+                        'hr24_prcp')
+        
+        
+    
+    #1.2 Server not found - InvalidParameterValueError
+    def test_contruct_server_not_found(self):
+        print "===test_contruct_server_not_found==="
+        
+        self.assertRaises(ex.InvalidParameterValueError, \
+                          NetCDFDatasource, \
+                          'http://server.not.found:8001/ocean_latest.nc', \
+                          self.bbox, 'SSTA_cc', plot_mask=True)
+        
+        
+    #1.3 Invalid port number - InvalidParameterValueError
+    def test_contruct_invalid_port_number(self):
+        print "===test_contruct_invalid_port_number==="
+        
+        self.assertRaises(ex.InvalidParameterValueError, \
+                        NetCDFDatasource, \
+                        'http://yoursoft06.cs.rmit.edu.au:0000/' + \
+                        'ocean_latest.nc', \
+                        self.bbox, 'SSTA_cc', plot_mask=True)
+        
+    """
         1. Test if get_lats() returns array of lats
     """
     def test_get_lats(self):
