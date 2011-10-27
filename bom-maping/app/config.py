@@ -6,7 +6,7 @@ available = {
     "exception_formats": ["xml"],
     "requests" : ["GetMap", "GetFullFigure", "GetLegend", "GetCapabilities"],
     "styles": ["grid", "contour", "grid_treshold"],
-    "request_methods" : ["GET","POST"]
+    "request_methods" : ["GET"]
     }
 
 defaults = {
@@ -43,11 +43,11 @@ service_basic_info = {
     "abstract" : "Map Overlay Web Service for the Australian Bureu of Meteorology",
     "keywordlist" : ["BOM","Contour Plot"],
     "online_resource_url" : "http://bom.gov.au",
-    "fees" : "0",
+    "fees" : "none",
     "access_constraints" : "none",
     "layer_limit" : "0",
-    "max_width" : "0",
-    "max_height" : "0"
+    "max_width" : "1024",
+    "max_height" : "1024"
     }
 
 # Contact Information
@@ -68,3 +68,5 @@ contact_info = {
     }
 
 data_dir = ""
+
+service_url = "http://poama.bom.gov.au/"

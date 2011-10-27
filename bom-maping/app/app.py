@@ -10,13 +10,14 @@ import config
 
 app = Flask(__name__)
 
-
-#FIX: Support for POST method : Error Code : 405
-
 @app.route('/')
 def index():
     try:
         params = WMSParams(request.args, config.available).validate()
+        
+        # FIXME: hack to work around styles parameter conflicts with test client
+        if 'plot_styles' in params:
+            params['styles'] = [params['plot_styles']]
         
         if params['request'] == 'GetCapabilities':
             defaults = config.capabilities_defaults
@@ -56,7 +57,6 @@ def handle_exception(exception):
     resp.headers['Content-Type'] = 'text/xml'
     return resp
     
-# TODO shuold use this one after modules return -> content, format
 valid_operations = {
     "GetMap": plotter.get_contour,
     "GetFullFigure": plotter.get_full_figure,
@@ -64,11 +64,12 @@ valid_operations = {
     "GetCapabilities": get_capabilities
     }
 
-if __name__ == '__main__':
-    port = 8007
-    if len(sys.argv) > 1:
-        port = int(sys.argv[1])
-   # TODO remember to turn off before going live
-    app.debug = True
-   # app.debug = False
-    app.run(host='0.0.0.0', port=port)
+# if __name__ == '__main__':
+#    port = 8007
+#    if len(sys.argv) > 1:
+#        port = int(sys.argv[1])
+#    
+#    #TODO remember to turn off before going live
+#    app.debug = True
+#    # app.debug = False
+#    app.run(host='0.0.0.0', port=port)
