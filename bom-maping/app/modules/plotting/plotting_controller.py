@@ -407,18 +407,25 @@ class PlottingController(object):
                      "historical skill"
         subheader2 = "Experimental outlook for demonstration and research only"
         
-        start_date = datetime.datetime.strftime( \
+        title = header + '\n' + \
+                subheader1 + '\n' + \
+                subheader2 + '\n'
+        try:
+            start_date = datetime.datetime.strftime( \
                             num2date( self.dset.get_init_date()[0], \
                                       self.dset.get_time_units()), \
                                       "%Y%m%d")
+        except:
+            start_date = "Cannot compute start_date."
         
-        title = header + '\n' + \
-                subheader1 + '\n' + \
-                subheader2 + '\n' + \
+        try:
+            title = title + \
                 'Variable: ' + self.parameters['layers'][0] + \
                 ' (' + self.dset.get_var_unit() + ')\n' + \
                 'Model initlialised ' + start_date + '\n' + \
                 'Forecast period: ' + str(self.dset.get_time_label())
+        except:
+            title = "Can not compute title."
 
         return title
         
