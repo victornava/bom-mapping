@@ -276,7 +276,7 @@ class NetCDFDatasource(IDataSource):
         try:
             var_units = self.dset[self.varname].attributes['units']
         except:
-            var_units = ''
+            var_units = ""
         
         return var_units
         
@@ -297,6 +297,8 @@ class NetCDFDatasource(IDataSource):
         """
         if 'time_label' in self.dset.variables.keys():
             return self.dset.variables['time_label'][self.timestep]
+        else:
+            return "No Time Label in datasource"
         
         
 class RemoteNetCDFDatasource(IDataSource):
