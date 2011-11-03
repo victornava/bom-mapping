@@ -166,7 +166,6 @@ class NetCDFDatasource(IDataSource):
             self.timestep = int(self.time_index)
         
         
-        
     def __validate_url(self, url):
         """
             Validates url and raises appropriate exception if invalid.
@@ -298,8 +297,8 @@ class NetCDFDatasource(IDataSource):
         """
         if 'time_label' in self.dset.variables.keys():
             return self.dset.variables['time_label'][self.timestep]
-            
-            
+        
+        
 class RemoteNetCDFDatasource(IDataSource):
     """
         Author: Saurabh Pandit (s3270950@student.rmit.edu.au)
