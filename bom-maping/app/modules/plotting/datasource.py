@@ -188,7 +188,6 @@ class NetCDFDatasource(IDataSource):
     def get_lats(self):
         """
             Returns all the lattitude values in the data source.
-            TODO : raise exception if invalid operation/unexpected error
         """
         try:
             lat = self.dset.variables['lat'][:]
@@ -202,7 +201,6 @@ class NetCDFDatasource(IDataSource):
     def get_lons(self):
         """
             Returns all the longitude values in the data source
-            TODO : raise exception if invalid operation/unexpected error
         """
         try:
             lon = self.dset.variables['lon'][:]
@@ -304,9 +302,11 @@ class NetCDFDatasource(IDataSource):
 class RemoteNetCDFDatasource(IDataSource):
     """
         Author: Saurabh Pandit (s3270950@student.rmit.edu.au)
-    
+        
         This class provides some basic functionality for accessing NetCDF data
-        from NetCDF files.
+        from pyDAP/openDAP servers.
+        
+        DEPRECATED: Use NetCDFDatasource instead.
         
         url: url of OpenDAP data set
         bbox: commons.bbox object
